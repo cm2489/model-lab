@@ -8,7 +8,7 @@ Status words: **planned** (not built), **draft** (built, not yet re-run by an in
 
 | Lab | You ship | Hours | Target week | Status |
 |---|---|---|---|---|
-| 0 · Setup | Your Mac's measured speed and memory | 1.5 | Oct 7 | planned |
+| 0 · Setup | Your Mac's measured speed and memory | 1.5 | Oct 7 | ready |
 | 1 · Evals first | Public eval harness with a pass/fail gate | 4.7 | Oct 7 to 13 | planned |
 | 2 · First fine-tune | Fine-tuned model and model card on Hugging Face | 4.8 | Oct 12 to 18 | planned |
 | 3 · Hosted fine-tune | Comparison write-up (up to $10) | 4 | Oct 16 to 21 | planned |
@@ -36,8 +36,6 @@ Hours are estimates and have not been measured. Labs 3 to 5 are built after Lab 
 | Thu Oct 8 | State of AI Report 2026 is published. Refresh the landscape research against it. | planned |
 | Fri Oct 9 | Revisit build-log posts. They start only once the LinkedIn profile is finished. | planned |
 | Tue Oct 13 | Count sessions for the week. Five or more turns on the weekly landscape run. | planned |
-| Fri Nov 6 | Job-search checkpoint 2. | planned |
-| Fri Dec 11 | Job-search target date. | planned |
 
 ## Waiting on Colby
 
@@ -47,7 +45,7 @@ Hours are estimates and have not been measured. Labs 3 to 5 are built after Lab 
 
 ## Depth phase · proposed, not approved
 
-After Lab 5, about six weeks remain before December 11. This phase repeats the loop on harder problems, aimed at what open-model job postings name. Colby confirms the contents before any of it is built.
+After Lab 5, this phase repeats the loop on harder problems, aimed at what open-model job postings ask for. Colby confirms the contents before any of it is built.
 
 - Serving under load: vLLM or SGLang, batching, throughput, cost per token.
 - Quantization: what each level costs in accuracy, measured on the golden set.
@@ -56,7 +54,7 @@ After Lab 5, about six weeks remain before December 11. This phase repeats the l
 - Distillation from an open teacher model.
 - A second task: structured extraction, harder than tagging.
 
-## Later tracks · start when the job search is settled
+## Later tracks · start after Track 1
 
 Short briefs, one to three hours each.
 

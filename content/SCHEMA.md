@@ -56,4 +56,5 @@ All dates and times are Eastern Time (America/New_York), written as ISO 8601 wit
 ```
 
 - Written by the `/lab` command when a step is finished. Nobody edits it by hand.
-- A session is one sitting. The bench counts sessions per week (Monday to Sunday).
+- A session is one sitting. Two sittings on one day are two entries. The bench counts sessions per week (Monday to Sunday).
+- `updated` is `null` until the first step is logged.

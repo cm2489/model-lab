@@ -15,7 +15,7 @@
       },
       "est_minutes": 90,
       "doc": "labs/00-setup/README.md",
-      "status": "draft",
+      "status": "ready",
       "steps": [
         {
           "id": "lab-0.1",

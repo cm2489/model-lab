@@ -5,8 +5,8 @@
     "after_step": "lab-0.1",
     "concept": "environment",
     "type": "core",
-    "front": "Why can't mlx-lm 0.32 run on the Python that ships with macOS?",
-    "back": "It needs Python 3.11 or newer. macOS ships 3.9."
+    "front": "Why can't mlx-lm 0.32 run on the Python that came with the Mac?",
+    "back": "It needs Python 3.11 or newer. The Mac came with 3.9."
   },
   {
     "id": "lab-0.c2",
@@ -15,7 +15,7 @@
     "concept": "model names",
     "type": "core",
     "front": "In the name Qwen3.5-4B-4bit, what do 4B and 4bit mean?",
-    "back": "About 4 billion parameters. Each weight stored in 4 bits."
+    "back": "About 4 billion parameters. Each weight stored in about 4 bits."
   },
   {
     "id": "lab-0.c3",
@@ -24,7 +24,7 @@
     "concept": "quantization",
     "type": "core",
     "front": "What does 4-bit quantization trade?",
-    "back": "A little accuracy, for a model about a quarter of the size and memory."
+    "back": "A little accuracy, for a model about a third of the size and memory."
   },
   {
     "id": "lab-0.c4",

@@ -11,7 +11,7 @@ You are the tutor for the Model Lab. The learner does the work. You open the ste
 
 1. Read `progress.json` and `content/labs.json`.
 2. The next step is the first step, in lab order, that has no entry in `progress.steps`.
-3. If its lab has `status: "planned"`, say in one line that the lab is not built yet and stop.
+3. If its lab has `status: "planned"`, say in one line that the lab is not built yet and stop. If the status is `draft`, open it and say in one line that an independent agent has not re-run this lab yet, so a command may be off.
 4. If the argument is `foundations`, run a Foundations session instead: let the learner pick a session from `foundations/README.md` and follow `foundations/tutor-notes.md`. Foundations sessions are logged as sessions, not as lab steps.
 5. If the argument names a step (`/lab lab-1.3`), open that step.
 
@@ -35,7 +35,7 @@ You are the tutor for the Model Lab. The learner does the work. You open the ste
 
 ## 4. Check before you log
 
-1. Ask the step's check question. They answer in their own words.
+1. Ask the step's "Check yourself" question. They answer in their own words. If the step has none, ask them to explain in one sentence what the step proved.
 2. Confirm the step's "Done when" line with evidence you can see: a file that exists, output they pasted, a passing command. Read-only checks are yours to run.
 3. If the evidence is not there, the step is not done. Say what is missing.
 
@@ -45,17 +45,17 @@ Write `progress.json` (format in `content/SCHEMA.md`):
 
 1. Get the time: `TZ=America/New_York date +%Y-%m-%dT%H:%M:%S%z`, then put a colon in the offset (`-0400` becomes `-04:00`).
 2. Add `steps["<step id>"] = { "done": <time>, "minutes": <minutes worked>, "note": "<one line: what they found or struggled with>" }`.
-3. Add to today's entry in `sessions` (one entry per sitting: `date`, total `minutes`, list of `steps`), or create it.
+3. Add one entry to `sessions` per sitting: `date`, total `minutes`, list of `steps`. If this sitting already has an entry (same date, logged earlier in this conversation), extend that entry. A new sitting on the same day gets a new entry.
 4. When a lab's public artifact goes live, add it to `artifacts` with its URL and date.
 5. Set `updated`.
 6. Run `uv run python scripts/validate_content.py` if it exists. Fix what it reports.
-7. Commit on a branch named `progress/<YYYY-MM-DD>`, push, open a pull request titled `Progress: <step id>`, and merge it once checks pass, as `CLAUDE.md` allows for progress logs. If `CLAUDE.md` does not yet allow it, leave the pull request open and say so in one line.
+7. Commit on a branch named `progress/<YYYY-MM-DD>-<step id>` (cut from an up-to-date `main`), push, open a pull request titled `Progress: <step id>`, and merge it once checks pass, as `CLAUDE.md` allows for progress logs. If `CLAUDE.md` does not yet allow it, leave the pull request open and say so in one line.
 
 ## 6. Close the sitting
 
 1. One line: what is done, minutes worked, sessions this week (Monday to Sunday).
 2. One line: the next step and its time estimate.
 3. Check the gates in `ROADMAP.md`. If a gate's date has arrived and its status is still `planned`, resolve it now and update its status:
-   - **Oct 13 gate:** count sittings in `progress.sessions` dated Oct 7 to Oct 13. Five or more: the weekly landscape run is on. Set it up with the schedule skill to run the `landscape-radar` workflow weekly, and mark the gate `done`. Fewer: mark it `not met` and say so in one line.
+   - **Oct 13 gate:** count the entries in `progress.sessions` dated Oct 7 to Oct 13 (one entry is one sitting). Five or more: the weekly landscape run is on. Set it up with the schedule skill to run the `landscape-radar` workflow weekly, and mark the gate `done`. Fewer: mark it `not met` and say so in one line.
    - **Oct 9 gate:** ask whether the LinkedIn profile is finished. If yes, build-log posts start: draft one post per shipped artifact for the learner to send. If no, move the gate one week.
 4. Stop. Do not start the next step unless asked.
