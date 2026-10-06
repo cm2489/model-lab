@@ -256,14 +256,62 @@ def split(bills: list[dict], rng: random.Random) -> dict[str, list[dict]]:
     return out
 
 
-def leakage(splits: dict[str, list[dict]]) -> dict[str, dict[str, int]]:
-    """For each pair of splits, how many title keys and short-title keys they share. All must be 0."""
-    out = {}
-    for kind, fn in [("title", lambda r: normalize_title(r["title"])), ("short_title", short_title_key)]:
-        keys = {name: {fn(r) for r in rows} - {None} for name, rows in splits.items()}
-        names = sorted(keys)
-        out[kind] = {f"{a}&{b}": len(keys[a] & keys[b]) for i, a in enumerate(names) for b in names[i + 1:]}
-    return out
+# --- Corrected keys and the cleanup pass -------------------------------------
+#
+# normalize_title drops "2025" but leaves the "of" before it, so the short titles
+# "Kids' Access to Care Act of 2025" and "Kids' Access to Care Act" got different
+# keys. The corrected keys below drop "of 2025" as a whole. They are used only
+# AFTER the split, to remove train and valid rows that collide with golden (or
+# valid rows that collide with train). The key that builds units and drives the
+# seeded shuffle is left unchanged on purpose: changing it would reshuffle every
+# split, including the frozen golden set.
+
+_YEAR_STRICT = re.compile(r"\b(of )?(19|20)\d\d\b")
+
+
+def strict_title_key(title: str) -> str:
+    """Like normalize_title, but "of 2025" goes as a whole, not just "2025"."""
+    t = " ".join(re.sub(r"[^a-z0-9]+", " ", title.lower()).split())
+    t = " ".join(_YEAR_STRICT.sub(" ", t).split())
+    t = _PREFIX.sub("", t)
+    t = _SUFFIX.sub("", t)
+    return t.strip()
+
+
+def strict_short_key(row: dict) -> str | None:
+    """The short title under the corrected rule, or None if the bill has no short title."""
+    short = strict_title_key(row.get("display_title") or "")
+    return short if short and short != strict_title_key(row["title"]) else None
+
+
+def strict_keys(row: dict) -> set[str]:
+    """Every corrected key of a row: its title key, plus its short-title key if it has one."""
+    return {strict_title_key(row["title"])} | ({strict_short_key(row)} - {None})
+
+
+def cleanup(splits: dict[str, list[dict]]) -> dict[str, int]:
+    """Drop train and valid rows that collide with golden, and valid rows that collide with train.
+
+    Golden is never touched. Returns how many rows were dropped from each split.
+    """
+    golden_keys = set().union(*(strict_keys(r) for r in splits["golden"]))
+    dropped = {"train": 0, "valid": 0, "golden": 0}
+    for name in ("train", "valid"):
+        kept = [r for r in splits[name] if not strict_keys(r) & golden_keys]
+        dropped[name] += len(splits[name]) - len(kept)
+        splits[name] = kept
+    train_keys = set().union(*(strict_keys(r) for r in splits["train"]))
+    kept = [r for r in splits["valid"] if not strict_keys(r) & train_keys]
+    dropped["valid"] += len(splits["valid"]) - len(kept)
+    splits["valid"] = kept
+    return dropped
+
+
+def leakage(splits: dict[str, list[dict]]) -> dict[str, int]:
+    """For each pair of splits, how many corrected keys (title or short title) they share. All must be 0."""
+    keys = {name: set().union(*(strict_keys(r) for r in rows)) for name, rows in splits.items()}
+    names = sorted(keys)
+    return {f"{a}&{b}": len(keys[a] & keys[b]) for i, a in enumerate(names) for b in names[i + 1:]}
 
 
 def to_example(row: dict) -> dict:
@@ -309,14 +357,16 @@ def main() -> None:
 
     rng = random.Random(SEED)
     splits = split(labelled, rng)
+    before = {name: len(rows) for name, rows in splits.items()}
+    dropped = cleanup(splits)
     paths = {"train": ROOT / "data/train.jsonl", "valid": ROOT / "data/valid.jsonl",
              "golden": ROOT / "evals/golden.jsonl"}
     for name, rows in splits.items():
         write_jsonl(paths[name], sorted((to_example(r) for r in rows), key=lambda r: r["id"]))
 
-    # Leakage check on the bills as written: no title key and no short title in two splits.
+    # Leakage check on the bills as written, with the corrected keys.
     overlaps = leakage(splits)
-    assert all(v == 0 for d in overlaps.values() for v in d.values()), overlaps
+    assert all(v == 0 for v in overlaps.values()), overlaps
 
     # Summary.
     fetched = min(m["fetched"] for m in manifest.values())
@@ -328,8 +378,11 @@ def main() -> None:
           f"   title keys with conflicting labels: {conflicting}")
     print(f"split units (title keys joined by short title): {n_units}"
           f"   golden candidates skipped for a near-twin title: {split.twins_skipped}")
+    print(f"before cleanup: train {before['train']}  valid {before['valid']}  golden {before['golden']}")
+    print(f"cleanup dropped (corrected-key collisions): train {dropped['train']}  valid {dropped['valid']}"
+          f"  golden {dropped['golden']}")
     print(f"split sizes: train {len(splits['train'])}  valid {len(splits['valid'])}  golden {len(splits['golden'])}")
-    print(f"shared across splits: {overlaps}")
+    print(f"shared corrected keys across splits: {overlaps}")
 
     label_counts = {name: collections.Counter(r["policy_area"] for r in rows) for name, rows in splits.items()}
     labels = sorted(set().union(*label_counts.values()), key=lambda l: -sum(c[l] for c in label_counts.values()))

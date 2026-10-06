@@ -74,7 +74,10 @@ class AnthropicBackend:
         if client is None:
             import anthropic
 
-            client = anthropic.Anthropic()
+            # No automatic retries: the SDK would otherwise resend a failed request up to
+            # twice, and the spend guard's worst case assumes one request per bill.
+            # A failed request is recorded as an invalid reply instead.
+            client = anthropic.Anthropic(max_retries=0)
         self.client = client
         self.runtime = None
         self.model_id = model_id
@@ -88,9 +91,9 @@ class AnthropicBackend:
         try:
             resp = self.client.messages.create(**kwargs)
         except Exception as e:  # noqa: BLE001
-            if not _retryable(e):
+            if not _transient(e):
                 raise
-            # The SDK already retried twice. Record the miss and keep going.
+            # Retries are off (see __init__). Record the miss and keep going.
             return {"raw": f"[api error] {type(e).__name__}", "input_tokens": 0, "output_tokens": 0,
                     "gen_tps": None, "stop": "error"}
         text = "".join(b.text for b in resp.content if getattr(b, "type", None) == "text")
@@ -105,8 +108,11 @@ class AnthropicBackend:
         }
 
 
-def _retryable(e: Exception) -> bool:
-    """Rate limits, server errors and network errors. Auth or bad-request errors stop the run."""
+def _transient(e: Exception) -> bool:
+    """Rate limits, server errors and network errors: recorded as invalid, the run goes on.
+
+    Anything else (a bad key, a bad request) stops the run, because every request would fail.
+    """
     try:
         import anthropic
     except ImportError:

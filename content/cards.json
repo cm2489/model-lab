@@ -86,8 +86,8 @@
     "after_step": "lab-1.1",
     "concept": "data leakage",
     "type": "core",
-    "front": "Why does the title key strip \"A bill to\" before splitting?",
-    "back": "House and Senate companions differ only in boilerplate like \"A bill to\". The key strips it, so companions share a split."
+    "front": "How do House and Senate companions stay out of different splits?",
+    "back": "Companions often differ only in 'A bill to'. The key strips it, and short titles join reworded ones, so companions share a split."
   },
   {
     "id": "lab-1.c3",
@@ -177,6 +177,6 @@
     "concept": "spend guard",
     "type": "core",
     "front": "What stops a paid eval run from overspending?",
-    "back": "--max-usd: the run refuses to start if every reply using all of max_tokens would cost more."
+    "back": "--max-usd refuses a run whose worst case is too high. It protects you when you pass the real prices."
   }
 ]

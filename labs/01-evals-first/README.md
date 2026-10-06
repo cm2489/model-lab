@@ -37,8 +37,10 @@ model. This lab builds the ruler you will measure it with.
    bills parsed: 17007   no policy area (dropped): 396   labelled: 16611
    distinct title keys: 13088   copies folded: 3523   title keys with conflicting labels: 86
    split units (title keys joined by short title): 12411   golden candidates skipped for a near-twin title: 12
-   split sizes: train 11647  valid 1280  golden 150
-   shared across splits: {'title': {'golden&train': 0, 'golden&valid': 0, 'train&valid': 0}, 'short_title': {'golden&train': 0, 'golden&valid': 0, 'train&valid': 0}}
+   before cleanup: train 11647  valid 1280  golden 150
+   cleanup dropped (corrected-key collisions): train 7  valid 33  golden 0
+   split sizes: train 11640  valid 1247  golden 150
+   shared corrected keys across splits: {'golden&train': 0, 'golden&valid': 0, 'train&valid': 0}
    ```
 
    Then a table of every label's count in each split, and at the end:
@@ -206,12 +208,15 @@ Fixing up means guessing what the model meant, and the guess becomes part of the
 **Do this:** run Claude on the same 150 bills and add a priced row to the table. **About 30 minutes.**
 
 **The cap for this step is $2.** The harness will not start a run that could cost more than you allow.
+The guard protects you when you pass the real prices: it trusts the numbers you give it, and refuses zero or negative ones.
 
 **The worst case, worked out.** At $4 per million input tokens and $20 per million output tokens:
 - Each reply is capped at 512 tokens (thinking included): 512 × $20 / 1,000,000 = $0.0102 a bill.
 - Input is about 250 to 440 tokens a bill (the guard assumes the high end): at most $0.0018 a bill.
 - 150 bills × $0.0120 = **$1.80 at most**. Real runs should cost far less, because most replies are short.
 - With the old cap of 2,048 tokens it would have been up to about $6.40. That is why the cap is 512.
+- Retries are off (`max_retries=0` in `evals/backends.py`). The SDK would otherwise resend a failed
+  request up to twice, which the worst case does not count. A failed request is recorded as an invalid reply instead.
 
 1. Check today's prices at `https://www.anthropic.com/pricing`. The kit was built with Claude Opus 5.5
    at $4 per million input tokens and $20 per million output tokens (Anthropic's model table, September 25, 2026).
@@ -228,7 +233,7 @@ Fixing up means guessing what the model meant, and the guess becomes part of the
    You should see (kit builder's run):
 
    ```text
-   spend guard: 150 bills, max_tokens 512, worst case $1.80, cap $1.00
+   spend guard: 150 bills, max_tokens 512, no retries, worst case $1.80, cap $1.00
    error: worst case $1.80 is over --max-usd $1.00. Lower --limit or --max-tokens, or raise --max-usd.
    ```
 
@@ -266,7 +271,8 @@ Fixing up means guessing what the model meant, and the guess becomes part of the
   against the cap. A reply cut off before its answer scores invalid and shows as `max_tokens` in "How replies ended".
   If that happens often, raising `--max-tokens` raises the worst case too, and the run will need more than $2.
 
-The harness also refuses to send the `train` or `valid` split to a paid API unless you add `--allow-large`.
+The harness also refuses to send the `train` or `valid` split, or any file over 500 bills, to a paid API unless you add `--allow-large`.
+If you run a model or prices the page did not document, it prints a one-line warning first.
 
 **Check:** the frontier row shows a cost per 1,000 bills. Where does that number come from?
 
@@ -341,6 +347,8 @@ The 2 invalid replies sit in group 1. Both named a label that does not exist.
 
 **Do this:** run the gate, break it on purpose, and watch CI catch it. **About 45 minutes.**
 
+**Start this step on the `main` branch** (`git switch main`). Sub-step 9 brings you back there.
+
 > Sub-steps 1 to 4 were run by the kit builder. Sub-steps 5 to 10 (the GitHub part) were
 > **not verified by the kit builder**: no deliberately broken pull request was opened. The same
 > workflow ran green on the kit's own pull request.
@@ -354,7 +362,7 @@ The 2 invalid replies sit in group 1. Both named a label that does not exist.
    You should see, at the end:
 
    ```text
-   Ran 67 tests in 1.520s
+   Ran 82 tests in 0.777s
 
    OK
    ```
@@ -426,9 +434,8 @@ The 2 invalid replies sit in group 1. Both named a label that does not exist.
    gh pr create --fill --draft
    ```
 
-   Expect: a pull request URL. The repository is private today and will be public by the time you
-   reach this step. **Unverified:** whether GitHub accepts draft pull requests on your account and plan.
-   If the draft flag is refused, run `gh pr create --fill` instead.
+   Expect: a pull request URL. If the repository is still private, the draft option may be refused
+   (**unverified**: it depends on your GitHub plan). If it is, run `gh pr create --fill` instead.
 
 8. Watch the checks:
 
@@ -439,13 +446,14 @@ The 2 invalid replies sit in group 1. Both named a label that does not exist.
    Expect: the `test-and-gate` check fails, at the step "Gate on the committed baseline predictions",
    with the same FAIL lines as sub-step 4.
 
-9. Go back to `main`:
+9. Go back to `main`, by name, whatever branch you are on now:
 
    ```bash
    git switch main
    ```
 
-   Expect: `Switched to branch 'main'`. The planted change stays on the test branch only.
+   Expect: `Switched to branch 'main'`, or `Already on 'main'`. The planted change stays on the test branch only.
+   If git refuses because of uncommitted changes, run `git restore results/` first, then switch again.
 
 10. Close the pull request and delete its branch:
 

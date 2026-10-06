@@ -37,6 +37,19 @@ class TitleKey(unittest.TestCase):
                             bd.normalize_title("To amend the Clean Water Act."))
 
 
+class StrictKey(unittest.TestCase):
+    def test_short_title_with_and_without_of_year(self):
+        a = {"title": "To expand care for kids.", "display_title": "Accelerating Kids' Access to Care Act of 2025"}
+        b = {"title": "A bill to widen care for children.", "display_title": "Accelerating Kids' Access to Care Act"}
+        self.assertEqual(bd.strict_short_key(a), bd.strict_short_key(b))
+        # The old key leaves "of" behind; that was the bug the cleanup pass fixes.
+        self.assertNotEqual(bd.normalize_title(a["display_title"]), bd.normalize_title(b["display_title"]))
+
+    def test_of_without_a_year_stays(self):
+        self.assertEqual(bd.strict_title_key("To amend the Department of Energy Act."),
+                         "to amend the department of energy act")
+
+
 class Split(unittest.TestCase):
     def make_bills(self):
         bills, n = [], 1
@@ -48,29 +61,39 @@ class Split(unittest.TestCase):
                 bills.append(bill(n, "s", f"A bill to {topic}.", label)); n += 1
         # Reworded companions joined only by their short title.
         bills.append(bill(n, "hr", "To fund rural clinics through grants.", "Health", "Rural Clinics Act of 2025")); n += 1
-        bills.append(bill(n, "s", "A bill to support rural clinics with grants.", "Health", "Rural Clinics Act of 2025"))
+        bills.append(bill(n, "s", "A bill to support rural clinics with grants.", "Health", "Rural Clinics Act of 2025")); n += 1
+        # Reworded companions whose short titles differ only by "of 2025": only cleanup() catches these.
+        bills.append(bill(n, "hr", "To speed care for children in clinics.", "Health", "Kids Care Act of 2025")); n += 1
+        bills.append(bill(n, "s", "A bill to quicken clinic care for minors.", "Health", "Kids Care Act"))
         return bills
 
-    def test_companions_never_straddle_splits(self):
+    def test_house_and_senate_companions_never_straddle_splits(self):
         with mock.patch.object(bd, "GOLDEN_SIZE", 9), mock.patch.object(bd, "MIN_GROUPS_FOR_GOLDEN", 5):
             splits = bd.split(self.make_bills(), random.Random(1))
+        bd.cleanup(splits)
         self.assertEqual(len(splits["golden"]), 9)
-        leaks = bd.leakage(splits)
-        for kind, pairs in leaks.items():
-            for pair, n in pairs.items():
-                self.assertEqual(n, 0, f"{kind} {pair}")
+        for pair, n in bd.leakage(splits).items():
+            self.assertEqual(n, 0, pair)
         where = {b["id"]: name for name, rows in splits.items() for b in rows}
-        # The two short-title companions: at most one is kept, never one in golden and one elsewhere.
-        rural = [where.get(i) for i in (f"hr{181}-119", f"s{182}-119")]
-        self.assertTrue(None in rural or rural[0] == rural[1], rural)
+        for hr, s in (("hr181-119", "s182-119"), ("hr183-119", "s184-119")):
+            pair = [where.get(hr), where.get(s)]
+            self.assertTrue(None in pair or pair[0] == pair[1], (hr, s, pair))
+
+    def test_cleanup_never_touches_golden(self):
+        splits = {"golden": [bill(1, "hr", "To do x.", "Health", "X Act of 2025")],
+                  "train": [bill(2, "s", "A bill to do y.", "Health", "X Act")],
+                  "valid": [bill(3, "s", "A bill to do z.", "Health")]}
+        dropped = bd.cleanup(splits)
+        self.assertEqual(dropped, {"train": 1, "valid": 0, "golden": 0})
+        self.assertEqual(len(splits["golden"]), 1)
 
 
 class CommittedFiles(unittest.TestCase):
-    """The files in git: no House/Senate companion title key in two splits."""
+    """The files in git: no corrected title key in two splits."""
 
-    def test_no_title_key_in_two_splits(self):
+    def test_no_corrected_title_key_in_two_splits(self):
         splits = {name: read_jsonl(path) for name, path in SPLITS.items()}
-        keys = {name: {bd.normalize_title(r["title"]) for r in rows} for name, rows in splits.items()}
+        keys = {name: {bd.strict_title_key(r["title"]) for r in rows} for name, rows in splits.items()}
         self.assertEqual(len(keys["golden"] & keys["train"]), 0)
         self.assertEqual(len(keys["golden"] & keys["valid"]), 0)
         self.assertEqual(len(keys["train"] & keys["valid"]), 0)

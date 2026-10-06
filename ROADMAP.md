@@ -9,7 +9,7 @@ Status words: **planned** (not built), **draft** (built, not yet re-run by an in
 | Lab | You ship | Hours | Target week | Status |
 |---|---|---|---|---|
 | 0 · Setup | Your Mac's measured speed and memory | 1.5 | Oct 7 | ready |
-| 1 · Evals first | Public eval harness with a pass/fail gate | 4.7 | Oct 7 to 13 | planned |
+| 1 · Evals first | Public eval harness with a pass/fail gate | 4.7 | Oct 7 to 13 | ready |
 | 2 · First fine-tune | Fine-tuned model and model card on Hugging Face | 4.8 | Oct 12 to 18 | planned |
 | 3 · Hosted fine-tune | Comparison write-up (up to $10) | 4 | Oct 16 to 21 | planned |
 | 4 · Serve it | Working endpoint and a cost-per-request table (up to $5) | 3.7 | Oct 21 to 25 | planned |
@@ -45,7 +45,7 @@ Hours are estimates and have not been measured. Labs 3 to 5 are built after Lab 
 
 ## Depth phase · proposed, not approved
 
-After Lab 5, this phase repeats the loop on harder problems, aimed at what open-model job postings ask for. Colby confirms the contents before any of it is built.
+After Lab 5, this phase repeats the loop on harder problems, aimed at what open-model job postings ask for. The owner confirms the contents before any of it is built.
 
 - Serving under load: vLLM or SGLang, batching, throughput, cost per token.
 - Quantization: what each level costs in accuracy, measured on the golden set.
