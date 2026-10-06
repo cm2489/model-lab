@@ -1,0 +1,19 @@
+# local only: audits, disk reports, raw research with personal notes
+private/
+# worktrees used by parallel builds
+.worktrees/
+# python
+.venv/
+__pycache__/
+*.pyc
+# model weights, adapters and caches never go in git
+models/
+adapters/
+*.safetensors
+*.gguf
+data/cache/
+# macOS
+.DS_Store
+# secrets
+.env
+.env.*
