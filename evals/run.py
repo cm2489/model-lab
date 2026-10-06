@@ -34,8 +34,52 @@ def make_backend(args):
         from evals.backends import AnthropicBackend
 
         effort = None if args.effort == "none" else args.effort
-        return AnthropicBackend(args.model, max_tokens=args.max_tokens or 2048, effort=effort)
+        return AnthropicBackend(args.model, max_tokens=max_tokens(args), effort=effort)
     raise ValueError(args.backend)
+
+
+API_BACKENDS = {"anthropic"}
+DEFAULT_MAX_TOKENS = {"mlx": 32, "anthropic": 512}
+
+
+def max_tokens(args) -> int:
+    return args.max_tokens or DEFAULT_MAX_TOKENS[args.backend]
+
+
+def input_tokens_estimate(title: str) -> int:
+    """A deliberately high guess of a prompt's input tokens: 1 token per 3 characters, plus 50.
+
+    English runs nearer 4 characters per token, so real counts should come in lower.
+    """
+    return len(build_messages(title)[0]["content"]) // 3 + 50
+
+
+def worst_case_usd(examples: list[dict], max_tokens: int, price_in: float, price_out: float) -> float:
+    """The most a run can cost: every reply uses all of max_tokens (thinking included)."""
+    tokens_in = sum(input_tokens_estimate(ex["title"]) for ex in examples)
+    tokens_out = max_tokens * len(examples)
+    return (tokens_in * price_in + tokens_out * price_out) / 1e6
+
+
+def spend_guard(args, examples: list[dict], split_name: str) -> float:
+    """Refuse a paid run that could cost more than --max-usd, or that targets a big split.
+
+    Returns the worst-case estimate. Exits with an error before any request is sent.
+    """
+    if args.price_in is None or args.price_out is None:
+        sys.exit("error: API runs need --price-in and --price-out (USD per million tokens), so the cost can be capped")
+    if args.max_usd is None:
+        sys.exit("error: API runs need --max-usd, the most you agree to spend on this run")
+    if split_name in ("train", "valid") and not args.allow_large:
+        sys.exit(f"error: refusing to send the {split_name} split ({len(examples)} bills) to a paid API. "
+                 "Pass --allow-large if you really mean it.")
+    worst = worst_case_usd(examples, max_tokens(args), args.price_in, args.price_out)
+    print(f"spend guard: {len(examples)} bills, max_tokens {max_tokens(args)}, worst case ${worst:.2f}, "
+          f"cap ${args.max_usd:.2f}", file=sys.stderr)
+    if worst > args.max_usd:
+        sys.exit(f"error: worst case ${worst:.2f} is over --max-usd ${args.max_usd:.2f}. "
+                 "Lower --limit or --max-tokens, or raise --max-usd.")
+    return worst
 
 
 def predict_all(backend, examples: list[dict], out_path: Path, model: str) -> list[dict]:
@@ -76,9 +120,11 @@ def main(argv=None) -> int:
     ap.add_argument("--limit", type=int, help="only the first N examples (for a quick smoke test)")
     ap.add_argument("--price-in", type=float, help="USD per million input tokens")
     ap.add_argument("--price-out", type=float, help="USD per million output tokens")
-    ap.add_argument("--max-tokens", type=int, help="reply length cap (default: mlx 32, anthropic 2048)")
+    ap.add_argument("--max-tokens", type=int, help="reply length cap, thinking included (default: mlx 32, anthropic 512)")
     ap.add_argument("--thinking", action="store_true", help="mlx: let the model think first (off by default)")
     ap.add_argument("--effort", default="low", help="anthropic: low|medium|high|xhigh|max, or none to omit")
+    ap.add_argument("--max-usd", type=float, help="API runs (required): refuse to start if the worst case is above this")
+    ap.add_argument("--allow-large", action="store_true", help="API runs: allow the train or valid split")
     args = ap.parse_args(argv)
 
     data_path = Path(args.data) if args.data else SPLITS[args.split]
@@ -112,6 +158,8 @@ def main(argv=None) -> int:
             pred_path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows))
         local = False
     else:
+        if args.backend in API_BACKENDS:
+            spend_guard(args, examples, split_name)
         backend = make_backend(args)
         rows = predict_all(backend, examples, pred_path, model)
         local = backend.local
@@ -121,11 +169,12 @@ def main(argv=None) -> int:
             "data": str(data_path.relative_to(ROOT)) if data_path.is_relative_to(ROOT) else str(data_path),
             "limit": args.limit, "date": date, "commit": git_commit(), "prompt_version": PROMPT_VERSION,
             "wall_time_s": round(wall, 1),
-            "settings": {"max_tokens": args.max_tokens, "thinking": args.thinking,
+            "settings": {"max_tokens": max_tokens(args) if args.backend != "predictions" else None,
+                         "thinking": args.thinking, "max_usd": args.max_usd,
                          "effort": args.effort if args.backend == "anthropic" else None}}
     if args.backend != "predictions":
         meta["runtime"] = getattr(backend, "runtime", None)
-    m = {"meta": meta, "classification": metrics.classification(rows), "speed": metrics.speed(rows),
+    m = {"meta": meta, "classification": metrics.classification(rows), "speed": metrics.speed(rows), "stops": metrics.stops(rows),
          "cost": metrics.cost(rows, args.price_in, args.price_out, local)}
     (run_dir / "metrics.json").write_text(json.dumps(m, indent=2) + "\n")
     (run_dir / "score.md").write_text(report.score_card(m))

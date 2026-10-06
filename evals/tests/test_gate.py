@@ -1,6 +1,7 @@
 import contextlib
 import io
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -66,6 +67,30 @@ class Gate(unittest.TestCase):
         p = self.write("made_up.jsonl", [{"id": g["id"], "pred": "Not A Label"} for g in golden])
         ok, c = gate.check(p, SPLITS["golden"], 0.0, 1.0)
         self.assertEqual(c["invalid"], len(golden))
+
+
+    def test_duplicate_ids_are_rejected(self):
+        golden = read_jsonl(SPLITS["golden"])
+        rows = [{"id": g["id"], "pred": g["label"]} for g in golden]
+        rows.append({"id": golden[0]["id"], "pred": golden[0]["label"]})
+        p = self.write("dupes.jsonl", rows)
+        self.assertEqual(run_gate("--predictions", p, "--min-accuracy", 0.0, "--max-invalid", 1.0), 1)
+
+    def test_changed_golden_file_fails_the_pinned_checksum(self):
+        golden = read_jsonl(SPLITS["golden"])
+        preds = self.write("perfect.jsonl", [{"id": g["id"], "pred": g["label"]} for g in golden])
+        edited = self.write("golden_edited.jsonl", [{**g, "label": "Health"} for g in golden])
+        pinned = gate.sha256(SPLITS["golden"])
+        self.assertEqual(run_gate("--predictions", preds, "--golden", SPLITS["golden"], "--golden-sha256", pinned,
+                                  "--min-accuracy", 1.0, "--max-invalid", 0.0), 0)
+        self.assertEqual(run_gate("--predictions", preds, "--golden", edited, "--golden-sha256", pinned,
+                                  "--min-accuracy", 0.0, "--max-invalid", 1.0), 1)
+
+    def test_makefile_pins_the_committed_golden_file(self):
+        makefile = (Path(__file__).resolve().parents[2] / "Makefile").read_text()
+        pinned = re.search(r"^GOLDEN_SHA256 \?= ([0-9a-f]{64})$", makefile, re.M)
+        self.assertIsNotNone(pinned, "Makefile must pin GOLDEN_SHA256")
+        self.assertEqual(pinned.group(1), gate.sha256(SPLITS["golden"]))
 
 
 if __name__ == "__main__":
