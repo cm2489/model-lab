@@ -1,0 +1,488 @@
+[
+ {
+  "id": "fnd-s3.c1",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Neuron computation",
+  "type": "core",
+  "front": "What three operations turn a neuron's inputs into its activation?",
+  "back": "Weighted sum of inputs, plus a bias, passed through a nonlinear activation function (sigmoid in 3B1B's intro; ReLU in modern nets). Output: one number."
+ },
+ {
+  "id": "fnd-s3.c2",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Weights as patterns",
+  "type": "core",
+  "front": "How would you read off 'what a first-layer neuron is looking for' from its weights?",
+  "back": "Visualize the weights over the input grid: positive weights mark pixels that excite it, negative ones suppress it. The weight pattern is the target pattern."
+ },
+ {
+  "id": "fnd-s3.c3",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Bias",
+  "type": "core",
+  "front": "A neuron should stay quiet unless its evidence is overwhelming. Which parameter implements this and how?",
+  "back": "The bias: a strongly negative bias raises the threshold the weighted sum must clear before the neuron meaningfully activates."
+ },
+ {
+  "id": "fnd-s3.c4",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Why nonlinearity",
+  "type": "core",
+  "front": "What happens to a 10-layer network if you delete every activation function?",
+  "back": "It collapses: compositions of linear maps are linear, so the network equals one weighted sum and depth adds nothing. Nonlinearity makes layers add power."
+ },
+ {
+  "id": "fnd-s3.c5",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "MNIST architecture",
+  "type": "core",
+  "front": "Why exactly 784 inputs and 10 outputs in the 3B1B digit network — and how is the answer read out?",
+  "back": "28×28 = 784 pixel brightness values in; one output per digit 0–9. The highest-activation output neuron is the network's guess."
+ },
+ {
+  "id": "fnd-s3.c6",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Layer hierarchy + caveat",
+  "type": "core",
+  "front": "State the edges→parts→digits story AND the caveat you must attach to it.",
+  "back": "Layers detect increasingly abstract features: edges, then strokes, then digits. Caveat: real trained features are messier and rarely nameable. It is intuition, not literal mechanism."
+ },
+ {
+  "id": "fnd-s3.c7",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Parameter count",
+  "type": "nuance",
+  "front": "Where do ~96% of the 13,002 parameters in the 784→16→16→10 network live, and why?",
+  "back": "The first hidden layer: 784 × 16 = 12,544 weights, because each of its 16 neurons connects to all 784 inputs."
+ },
+ {
+  "id": "fnd-s3.c8",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Learning, defined",
+  "type": "core",
+  "front": "Complete and defend: 'When a network learns, the only thing that changes is ______.'",
+  "back": "The values of its weights and biases. There's nowhere else for knowledge to live — no rules are stored; the knowledge IS the dial settings."
+ },
+ {
+  "id": "fnd-s3.c9",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Random initialization",
+  "type": "nuance",
+  "front": "Why does an untrained network produce confident garbage rather than refusing to answer?",
+  "back": "Arithmetic runs fine on random weights — structure exists before knowledge. The function computes fluently; its outputs are arbitrary until training sets the dials."
+ },
+ {
+  "id": "fnd-s3.c10",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Sigmoid vs ReLU",
+  "type": "nuance",
+  "front": "What does sigmoid do to a neuron's pre-activation, and what do modern networks mostly use instead?",
+  "back": "Sigmoid squashes any number into (0,1) — very negative→~0, very positive→~1. Modern nets mostly use ReLU (0 below zero, identity above), which trains more easily."
+ },
+ {
+  "id": "fnd-s3.c11",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Out-of-scope inputs",
+  "type": "nuance",
+  "front": "What would the trained MNIST network do with a 28×28 cat photo, and what does that reveal?",
+  "back": "It confidently outputs some digit, because it has no 'none of the above'. It is a fixed function from 784 numbers to 10 scores."
+ },
+ {
+  "id": "fnd-s3.c12",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Neuron as function",
+  "type": "nuance",
+  "front": "Why is 'a neuron holds a number' a misleading mental model?",
+  "back": "Its activation is computed fresh from the previous layer for each input. 'Holds a number' describes only one moment."
+ },
+ {
+  "id": "fnd-s4.c1",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Loss function",
+  "type": "core",
+  "front": "Why must training optimize a smooth loss number rather than accuracy, which is what we actually care about?",
+  "back": "Accuracy is a staircase: tiny weight nudges don't change it, so there is no slope to follow. Smooth loss grades every nudge."
+ },
+ {
+  "id": "fnd-s4.c2",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Loss reframing",
+  "type": "nuance",
+  "front": "When we treat loss as a function during training, what are its variables — and what gets frozen?",
+  "back": "Weights and biases are the variables; training images and labels are frozen. Loss maps one setting of all dials to one wrongness number."
+ },
+ {
+  "id": "fnd-s4.c3",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Gradient",
+  "type": "core",
+  "front": "The gradient hands you 13,002 numbers. What do the sign and magnitude of each one tell you?",
+  "back": "Sign: which way that weight pushes the loss, so step opposite. Magnitude: how much it matters; near zero means locally irrelevant."
+ },
+ {
+  "id": "fnd-s4.c4",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Gradient descent loop",
+  "type": "core",
+  "front": "State the entire training loop of modern AI in one sentence.",
+  "back": "Measure how wrong the model is (loss), compute each weight's slope (gradient, via backprop), step weights slightly downhill, repeat millions of times."
+ },
+ {
+  "id": "fnd-s4.c5",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Learning rate diagnosis",
+  "type": "core",
+  "front": "Loss curve A oscillates violently. What is your first hypothesis?",
+  "back": "Learning rate too large: steps overshoot the valley and bounce."
+ },
+ {
+  "id": "fnd-s4.c6",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Automatic step shrinking",
+  "type": "nuance",
+  "front": "Why do gradient-descent steps naturally get smaller as you approach a minimum, even with a fixed learning rate?",
+  "back": "Updates are learning rate × gradient, and gradients shrink as terrain flattens near a minimum, like a ball slowing in a bowl."
+ },
+ {
+  "id": "fnd-s4.c7",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Backprop vs gradient descent",
+  "type": "core",
+  "front": "An engineer says 'we use backprop instead of gradient descent.' Fix the sentence precisely.",
+  "back": "They're complementary: backprop COMPUTES the gradient (every weight's sensitivity, one backward sweep); gradient descent USES it to update weights. Slope-computing vs slope-following."
+ },
+ {
+  "id": "fnd-s4.c8",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Backprop efficiency",
+  "type": "core",
+  "front": "Why is 'nudge each weight and re-run the network' hopeless, and what does backprop cost instead?",
+  "back": "Nudging costs one forward pass per weight, billions per step at scale. Backprop recovers every sensitivity in about one backward sweep."
+ },
+ {
+  "id": "fnd-s4.c9",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Blame propagation",
+  "type": "core",
+  "front": "How does an error at the output assign precise blame to a weight buried in layer 1?",
+  "back": "Chain rule: a weight's effect on the loss is the product of local sensitivities along the path to the output. Backprop passes blame backward."
+ },
+ {
+  "id": "fnd-s4.c10",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Toy gradient",
+  "type": "nuance",
+  "front": "For L=(y−t)² and y=Σwx, what's dL/dw in words — and which weight moves most in an update?",
+  "back": "2(y−t)·x: error times that weight's input. Weights fed by larger inputs have more influence, get bigger gradient components, and move most."
+ },
+ {
+  "id": "fnd-s4.c11",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "SGD / mini-batches",
+  "type": "nuance",
+  "front": "Why are noisy mini-batch gradient steps better than exact full-dataset steps, cost-wise?",
+  "back": "Each step is far cheaper, so you take many more steps per unit of compute, and they still trend downhill."
+ },
+ {
+  "id": "fnd-s4.c12",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Local minima",
+  "type": "nuance",
+  "front": "Gradient descent can't escape the valley it rolls into. Why isn't this fatal in practice?",
+  "back": "Large networks have many settings that are good enough, and descent plus SGD noise reliably finds one. You need a good minimum, not the best."
+ },
+ {
+  "id": "fnd-s5.c1",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "What the model sees",
+  "type": "core",
+  "front": "Trace what happens to your typed sentence before the model computes anything.",
+  "back": "The tokenizer splits text into chunks, each mapped to an integer ID, and IDs map to embedding vectors. The model never sees words or letters."
+ },
+ {
+  "id": "fnd-s5.c2",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Token opacity",
+  "type": "core",
+  "front": "Why can a model that's read more text than any human still miscount the r's in 'strawberry'?",
+  "back": "It receives 'strawberry' as one or a few opaque token IDs with no letter structure. Spelling must be learned statistically, not inspected."
+ },
+ {
+  "id": "fnd-s5.c3",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "BPE algorithm",
+  "type": "core",
+  "front": "Describe BPE's training loop in three verbs, and where it starts and stops.",
+  "back": "Find the most frequent adjacent pair, merge it into a new token, replace it corpus-wide; repeat. Start from 256 bytes; stop at the vocabulary budget."
+ },
+ {
+  "id": "fnd-s5.c4",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Tokenizer separateness",
+  "type": "core",
+  "front": "Why does it matter that the tokenizer is trained separately from the model and then frozen?",
+  "back": "Its frequency biases are baked in permanently, and its training corpus differs from the model's. That seam is where glitch tokens come from."
+ },
+ {
+  "id": "fnd-s5.c5",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Spelling fix trick",
+  "type": "nuance",
+  "front": "Why does spacing out letters ('l o l l i p o p') suddenly improve character-level tasks?",
+  "back": "Each letter becomes its own token, so the character sequence is directly visible to the model instead of hidden inside chunks."
+ },
+ {
+  "id": "fnd-s5.c6",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Arithmetic weakness",
+  "type": "core",
+  "front": "Why is digit-level arithmetic representationally awkward for LLMs?",
+  "back": "Frequency-driven chunking splits numbers arbitrarily ('123'+'4567'), scrambling place-value alignment — the ones/tens/carry structure addition depends on isn't cleanly visible."
+ },
+ {
+  "id": "fnd-s5.c7",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Non-English tax",
+  "type": "core",
+  "front": "A Hindi chatbot costs ~3x more per conversation than its English twin and hits context limits sooner. One mechanism for both symptoms?",
+  "back": "BPE merges came from mostly-English data, so Hindi fragments into many more tokens. Billing and context windows count tokens: more cost, less room."
+ },
+ {
+  "id": "fnd-s5.c8",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Glitch tokens",
+  "type": "core",
+  "front": "What two-corpus mismatch created 'SolidGoldMagikarp' behavior?",
+  "back": "Frequent in the tokenizer's corpus, so it got its own token, but near-absent from the model's training data. Its embedding stayed untrained, causing erratic output."
+ },
+ {
+  "id": "fnd-s5.c9",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Whitespace sensitivity",
+  "type": "nuance",
+  "front": "A trailing space degrades a previously perfect prompt. First hypothesis?",
+  "back": "Tokenization changed: spaces belong to tokens (' the' ≠ 'the'), so boundaries shifted and the model sees a rarer ID sequence."
+ },
+ {
+  "id": "fnd-s5.c10",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Byte-level base",
+  "type": "nuance",
+  "front": "What guarantee does starting BPE from 256 byte values buy, and at what worst-case price?",
+  "back": "No text in any language is unrepresentable, so there are no out-of-vocabulary failures. Worst case: rare text becomes long runs of single-byte tokens."
+ },
+ {
+  "id": "fnd-s5.c11",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Vocab size tradeoff",
+  "type": "core",
+  "front": "What do you gain by 10x-ing vocabulary size?",
+  "back": "Shorter sequences: more meaning per context window and forward pass."
+ },
+ {
+  "id": "fnd-s5.c12",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Real vocab sizes",
+  "type": "nuance",
+  "front": "Roughly how big are GPT-style vocabularies, and is that a law of nature?",
+  "back": "GPT-2: 50,257; later OpenAI tokenizers ~100k; generally tens-of-thousands to low-hundreds-of-thousands. Not a law — just the current balance of compression vs learnability."
+ },
+ {
+  "id": "fnd-s5.c13",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Diagnostic habit",
+  "type": "core",
+  "front": "An LLM fails at something character-trivial. What's the professional first move before blaming the model?",
+  "back": "Check what the tokenizer did to the input — paste it into a tokenizer visualizer. Representation explains failure more often than 'model stupidity' does."
+ },
+ {
+  "id": "fnd-s6.c1",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "RNN bottleneck",
+  "type": "core",
+  "front": "Name the two structural RNN problems and identify which one ultimately blocked scale.",
+  "back": "Forgetting (context squeezed through a fixed-size state) and sequentiality (step n needs step n−1). Sequentiality blocked scale by wasting GPUs."
+ },
+ {
+  "id": "fnd-s6.c2",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "What attention is for",
+  "type": "core",
+  "front": "Token embeddings arrive context-free ('bank' is ambiguous). What does attention do about it?",
+  "back": "Each token updates its own representation by absorbing content from relevant tokens, directly and regardless of distance, so meanings become sentence-specific."
+ },
+ {
+  "id": "fnd-s6.c3",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Q/K/V roles",
+  "type": "core",
+  "front": "Filing-system test: what do query, key, and value each correspond to?",
+  "back": "Query: what I'm searching for. Key: the label each token displays for matching. Value: the contents actually delivered once matched. Keys advertise; values deliver."
+ },
+ {
+  "id": "fnd-s6.c4",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Key vs value separation",
+  "type": "core",
+  "front": "Why must a token's key and value be different vectors?",
+  "back": "Findability and content are different jobs: what makes a token matchable isn't what it should contribute once matched. Separate learned projections optimize each role independently."
+ },
+ {
+  "id": "fnd-s6.c5",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Where Q/K/V come from",
+  "type": "nuance",
+  "front": "Nobody hand-writes queries or keys — so where do they come from?",
+  "back": "Each token's embedding times three learned matrices (W_Q, W_K, W_V): ordinary weights set by gradient descent, because useful matching lowers the loss."
+ },
+ {
+  "id": "fnd-s6.c6",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Four-step computation",
+  "type": "core",
+  "front": "Walk the four steps from one token's query to its updated representation.",
+  "back": "Score (dot product with every key), scale (divide by √d_k), normalize (softmax into weights summing to 1), blend (weighted sum of values)."
+ },
+ {
+  "id": "fnd-s6.c7",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Why softmax",
+  "type": "nuance",
+  "front": "Why can't raw dot-product scores serve directly as blending weights?",
+  "back": "Raw scores can be negative or huge. Softmax makes them positive and sum to 1, a relevance budget, and sharpens strong matches."
+ },
+ {
+  "id": "fnd-s6.c8",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "√d_k scaling",
+  "type": "nuance",
+  "front": "What goes wrong without the divide-by-√d_k step?",
+  "back": "Long vectors produce large dot products that saturate softmax into near-one-hot outputs with vanishing gradients — training destabilizes. Scaling keeps scores in a trainable range."
+ },
+ {
+  "id": "fnd-s6.c9",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Multi-head purpose",
+  "type": "core",
+  "front": "What can 8 heads do that one giant head cannot?",
+  "back": "Hold 8 independent relevance patterns per token (e.g. coreference and modifiers). One head has a single softmax and must average all relationships."
+ },
+ {
+  "id": "fnd-s6.c10",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "The title's claim",
+  "type": "core",
+  "front": "What does 'Attention Is All You Need' claim, precisely — given that attention already existed in 2017?",
+  "back": "Sufficiency, not novelty: attention was an RNN add-on. Attention plus feed-forward alone, without recurrence or convolution, beat the translation state of the art."
+ },
+ {
+  "id": "fnd-s6.c11",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Parallelism → scale chain",
+  "type": "core",
+  "front": "Build the chain: 'removed recurrence' → ... → 'GPT became possible.'",
+  "back": "No dependency chain, so all positions compute at once as matrix ops, fitting GPUs. Scale is limited by chips, so bigger models kept improving: GPT."
+ },
+ {
+  "id": "fnd-s6.c12",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Quadratic cost",
+  "type": "nuance",
+  "front": "Why does a 100x longer context cost on the order of 10,000x the attention compute?",
+  "back": "Every token attends to every token, so all-pairs scoring grows with sequence length squared. Direct long-range links create the long-context bill."
+ },
+ {
+  "id": "fnd-s6.c13",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Transformer block",
+  "type": "nuance",
+  "front": "Attention is only half a transformer block — what's the other half, and how do the two divide labor?",
+  "back": "A feed-forward network applied per position. Attention = communication (tokens exchange information); feed-forward = computation (each token processes what it gathered, alone). Stacked many times."
+ },
+ {
+  "id": "fnd-s3.c13",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Neuron as function",
+  "type": "nuance",
+  "front": "What is a better mental model of a neuron, and of a network?",
+  "back": "A neuron is a tiny function. The network is a function of functions."
+ },
+ {
+  "id": "fnd-s4.c13",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Learning rate diagnosis",
+  "type": "core",
+  "front": "Loss curve B creeps down imperceptibly for hours. What is your first hypothesis?",
+  "back": "Learning rate possibly too small: correct but tiny steps. It is the cheapest first knob to test."
+ },
+ {
+  "id": "fnd-s4.c14",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "SGD / mini-batches",
+  "type": "nuance",
+  "front": "How does mini-batch noise help the optimizer?",
+  "back": "The noise jiggles the optimizer out of shallow dips. Fast but noisy beats careful but slow."
+ },
+ {
+  "id": "fnd-s5.c14",
+  "lab": "foundations",
+  "after_step": null,
+  "concept": "Vocab size tradeoff",
+  "type": "core",
+  "front": "What do you lose by 10x-ing vocabulary size?",
+  "back": "Bigger embedding and output layers, and rarer tokens get less training signal, creating glitch-prone tokens."
+ }
+]
