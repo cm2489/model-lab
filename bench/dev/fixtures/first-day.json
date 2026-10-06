@@ -1,0 +1,10 @@
+{
+  "_about": "First day: empty progress.json, real cards, nothing reviewed.",
+  "now": "2026-10-07T07:30:00-04:00",
+  "progress": {
+    "updated": null,
+    "steps": {},
+    "sessions": [],
+    "artifacts": []
+  }
+}

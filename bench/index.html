@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Model Lab bench: your next step, flashcard review and what you have shipped.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Model Lab bench</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <div class="page" id="home">
+    <header class="top">
+      <h1>Model Lab</h1>
+      <p class="today" id="today"></p>
+    </header>
+
+    <p class="notice" id="notice" role="status" hidden></p>
+
+    <main>
+      <section class="next" id="next" aria-labelledby="next-h">
+        <h2 class="eyebrow" id="next-h">Next step</h2>
+        <div id="next-body"><p class="muted">Loading…</p></div>
+      </section>
+
+      <section class="block" id="recall" aria-labelledby="recall-h">
+        <h2 class="eyebrow" id="recall-h">Recall</h2>
+        <div id="recall-body"></div>
+        <label class="toggle">
+          <input type="checkbox" id="include-foundations">
+          <span>Include foundations</span>
+        </label>
+        <details class="backup">
+          <summary>Back up review data</summary>
+          <div class="backup-body">
+            <p class="muted small">Review history lives only in this browser. Copy it out to keep it, paste it back to restore it.</p>
+            <div class="row">
+              <button type="button" class="btn quiet" id="export-btn">Export</button>
+              <button type="button" class="btn quiet" id="import-btn">Import</button>
+            </div>
+            <label class="sr-only" for="backup-text">Review data</label>
+            <textarea id="backup-text" rows="4" spellcheck="false" autocomplete="off" placeholder="Exported data appears here. To import, paste it here and press Import."></textarea>
+            <p class="small" id="backup-msg" role="status"></p>
+          </div>
+        </details>
+      </section>
+
+      <section class="block" id="shelf" aria-labelledby="shelf-h">
+        <h2 class="eyebrow" id="shelf-h">Shipped</h2>
+        <div id="shelf-body"></div>
+      </section>
+
+      <section class="block" id="week" aria-labelledby="week-h">
+        <h2 class="eyebrow" id="week-h">This week</h2>
+        <div id="week-body"></div>
+      </section>
+
+      <section class="block" id="labs" aria-labelledby="labs-h">
+        <h2 class="eyebrow" id="labs-h">All labs</h2>
+        <div id="labs-body"></div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p class="small muted" id="foot"></p>
+    </footer>
+  </div>
+
+  <div class="review" id="review" role="dialog" aria-modal="true" aria-labelledby="review-h" hidden>
+    <div class="review-inner">
+      <div class="review-top">
+        <h2 class="eyebrow" id="review-h">Review</h2>
+        <span class="small muted" id="review-count"></span>
+        <button type="button" class="btn quiet" id="review-close">Close</button>
+      </div>
+      <div class="review-card" id="review-card" aria-live="polite"></div>
+      <div class="review-actions" id="review-actions"></div>
+    </div>
+  </div>
+</body>
+</html>
