@@ -58,7 +58,7 @@
       },
       "est_minutes": 280,
       "doc": "labs/01-evals-first/README.md",
-      "status": "draft",
+      "status": "ready",
       "steps": [
         {
           "id": "lab-1.1",

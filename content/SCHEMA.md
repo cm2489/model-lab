@@ -27,7 +27,7 @@ All dates and times are Eastern Time (America/New_York), written as ISO 8601 wit
 }
 ```
 
-- `status` is `ready` (every step has been run and re-run by an independent agent), `draft` (written, not yet verified) or `planned` (titles only).
+- `status` is `ready` (every step that can run without the learner's own accounts has been run by its builder and re-run from the page by an independent agent; steps that need the learner's accounts are marked "not verified" on the page), `draft` (written, not yet independently re-run) or `planned` (titles only).
 - `where` is `laptop`, `phone` or `hosted`.
 - `anchor` is the heading anchor of the step inside `doc`.
 

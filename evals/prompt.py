@@ -58,25 +58,34 @@ def strip_thinking(text: str) -> str:
 
 
 _PREFIX = re.compile(r"^(policy area|answer|label|category)\s*:\s*", re.I)
+_MARKERS = re.compile(r"^(#{1,6}\s+|[-*+]\s+|\d+[.)]\s+)")  # markdown heading or list marker
 _WRAP = "\"'`*“”‘’"
+_TRAILING = ".!?;:"
+
+
+def _trim(text: str) -> str:
+    return text.strip().strip(_WRAP).strip()
 
 
 def parse_label(reply: str) -> tuple[str | None, str]:
     """Turn a model reply into (label, how). Strict on purpose.
 
-    The reply counts only if, once these are removed, the whole reply is one label:
-      - reasoning in <think>...</think>
-      - an optional "Policy area:" style prefix
-      - surrounding quotes, backticks or asterisks, and one final period
-    Case, spacing and punctuation inside the label are ignored.
+    Removed, in this order:
+      1. reasoning in <think>...</think>
+      2. whitespace, and surrounding quotes, backticks or asterisks
+      3. one markdown heading marker ("# ") or list marker ("- ", "* ", "1. ")
+      4. an optional "Policy area:" style prefix, also when wrapped in asterisks
+         ("**Policy area:** Health")
+      5. trailing punctuation (. ! ? ; :), then whitespace and wrapping again
+    What is left must equal exactly one label, ignoring case, spacing and
+    punctuation inside it ("arts culture religion" is "Arts, Culture, Religion").
+
     how is "exact" for a label, "invalid" for anything else: a label inside a
     sentence, two labels, a negation ("Not Health"), or no label at all.
     """
-    text = strip_thinking(reply).strip()
-    text = _PREFIX.sub("", text).strip()
-    text = text.strip(_WRAP).strip()
-    if text.endswith("."):
-        text = text[:-1]
-    text = text.strip(_WRAP).strip()
+    text = _trim(strip_thinking(reply))
+    text = _trim(_MARKERS.sub("", text))
+    text = _trim(_PREFIX.sub("", text))
+    text = _trim(text.rstrip(_TRAILING))
     label = _BY_NORM.get(_norm(text))
     return (label, "exact") if label else (None, "invalid")

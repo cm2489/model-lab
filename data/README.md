@@ -20,8 +20,8 @@ US government works are public domain. The three JSONL files are committed so th
 
 | File | Rows | What it is for |
 |---|---|---|
-| `data/train.jsonl` | 11,647 | Training (Lab 2). |
-| `data/valid.jsonl` | 1,280 | Watching training (Lab 2). |
+| `data/train.jsonl` | 11,640 | Training (Lab 2). |
+| `data/valid.jsonl` | 1,247 | Watching training (Lab 2). |
 | `evals/golden.jsonl` | 150 | The test set. Never train on it. |
 
 Each row: `id`, `title`, `label`, `bill_type`, `congress`, `url` (the bill on Congress.gov).
@@ -41,8 +41,15 @@ Each row: `id`, `title`, `label`, `bill_type`, `congress`, `url` (the bill on Co
    least 2, the rest in proportion to label size. A candidate is skipped if any other title in
    the data shares 80% or more of its words (a reworded twin). Valid: 10% of the remaining units
    per label. Train: the rest. Train and valid keep one bill per title key in each unit.
-5. Fixed seed (`20261006`). The same download always gives the same files. The script asserts
-   that no title key and no short title appears in two splits, checked on the rows as written.
+5. **Cleanup pass.** The title key above drops "2025" but leaves the "of" in "Act of 2025", so
+   "Kids' Access to Care Act of 2025" and "Kids' Access to Care Act" got different short-title keys.
+   A corrected key drops "of 2025" as a whole. It runs only after the split: it drops every train
+   or valid row whose corrected title or short-title key matches a golden bill, and every valid
+   row that matches a train row. That removed 7 train rows and 33 valid rows. Golden is never
+   touched, and the split itself is unchanged, so the frozen test set did not move.
+6. Fixed seed (`20261006`). The same download always gives the same files. The script asserts,
+   on the rows as written and with the corrected keys, that no title key and no short title
+   appears in two splits.
 
 ### What was folded, pattern by pattern
 
@@ -53,7 +60,7 @@ Measured on the 16,611 labelled bills, each step on top of the one before:
 | Identical title text | 322 |
 | Same up to letter case | 3 |
 | Same up to punctuation | 1 |
-| Same up to a 4-digit year ("Act of 2025") | 24 |
+| Same up to a 4-digit year (the "2025" in "Act of 2025"; the "of" stays) | 24 |
 | Same up to "A bill" / "A joint resolution" / "A concurrent resolution" prefix | 3,095 |
 | Same up to a trailing "and for other purposes" | 78 |
 | Same up to a session marker ("119th Congress") | 0 (none occur) |
@@ -62,8 +69,9 @@ Measured on the 16,611 labelled bills, each step on top of the one before:
 That leaves 13,088 title keys. 86 of them hold bills with different labels; the earliest bill's label wins.
 Short titles then join the 13,088 keys into 12,411 split units. 12 golden candidates were skipped
 for a reworded twin. 11 title keys drop out because their unit went to golden, which keeps one bill per unit.
+The cleanup pass (step 5 above) then drops 7 train and 33 valid rows whose corrected keys collide.
 
-**What is left, checked by hand.** 9 golden titles share 70% to 80% of their words with a train or
+**What is left, checked by hand.** About 9 golden titles share 70% to 80% of their words with a train or
 valid title. They are sibling bills amending the same law in different ways ("…title XVIII of the
 Social Security Act to allow…" next to "…to provide for…"), not copies. They stay.
 
