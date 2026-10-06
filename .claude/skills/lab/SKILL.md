@@ -57,5 +57,5 @@ Write `progress.json` (format in `content/SCHEMA.md`):
 2. One line: the next step and its time estimate.
 3. Check the gates in `ROADMAP.md`. If a gate's date has arrived and its status is still `planned`, resolve it now and update its status:
    - **Oct 13 gate:** count the entries in `progress.sessions` dated Oct 7 to Oct 13 (one entry is one sitting). Five or more: the weekly landscape run is on. Set it up with the schedule skill to run the `landscape-radar` workflow weekly, and mark the gate `done`. Fewer: mark it `not met` and say so in one line.
-   - **Oct 9 gate:** ask whether the LinkedIn profile is finished. If yes, build-log posts start: draft one post per shipped artifact for the learner to send. If no, move the gate one week.
+   - **Oct 9 gate:** ask whether public build-log posts should start now. If yes, draft one post per shipped artifact for the learner to send. If no, move the gate one week.
 4. Stop. Do not start the next step unless asked.

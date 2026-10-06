@@ -2,7 +2,7 @@
 
 All dates are Eastern Time. Pace: 8 or more hours a week, starting Wednesday October 7, 2026.
 
-Status words: **planned** (not built), **draft** (built, not yet re-run by an independent agent), **ready** (verified, do it), **done**, **blocked**, **proposed** (waits for Colby's OK).
+Status words: **planned** (not built), **draft** (built, not yet re-run by an independent agent), **ready** (verified, do it), **done**, **blocked**, **proposed** (waits for the owner's OK).
 
 ## Track 1 · Open-weight model customization
 
@@ -34,10 +34,10 @@ Hours are estimates and have not been measured. Labs 3 to 5 are built after Lab 
 | Date | Gate | Status |
 |---|---|---|
 | Thu Oct 8 | State of AI Report 2026 is published. Refresh the landscape research against it. | planned |
-| Fri Oct 9 | Revisit build-log posts. They start only once the LinkedIn profile is finished. | planned |
+| Fri Oct 9 | Decide whether public build-log posts start. | planned |
 | Tue Oct 13 | Count sessions for the week. Five or more turns on the weekly landscape run. | planned |
 
-## Waiting on Colby
+## Waiting on the owner
 
 - Close the API-key exposure on the old course app. Done together in Chrome.
 - Turn off the two old scheduled tasks, if they still run. Done together.
