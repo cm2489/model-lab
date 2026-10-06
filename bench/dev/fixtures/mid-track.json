@@ -1,0 +1,304 @@
+{
+  "_about": "Mid-track: Labs 0 and 1 done, Lab 2 at step 3, three cards due plus new ones, one artifact shipped, 3 sessions this week.",
+  "now": "2026-10-14T08:15:00-04:00",
+  "labStatus": {
+    "lab-0": "ready",
+    "lab-1": "ready",
+    "lab-2": "ready",
+    "lab-3": "draft"
+  },
+  "progress": {
+    "updated": "2026-10-13T20:40:00-04:00",
+    "steps": {
+      "lab-0.1": {
+        "done": "2026-10-07T10:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-0.2": {
+        "done": "2026-10-07T11:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-0.3": {
+        "done": "2026-10-08T12:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-0.4": {
+        "done": "2026-10-08T13:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-1.1": {
+        "done": "2026-10-09T14:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-1.2": {
+        "done": "2026-10-09T15:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-1.3": {
+        "done": "2026-10-10T16:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-1.4": {
+        "done": "2026-10-11T17:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-1.5": {
+        "done": "2026-10-12T10:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-1.6": {
+        "done": "2026-10-12T11:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-1.7": {
+        "done": "2026-10-12T12:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-2.1": {
+        "done": "2026-10-13T13:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      },
+      "lab-2.2": {
+        "done": "2026-10-13T14:15:00-04:00",
+        "minutes": 30,
+        "note": ""
+      }
+    },
+    "sessions": [
+      {
+        "date": "2026-10-07",
+        "minutes": 75,
+        "steps": [
+          "lab-0.1",
+          "lab-0.2",
+          "lab-0.3"
+        ]
+      },
+      {
+        "date": "2026-10-08",
+        "minutes": 60,
+        "steps": [
+          "lab-0.4",
+          "lab-1.1"
+        ]
+      },
+      {
+        "date": "2026-10-10",
+        "minutes": 90,
+        "steps": [
+          "lab-1.2",
+          "lab-1.3"
+        ]
+      },
+      {
+        "date": "2026-10-11",
+        "minutes": 95,
+        "steps": [
+          "lab-1.4",
+          "lab-1.5"
+        ]
+      },
+      {
+        "date": "2026-10-12",
+        "minutes": 80,
+        "steps": [
+          "lab-1.6",
+          "lab-1.7"
+        ]
+      },
+      {
+        "date": "2026-10-13",
+        "minutes": 55,
+        "steps": [
+          "lab-2.1"
+        ]
+      },
+      {
+        "date": "2026-10-13T21:10:00-04:00",
+        "minutes": 40,
+        "steps": [
+          "lab-2.2"
+        ]
+      }
+    ],
+    "artifacts": [
+      {
+        "lab": "lab-1",
+        "title": "Bill-tagging eval harness",
+        "url": "https://github.com/cm2489/model-lab/tree/main/evals",
+        "shipped": "2026-10-12"
+      }
+    ]
+  },
+  "cards": [
+    {
+      "id": "lab-0.c1",
+      "lab": "lab-0",
+      "after_step": "lab-0.2",
+      "concept": "quantization",
+      "type": "core",
+      "front": "What does 4-bit quantization trade away to fit a model in less memory?",
+      "back": "Some accuracy: each weight is stored with fewer bits, so values are rounded."
+    },
+    {
+      "id": "lab-0.c2",
+      "lab": "lab-0",
+      "after_step": "lab-0.3",
+      "concept": "tokens per second",
+      "type": "core",
+      "front": "Which number tells you how fast a model generates text on your Mac?",
+      "back": "Tokens per second during generation, measured after the prompt is processed."
+    },
+    {
+      "id": "lab-0.c3",
+      "lab": "lab-0",
+      "after_step": "lab-0.3",
+      "concept": "unified memory",
+      "type": "core",
+      "front": "Why can an M1 Max run models that a 16 GB GPU cannot?",
+      "back": "The GPU shares the 32 GB of unified memory with the CPU."
+    },
+    {
+      "id": "lab-1.c1",
+      "lab": "lab-1",
+      "after_step": "lab-1.2",
+      "concept": "golden set",
+      "type": "core",
+      "front": "What is a golden set?",
+      "back": "A fixed, hand-checked set of inputs and correct labels used to score every model the same way."
+    },
+    {
+      "id": "lab-1.c2",
+      "lab": "lab-1",
+      "after_step": "lab-1.3",
+      "concept": "baseline",
+      "type": "core",
+      "front": "Why score the base model before any fine-tuning?",
+      "back": "It is the baseline: without it you cannot show that tuning helped."
+    },
+    {
+      "id": "lab-1.c3",
+      "lab": "lab-1",
+      "after_step": "lab-1.5",
+      "concept": "error analysis",
+      "type": "core",
+      "front": "What do you look for when you read 30 failures?",
+      "back": "Patterns: which labels get confused and why, so you fix the cause, not one case."
+    },
+    {
+      "id": "lab-1.c4",
+      "lab": "lab-1",
+      "after_step": "lab-1.6",
+      "concept": "regression gate",
+      "type": "core",
+      "front": "What does a pass/fail gate in CI protect against?",
+      "back": "A change that quietly makes the model worse than the agreed bar."
+    },
+    {
+      "id": "lab-2.c1",
+      "lab": "lab-2",
+      "after_step": "lab-2.1",
+      "concept": "LoRA",
+      "type": "core",
+      "front": "What does LoRA train instead of the full weights?",
+      "back": "Small low-rank matrices added beside chosen layers; the original weights stay frozen."
+    },
+    {
+      "id": "lab-2.c2",
+      "lab": "lab-2",
+      "after_step": "lab-2.2",
+      "concept": "chat template",
+      "type": "core",
+      "front": "Why must training examples use the model's chat template?",
+      "back": "The model learned its roles and turn markers in that format; a mismatch hurts quality."
+    },
+    {
+      "id": "lab-2.c3",
+      "lab": "lab-2",
+      "after_step": "lab-2.3",
+      "concept": "learning rate",
+      "type": "core",
+      "front": "Locked until step 2.3 is done.",
+      "back": "This card should not appear in the mid-track fixture."
+    },
+    {
+      "id": "lab-2.c4",
+      "lab": "lab-2",
+      "after_step": "lab-2.4",
+      "concept": "overfitting",
+      "type": "core",
+      "front": "Locked until step 2.4 is done.",
+      "back": "This card should not appear in the mid-track fixture."
+    }
+  ],
+  "foundations": [
+    {
+      "id": "fnd.c1",
+      "lab": "foundations",
+      "after_step": null,
+      "concept": "tokens",
+      "type": "core",
+      "front": "What is a token?",
+      "back": "A chunk of text, often part of a word, that the model reads and writes."
+    },
+    {
+      "id": "fnd.c2",
+      "lab": "foundations",
+      "after_step": null,
+      "concept": "weights",
+      "type": "core",
+      "front": "What are a model's weights?",
+      "back": "The learned numbers that turn input tokens into predictions."
+    }
+  ],
+  "review": {
+    "version": 1,
+    "cards": {
+      "lab-0.c1": {
+        "due": "2026-10-13T09:00:00-04:00",
+        "iv": 2.5,
+        "ease": 2.5,
+        "reps": 2,
+        "lapses": 0
+      },
+      "lab-0.c2": {
+        "due": "2026-10-12T09:00:00-04:00",
+        "iv": 1,
+        "ease": 2.5,
+        "reps": 1,
+        "lapses": 0
+      },
+      "lab-0.c3": {
+        "due": "2026-10-20T09:00:00-04:00",
+        "iv": 6.25,
+        "ease": 2.5,
+        "reps": 3,
+        "lapses": 0
+      },
+      "lab-1.c1": {
+        "due": "2026-10-14T07:00:00-04:00",
+        "iv": 1,
+        "ease": 2.3,
+        "reps": 2,
+        "lapses": 1
+      }
+    },
+    "daily": {
+      "date": "2026-10-13",
+      "new": 4
+    },
+    "includeFoundations": false
+  }
+}
