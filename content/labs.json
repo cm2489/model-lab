@@ -122,7 +122,7 @@
       },
       "est_minutes": 285,
       "doc": "labs/02-first-fine-tune/README.md",
-      "status": "planned",
+      "status": "draft",
       "steps": [
         {
           "id": "lab-2.1",

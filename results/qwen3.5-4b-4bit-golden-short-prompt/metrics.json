@@ -1,0 +1,289 @@
+{
+  "meta": {
+    "run_name": "qwen3.5-4b-4bit-golden-short-prompt",
+    "backend": "mlx",
+    "model": "mlx-community/Qwen3.5-4B-4bit",
+    "split": "golden",
+    "data": "evals/golden.jsonl",
+    "limit": null,
+    "date": "2026-10-06T17:43:57-04:00",
+    "commit": "51465ff-dirty",
+    "prompt_version": "short-v1",
+    "prompt_style": "short",
+    "adapter": null,
+    "wall_time_s": 29.8,
+    "settings": {
+      "max_tokens": 32,
+      "thinking": false,
+      "max_usd": null,
+      "effort": null
+    },
+    "runtime": "mlx-lm 0.32.0"
+  },
+  "classification": {
+    "n": 150,
+    "correct": 16,
+    "accuracy": 0.1067,
+    "macro_f1": 0.0875,
+    "invalid": 130,
+    "invalid_rate": 0.8667,
+    "per_label": {
+      "Agriculture and Food": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 6
+      },
+      "Animals": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      "Armed Forces and National Security": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 10
+      },
+      "Arts, Culture, Religion": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      "Civil Rights and Liberties, Minority Issues": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "Commerce": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 5
+      },
+      "Congress": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "Crime and Law Enforcement": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 7
+      },
+      "Economics and Public Finance": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "Education": {
+        "precision": 0.6667,
+        "recall": 0.8,
+        "f1": 0.7273,
+        "support": 5
+      },
+      "Emergency Management": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "Energy": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 4
+      },
+      "Environmental Protection": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 5
+      },
+      "Families": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "Finance and Financial Sector": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 6
+      },
+      "Foreign Trade and International Finance": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "Government Operations and Politics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 9
+      },
+      "Health": {
+        "precision": 0.875,
+        "recall": 0.5833,
+        "f1": 0.7,
+        "support": 12
+      },
+      "Housing and Community Development": {
+        "precision": 1.0,
+        "recall": 0.3333,
+        "f1": 0.5,
+        "support": 3
+      },
+      "Immigration": {
+        "precision": 1.0,
+        "recall": 0.1667,
+        "f1": 0.2857,
+        "support": 6
+      },
+      "International Affairs": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 7
+      },
+      "Labor and Employment": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 4
+      },
+      "Law": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "Native Americans": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "Public Lands and Natural Resources": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 5
+      },
+      "Science, Technology, Communications": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 5
+      },
+      "Social Welfare": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "Sports and Recreation": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      "Taxation": {
+        "precision": 1.0,
+        "recall": 0.3333,
+        "f1": 0.5,
+        "support": 9
+      },
+      "Transportation and Public Works": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 6
+      },
+      "Water Resources Development": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      }
+    },
+    "top_confusions": [
+      {
+        "gold": "Armed Forces and National Security",
+        "pred": "INVALID",
+        "count": 9
+      },
+      {
+        "gold": "Government Operations and Politics",
+        "pred": "INVALID",
+        "count": 9
+      },
+      {
+        "gold": "International Affairs",
+        "pred": "INVALID",
+        "count": 7
+      },
+      {
+        "gold": "Crime and Law Enforcement",
+        "pred": "INVALID",
+        "count": 6
+      },
+      {
+        "gold": "Transportation and Public Works",
+        "pred": "INVALID",
+        "count": 6
+      },
+      {
+        "gold": "Finance and Financial Sector",
+        "pred": "INVALID",
+        "count": 6
+      },
+      {
+        "gold": "Taxation",
+        "pred": "INVALID",
+        "count": 6
+      },
+      {
+        "gold": "Commerce",
+        "pred": "INVALID",
+        "count": 5
+      },
+      {
+        "gold": "Immigration",
+        "pred": "INVALID",
+        "count": 5
+      },
+      {
+        "gold": "Health",
+        "pred": "INVALID",
+        "count": 5
+      }
+    ]
+  },
+  "speed": {
+    "latency_p50_s": 0.182,
+    "latency_p90_s": 0.221,
+    "tokens_per_second": 141.8
+  },
+  "stops": {
+    "stop": 150
+  },
+  "cost": {
+    "input_tokens": 9720,
+    "output_tokens": 533,
+    "avg_input_tokens": 64.8,
+    "avg_output_tokens": 3.6,
+    "price_in_per_mtok": null,
+    "price_out_per_mtok": null,
+    "cost_per_1k_usd": 0.0,
+    "cost_note": "local run: $0 marginal cost (hardware and electricity not counted)"
+  }
+}

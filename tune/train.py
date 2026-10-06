@@ -24,6 +24,7 @@ import argparse
 import shutil
 import sys
 import time
+from pathlib import Path
 
 from evals.files import ROOT
 
@@ -55,13 +56,16 @@ def main(argv=None) -> int:
     from mlx_lm import lora
 
     adapter = ROOT / "adapters" / args.name
-    sys.argv = ["mlx_lm.lora", "--model", args.model, "--train", "--data", args.data,
+    # Pass paths relative to the repo root, so the tool's summary box never prints a home folder.
+    data = Path(args.data)
+    data_arg = str(data.relative_to(ROOT)) if data.is_absolute() and data.is_relative_to(ROOT) else str(data)
+    sys.argv = ["mlx_lm.lora", "--model", args.model, "--train", "--data", data_arg,
                 "--iters", str(args.iters), "--batch-size", str(args.batch_size),
                 "--grad-accumulation-steps", str(args.grad_accumulation_steps),
                 "--num-layers", str(args.num_layers), "--learning-rate", str(args.learning_rate),
                 "--mask-prompt", "--max-seq-length", "512",
                 "--steps-per-report", "100", "--steps-per-eval", "400", "--val-batches", "100",
-                "--adapter-path", str(adapter)]
+                "--adapter-path", str(adapter.relative_to(ROOT))]
     start = time.time()
     lora.main()
     elapsed = time.time() - start

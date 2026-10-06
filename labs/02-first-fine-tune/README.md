@@ -81,7 +81,7 @@ One 3 GB base model and ten small adapters, about 16 MB each. You load the base 
    **You should see** one line: a `user` message with a short question and a bill title, then an `assistant` message that is only the policy area.
 
    ```text
-   {"messages": [{"role": "user", "content": "Which Congress.gov policy area does this bill belong to? Reply with the policy area only.\n\nBill title:\nTo amend title 49, United States Code, with respect to the requirement to test drivers of commercial motor vehicles for English proficiency, and for other purposes."}, {"role": "assistant", "content": "Transportation and Public Works"}]}
+   {"messages": [{"role": "user", "content": "Which Congress.gov policy area does this bill belong to? Reply with the policy area only.\n\nBill title:\nTo direct the Attorney General to establish within the Department of Justice the Office of the National Coordinator to Counter Antisemitism, and for other purposes."}, {"role": "assistant", "content": "Civil Rights and Liberties, Minority Issues"}]}
    ```
 
 3. Open `tune/prepare.py` and find the answers to these three questions. Each is a design choice you may be asked to defend.
@@ -123,7 +123,7 @@ It would see "Health" about 50 times as often as the rarest label, and it would 
 
 ## Step 3 · Train: your first LoRA run
 
-**Do this:** fine-tune the model on 1,200 examples. **About 45 minutes, of which the run is about @@TRAIN_MIN@@.**
+**Do this:** fine-tune the model on 1,200 examples. **About 45 minutes, of which the run is about 13 minutes.**
 
 1. Make room. Training needs memory, and a Mac that runs short of memory writes swap files to disk.
 
@@ -145,7 +145,35 @@ It would see "Health" about 50 times as often as the rarest label, and it would 
    **You should see** a box with the settings, then a loss table, then three summary lines.
 
    ```text
-@@TRAIN_OUTPUT@@
+   │    model           mlx-community/Qwen3.5-4B-4bit
+   │    type            lora · 8 layers · rank 8
+   │    dataset         data/lora
+   │    optimizer       adam · lr 1.0e-04
+   │    batch · iters   1 · 1,200
+   │    max seq         512
+   Trainable parameters: 0.096% (4.058M/4205.750M)
+     iter   train_loss     tok/s     tokens
+        1    val 2.722    22.83s
+      100    0.944 ▼       11      0.8k
+      200    0.666 ▼       13      1.6k
+      300    0.413 ▼       14      2.4k
+      400    val 0.262    16.76s
+      400    0.281 ▼       13      3.2k
+      500    0.334 ▲       14      4.0k
+      600    0.285 ▼       14      4.9k
+      700    0.268 ▼       13      5.6k
+      800    val 0.346    16.75s
+      800    0.329 ▲       14      6.5k
+      900    0.524 ▲       14      7.3k
+     1000    0.382 ▼       14      8.1k
+     1100    0.418 ▲       14      8.9k
+     1200    val 0.162    16.74s
+     1200    0.198 ▼       15      9.7k
+   train ██████████████████████████████ 100% · 1,200/1,200
+   Model:       mlx-community/Qwen3.5-4B-4bit
+   Adapter:     adapters/policy-area
+   Wall time:   13.3 minutes for 1200 steps
+   Peak memory: 7.54 GB
    ```
 
 4. While it runs, open Activity Monitor and watch the Memory tab. The "Memory Pressure" graph should stay green.
@@ -155,13 +183,13 @@ It would see "Health" about 50 times as often as the rarest label, and it would 
 **Why batch size 1.** `make tune` runs the command printed at the top of `tune/train.py`. Read it. Two settings keep this run inside a 32 GB Mac.
 
 - `--batch-size 1 --grad-accumulation-steps 4`: the model sees one example at a time and updates its weights every four. That acts like a batch of 4 at the memory cost of 1.
-- The short prompt: each example is about @@SHORT_TOKENS@@ tokens. With the label list in every example it is about 250.
+- The short prompt: each example is about 65 tokens. With the label list in every example it is about 250.
 
 These were measured on this Mac on October 6, 2026.
 
 | Run | Peak memory | What happened |
 |---|---|---|
-| Batch 1, short prompt (this lab) | @@TRAIN_PEAK@@ GB | Fine |
+| Batch 1, short prompt (this lab) | 7.5 GB | Fine |
 | Batch 2, label-list prompt, 8 layers | 22.8 GB | Ran, at about 4 seconds a step |
 | Batch 4, short prompt, 8 layers | not recorded | Heavy swap. Free disk fell from 18 GB to 4 GB. Stopped by hand. |
 | Batch 4, label-list prompt, 16 layers | none | Crashed: "Insufficient Memory" |
@@ -193,7 +221,10 @@ No. With batch size 1 each report averages few examples, so the training loss is
    **You should see** 150 progress lines, then
 
    ```text
-@@EVAL_TUNED@@
+   run: results/qwen3.5-4b-4bit-tuned-golden
+   accuracy 74.7% (112/150)   macro-F1 0.749   invalid 0.7% (1)
+   latency p50 0.215s  p90 0.27s   tokens/s 96.6   wall 35s
+   cost per 1,000 bills: 0.0  (local run: $0 marginal cost (hardware and electricity not counted))
    ```
 
 2. Score the untuned model with the same short prompt. This shows what the fine-tune taught.
@@ -205,7 +236,10 @@ No. With batch size 1 each report averages few examples, so the training loss is
    **You should see**
 
    ```text
-@@EVAL_BASE_SHORT@@
+   run: results/qwen3.5-4b-4bit-golden-short-prompt
+   accuracy 10.7% (16/150)   macro-F1 0.087   invalid 86.7% (130)
+   latency p50 0.182s  p90 0.221s   tokens/s 141.8   wall 30s
+   cost per 1,000 bills: 0.0  (local run: $0 marginal cost (hardware and electricity not counted))
    ```
 
 3. Open the score table and read the three rows side by side.
@@ -217,8 +251,8 @@ No. With batch size 1 each report averages few examples, so the training loss is
    | Model | Prompt | Accuracy | Invalid replies | Prompt tokens per bill |
    |---|---|---|---|---|
    | Untuned | lists all 32 labels | 56.7% | 2 | 250 |
-   | Untuned | short | @@BASE_SHORT_ACC@@ | @@BASE_SHORT_INV@@ | @@SHORT_TOKENS@@ |
-   | Tuned | short | @@TUNED_ACC@@ | @@TUNED_INV@@ | @@SHORT_TOKENS@@ |
+   | Untuned | short | 10.7% | 130 | 65 |
+   | Tuned | short | 74.7% | 1 | 65 |
 
 4. Check your two predictions from step 1.
 
@@ -234,7 +268,7 @@ No. With batch size 1 each report averages few examples, so the training loss is
 
 - Without the label list, the untuned model makes up label names. Most of its replies are invalid.
 - The tuned model learned the label names. It needs no list.
-- A prompt about a sixth of the length means each bill costs about a sixth as much to read. On a hosted model you pay for that difference on every request.
+- The short prompt is about a quarter of the length (65 tokens against 250), so each bill costs about a quarter as much to read. On a hosted model you pay for that difference on every request.
 
 **Check yourself.** The tuned model was scored with a different prompt from the baseline. Is the comparison fair?
 
@@ -275,7 +309,10 @@ Yes, if you say so plainly. Each model gets the prompt it works best with, and b
    **You should see**, for the "quarter of the training" experiment:
 
    ```text
-@@EVAL_QUICK@@
+   run: results/qwen3.5-4b-4bit-tuned-quick-golden
+   accuracy 54.0% (81/150)   macro-F1 0.490   invalid 14.7% (22)
+   latency p50 0.227s  p90 0.293s   tokens/s 82.1   wall 40s
+   cost per 1,000 bills: 0.0  (local run: $0 marginal cost (hardware and electricity not counted))
    ```
 
 5. Write one sentence: what did this one change do, and would you keep it?
@@ -404,4 +441,4 @@ Because the reader will find out anyway, and a card that names its limits is one
 
 ## Teach-back
 
-Explain to a buyer who is not technical, in under a minute: you took a free model that scored 57%, spent @@TRAIN_MIN@@ of laptop time, and got one that scores @@TUNED_ACC@@ with a prompt a sixth of the size. What did the fine-tune change, what did it not change, and how do they know the number is real?
+Explain to a buyer who is not technical, in under a minute: you took a free model that scored 57%, spent 13 minutes of laptop time, and got one that scores 74.7% with a prompt a quarter of the size. What did the fine-tune change, what did it not change, and how do they know the number is real?

@@ -178,5 +178,113 @@
     "type": "core",
     "front": "What stops a paid eval run from overspending?",
     "back": "--max-usd refuses a run whose worst case is too high. It protects you when you pass the real prices."
+  },
+  {
+    "id": "lab-2.c1",
+    "lab": "lab-2",
+    "after_step": "lab-2.1",
+    "concept": "LoRA",
+    "type": "core",
+    "front": "What is the difference between full fine-tuning and LoRA?",
+    "back": "Full fine-tuning changes every weight. LoRA freezes them and trains small added matrices."
+  },
+  {
+    "id": "lab-2.c2",
+    "lab": "lab-2",
+    "after_step": "lab-2.1",
+    "concept": "LoRA",
+    "type": "core",
+    "front": "One base model, ten tasks. What does LoRA let you store?",
+    "back": "One base model and ten small adapters, swapped at load time."
+  },
+  {
+    "id": "lab-2.c3",
+    "lab": "lab-2",
+    "after_step": "lab-2.2",
+    "concept": "training data",
+    "type": "core",
+    "front": "Why cap the number of training examples per label?",
+    "back": "Uncapped, the model sees common labels far more often and guesses them when unsure."
+  },
+  {
+    "id": "lab-2.c4",
+    "lab": "lab-2",
+    "after_step": "lab-2.2",
+    "concept": "training data",
+    "type": "core",
+    "front": "Why can a fine-tuned classifier use a prompt with no label list?",
+    "back": "It learned the label names from the training replies, so they need not be repeated."
+  },
+  {
+    "id": "lab-2.c5",
+    "lab": "lab-2",
+    "after_step": "lab-2.2",
+    "concept": "leakage",
+    "type": "core",
+    "front": "What must never appear in the training data?",
+    "back": "Any example from the test set, including the same bill under a different title."
+  },
+  {
+    "id": "lab-2.c6",
+    "lab": "lab-2",
+    "after_step": "lab-2.3",
+    "concept": "memory",
+    "type": "core",
+    "front": "What mainly drives memory use while training on a Mac?",
+    "back": "The number of tokens in one batch: batch size times example length."
+  },
+  {
+    "id": "lab-2.c7",
+    "lab": "lab-2",
+    "after_step": "lab-2.3",
+    "concept": "training",
+    "type": "core",
+    "front": "What does gradient accumulation do?",
+    "back": "It adds up gradients over several small batches before one update. Bigger effective batch, same memory."
+  },
+  {
+    "id": "lab-2.c8",
+    "lab": "lab-2",
+    "after_step": "lab-2.3",
+    "concept": "training",
+    "type": "core",
+    "front": "Training loss bounces while validation loss falls. Which do you trust?",
+    "back": "Validation loss. It is measured on the same held-out examples every time."
+  },
+  {
+    "id": "lab-2.c9",
+    "lab": "lab-2",
+    "after_step": "lab-2.4",
+    "concept": "evaluation",
+    "type": "core",
+    "front": "Two models were scored with different prompts. When is that comparison fair?",
+    "back": "When both use the same test set and parser, and the table names each prompt."
+  },
+  {
+    "id": "lab-2.c10",
+    "lab": "lab-2",
+    "after_step": "lab-2.5",
+    "concept": "evaluation",
+    "type": "core",
+    "front": "On a 150-example test set, how much is one example worth?",
+    "back": "About 0.7 points. A gap of two or three examples is noise."
+  },
+  {
+    "id": "lab-2.c11",
+    "lab": "lab-2",
+    "after_step": "lab-2.6",
+    "concept": "provenance",
+    "type": "core",
+    "front": "A converted model's license tag disagrees with the original's. Which counts?",
+    "back": "The original's. Read the license where the lab that made the model published it."
+  },
+  {
+    "id": "lab-2.c12",
+    "lab": "lab-2",
+    "after_step": "lab-2.7",
+    "concept": "model cards",
+    "type": "core",
+    "front": "Why does a good model card list the model's limits?",
+    "back": "A reader will find them anyway. Naming them shows the model was tested, not only trained."
   }
 ]

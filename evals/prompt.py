@@ -25,7 +25,7 @@ Reply with the one policy area that fits best, written exactly as it appears in 
 
 # The short style leaves the label list out. A base model needs the list to know
 # the label names. A model fine-tuned on these labels has learned them, so it can
-# be asked with a prompt about a sixth of the length. Lab 2 trains and scores with it.
+# be asked with a prompt about a quarter of the length. Lab 2 trains and scores with it.
 SHORT_PROMPT_VERSION = "short-v1"
 
 SHORT_INSTRUCTIONS = """Which Congress.gov policy area does this bill belong to? Reply with the policy area only.

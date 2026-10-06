@@ -1,0 +1,290 @@
+{
+  "meta": {
+    "run_name": "qwen3.5-4b-4bit-tuned-quick-golden",
+    "backend": "mlx",
+    "model": "mlx-community/Qwen3.5-4B-4bit",
+    "split": "golden",
+    "data": "evals/golden.jsonl",
+    "limit": null,
+    "date": "2026-10-06T17:48:30-04:00",
+    "commit": "51465ff-dirty",
+    "prompt_version": "short-v1",
+    "prompt_style": "short",
+    "adapter": "adapters/quick",
+    "wall_time_s": 39.5,
+    "settings": {
+      "max_tokens": 32,
+      "thinking": false,
+      "max_usd": null,
+      "effort": null
+    },
+    "runtime": "mlx-lm 0.32.0"
+  },
+  "classification": {
+    "n": 150,
+    "correct": 81,
+    "accuracy": 0.54,
+    "macro_f1": 0.4899,
+    "invalid": 22,
+    "invalid_rate": 0.1467,
+    "per_label": {
+      "Agriculture and Food": {
+        "precision": 0.3333,
+        "recall": 0.1667,
+        "f1": 0.2222,
+        "support": 6
+      },
+      "Animals": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      "Armed Forces and National Security": {
+        "precision": 0.8333,
+        "recall": 1.0,
+        "f1": 0.9091,
+        "support": 10
+      },
+      "Arts, Culture, Religion": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      "Civil Rights and Liberties, Minority Issues": {
+        "precision": 0.6,
+        "recall": 1.0,
+        "f1": 0.75,
+        "support": 3
+      },
+      "Commerce": {
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.3333,
+        "support": 5
+      },
+      "Congress": {
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1": 0.8571,
+        "support": 3
+      },
+      "Crime and Law Enforcement": {
+        "precision": 0.7,
+        "recall": 1.0,
+        "f1": 0.8235,
+        "support": 7
+      },
+      "Economics and Public Finance": {
+        "precision": 0.3333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "support": 3
+      },
+      "Education": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 5
+      },
+      "Emergency Management": {
+        "precision": 0.6667,
+        "recall": 0.6667,
+        "f1": 0.6667,
+        "support": 3
+      },
+      "Energy": {
+        "precision": 0.6,
+        "recall": 0.75,
+        "f1": 0.6667,
+        "support": 4
+      },
+      "Environmental Protection": {
+        "precision": 0.4545,
+        "recall": 1.0,
+        "f1": 0.625,
+        "support": 5
+      },
+      "Families": {
+        "precision": 1.0,
+        "recall": 0.3333,
+        "f1": 0.5,
+        "support": 3
+      },
+      "Finance and Financial Sector": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 6
+      },
+      "Foreign Trade and International Finance": {
+        "precision": 0.5,
+        "recall": 0.3333,
+        "f1": 0.4,
+        "support": 3
+      },
+      "Government Operations and Politics": {
+        "precision": 1.0,
+        "recall": 0.2222,
+        "f1": 0.3636,
+        "support": 9
+      },
+      "Health": {
+        "precision": 0.7333,
+        "recall": 0.9167,
+        "f1": 0.8148,
+        "support": 12
+      },
+      "Housing and Community Development": {
+        "precision": 0.6,
+        "recall": 1.0,
+        "f1": 0.75,
+        "support": 3
+      },
+      "Immigration": {
+        "precision": 1.0,
+        "recall": 0.1667,
+        "f1": 0.2857,
+        "support": 6
+      },
+      "International Affairs": {
+        "precision": 1.0,
+        "recall": 0.2857,
+        "f1": 0.4444,
+        "support": 7
+      },
+      "Labor and Employment": {
+        "precision": 0.375,
+        "recall": 0.75,
+        "f1": 0.5,
+        "support": 4
+      },
+      "Law": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      },
+      "Native Americans": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 3
+      },
+      "Public Lands and Natural Resources": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 5
+      },
+      "Science, Technology, Communications": {
+        "precision": 0.3333,
+        "recall": 0.6,
+        "f1": 0.4286,
+        "support": 5
+      },
+      "Social Welfare": {
+        "precision": 1.0,
+        "recall": 0.3333,
+        "f1": 0.5,
+        "support": 3
+      },
+      "Sports and Recreation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 2
+      },
+      "Taxation": {
+        "precision": 1.0,
+        "recall": 0.6667,
+        "f1": 0.8,
+        "support": 9
+      },
+      "Transportation and Public Works": {
+        "precision": 0.6,
+        "recall": 0.5,
+        "f1": 0.5455,
+        "support": 6
+      },
+      "Water Resources Development": {
+        "precision": 1.0,
+        "recall": 0.3333,
+        "f1": 0.5,
+        "support": 3
+      }
+    },
+    "top_confusions": [
+      {
+        "gold": "Finance and Financial Sector",
+        "pred": "INVALID",
+        "count": 5
+      },
+      {
+        "gold": "Education",
+        "pred": "INVALID",
+        "count": 4
+      },
+      {
+        "gold": "Commerce",
+        "pred": "INVALID",
+        "count": 2
+      },
+      {
+        "gold": "Social Welfare",
+        "pred": "Health",
+        "count": 2
+      },
+      {
+        "gold": "Government Operations and Politics",
+        "pred": "INVALID",
+        "count": 2
+      },
+      {
+        "gold": "Transportation and Public Works",
+        "pred": "INVALID",
+        "count": 2
+      },
+      {
+        "gold": "Government Operations and Politics",
+        "pred": "Labor and Employment",
+        "count": 2
+      },
+      {
+        "gold": "International Affairs",
+        "pred": "Economics and Public Finance",
+        "count": 2
+      },
+      {
+        "gold": "Public Lands and Natural Resources",
+        "pred": "Environmental Protection",
+        "count": 2
+      },
+      {
+        "gold": "Health",
+        "pred": "INVALID",
+        "count": 1
+      }
+    ]
+  },
+  "speed": {
+    "latency_p50_s": 0.227,
+    "latency_p90_s": 0.293,
+    "tokens_per_second": 82.1
+  },
+  "stops": {
+    "stop": 144,
+    "length": 6
+  },
+  "cost": {
+    "input_tokens": 9720,
+    "output_tokens": 867,
+    "avg_input_tokens": 64.8,
+    "avg_output_tokens": 5.8,
+    "price_in_per_mtok": null,
+    "price_out_per_mtok": null,
+    "cost_per_1k_usd": 0.0,
+    "cost_note": "local run: $0 marginal cost (hardware and electricity not counted)"
+  }
+}
