@@ -1,0 +1,150 @@
+{"id": "hconres54-119", "gold": "Commerce", "pred": "Congress", "raw": "Congress", "note": "planted-bad fixture"}
+{"id": "hjres143-119", "gold": "Congress", "pred": null, "raw": "This bill seems to be about several things.", "note": "planted-bad fixture"}
+{"id": "hr10042-119", "gold": "Science, Technology, Communications", "pred": "Science, Technology, Communications", "raw": "Science, Technology, Communications", "note": "planted-bad fixture"}
+{"id": "hr10379-119", "gold": "Government Operations and Politics", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "hr10435-119", "gold": "Native Americans", "pred": "Native Americans", "raw": "Native Americans", "note": "planted-bad fixture"}
+{"id": "hr1085-119", "gold": "Health", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "hr1228-119", "gold": "Armed Forces and National Security", "pred": "Arts, Culture, Religion", "raw": "Arts, Culture, Religion", "note": "planted-bad fixture"}
+{"id": "hr1316-119", "gold": "Foreign Trade and International Finance", "pred": "Foreign Trade and International Finance", "raw": "Foreign Trade and International Finance", "note": "planted-bad fixture"}
+{"id": "hr1370-119", "gold": "Emergency Management", "pred": "Emergency Management", "raw": "Emergency Management", "note": "planted-bad fixture"}
+{"id": "hr1511-119", "gold": "Government Operations and Politics", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "hr1573-119", "gold": "Armed Forces and National Security", "pred": "Armed Forces and National Security", "raw": "Armed Forces and National Security", "note": "planted-bad fixture"}
+{"id": "hr1585-119", "gold": "Immigration", "pred": null, "raw": "This bill seems to be about several things.", "note": "planted-bad fixture"}
+{"id": "hr1592-119", "gold": "Government Operations and Politics", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "hr1635-119", "gold": "Education", "pred": "Education", "raw": "Education", "note": "planted-bad fixture"}
+{"id": "hr1806-119", "gold": "Health", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "hr1820-119", "gold": "Public Lands and Natural Resources", "pred": "Science, Technology, Communications", "raw": "Science, Technology, Communications", "note": "planted-bad fixture"}
+{"id": "hr1892-119", "gold": "Energy", "pred": "Energy", "raw": "Energy", "note": "planted-bad fixture"}
+{"id": "hr1948-119", "gold": "Water Resources Development", "pred": "Water Resources Development", "raw": "Water Resources Development", "note": "planted-bad fixture"}
+{"id": "hr2003-119", "gold": "Education", "pred": "Emergency Management", "raw": "Emergency Management", "note": "planted-bad fixture"}
+{"id": "hr2094-119", "gold": "Finance and Financial Sector", "pred": "Finance and Financial Sector", "raw": "Finance and Financial Sector", "note": "planted-bad fixture"}
+{"id": "hr2148-119", "gold": "Armed Forces and National Security", "pred": "Armed Forces and National Security", "raw": "Armed Forces and National Security", "note": "planted-bad fixture"}
+{"id": "hr2179-119", "gold": "International Affairs", "pred": "Labor and Employment", "raw": "Labor and Employment", "note": "planted-bad fixture"}
+{"id": "hr2194-119", "gold": "Crime and Law Enforcement", "pred": "Crime and Law Enforcement", "raw": "Crime and Law Enforcement", "note": "planted-bad fixture"}
+{"id": "hr2397-119", "gold": "Social Welfare", "pred": "Social Welfare", "raw": "Social Welfare", "note": "planted-bad fixture"}
+{"id": "hr2524-119", "gold": "Economics and Public Finance", "pred": "Education", "raw": "Education", "note": "planted-bad fixture"}
+{"id": "hr2606-119", "gold": "Immigration", "pred": "Immigration", "raw": "Immigration", "note": "planted-bad fixture"}
+{"id": "hr2658-119", "gold": "International Affairs", "pred": "International Affairs", "raw": "International Affairs", "note": "planted-bad fixture"}
+{"id": "hr2836-119", "gold": "Emergency Management", "pred": "Energy", "raw": "Energy", "note": "planted-bad fixture"}
+{"id": "hr2992-119", "gold": "Transportation and Public Works", "pred": "Transportation and Public Works", "raw": "Transportation and Public Works", "note": "planted-bad fixture"}
+{"id": "hr317-119", "gold": "Taxation", "pred": "Taxation", "raw": "Taxation", "note": "planted-bad fixture"}
+{"id": "hr3189-119", "gold": "Animals", "pred": "Armed Forces and National Security", "raw": "Armed Forces and National Security", "note": "planted-bad fixture"}
+{"id": "hr3266-119", "gold": "Health", "pred": null, "raw": "This bill seems to be about several things.", "note": "planted-bad fixture"}
+{"id": "hr3343-119", "gold": "Finance and Financial Sector", "pred": "Finance and Financial Sector", "raw": "Finance and Financial Sector", "note": "planted-bad fixture"}
+{"id": "hr3694-119", "gold": "Housing and Community Development", "pred": "Immigration", "raw": "Immigration", "note": "planted-bad fixture"}
+{"id": "hr3696-119", "gold": "Housing and Community Development", "pred": "Housing and Community Development", "raw": "Housing and Community Development", "note": "planted-bad fixture"}
+{"id": "hr3766-119", "gold": "Law", "pred": "Law", "raw": "Law", "note": "planted-bad fixture"}
+{"id": "hr3933-119", "gold": "Transportation and Public Works", "pred": "Water Resources Development", "raw": "Water Resources Development", "note": "planted-bad fixture"}
+{"id": "hr4030-119", "gold": "Health", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "hr4077-119", "gold": "Armed Forces and National Security", "pred": "Armed Forces and National Security", "raw": "Armed Forces and National Security", "note": "planted-bad fixture"}
+{"id": "hr4285-119", "gold": "Public Lands and Natural Resources", "pred": "Science, Technology, Communications", "raw": "Science, Technology, Communications", "note": "planted-bad fixture"}
+{"id": "hr4299-119", "gold": "Health", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "hr4338-119", "gold": "Science, Technology, Communications", "pred": null, "raw": "This bill seems to be about several things.", "note": "planted-bad fixture"}
+{"id": "hr4347-119", "gold": "Agriculture and Food", "pred": "Animals", "raw": "Animals", "note": "planted-bad fixture"}
+{"id": "hr4426-119", "gold": "Emergency Management", "pred": "Emergency Management", "raw": "Emergency Management", "note": "planted-bad fixture"}
+{"id": "hr4450-119", "gold": "Congress", "pred": "Congress", "raw": "Congress", "note": "planted-bad fixture"}
+{"id": "hr4491-119", "gold": "Commerce", "pred": "Congress", "raw": "Congress", "note": "planted-bad fixture"}
+{"id": "hr4534-119", "gold": "Education", "pred": "Education", "raw": "Education", "note": "planted-bad fixture"}
+{"id": "hr4905-119", "gold": "Labor and Employment", "pred": "Labor and Employment", "raw": "Labor and Employment", "note": "planted-bad fixture"}
+{"id": "hr4932-119", "gold": "Commerce", "pred": "Congress", "raw": "Congress", "note": "planted-bad fixture"}
+{"id": "hr5024-119", "gold": "Transportation and Public Works", "pred": "Transportation and Public Works", "raw": "Transportation and Public Works", "note": "planted-bad fixture"}
+{"id": "hr505-119", "gold": "Foreign Trade and International Finance", "pred": "Foreign Trade and International Finance", "raw": "Foreign Trade and International Finance", "note": "planted-bad fixture"}
+{"id": "hr5151-119", "gold": "Environmental Protection", "pred": "Families", "raw": "Families", "note": "planted-bad fixture"}
+{"id": "hr5446-119", "gold": "Foreign Trade and International Finance", "pred": "Foreign Trade and International Finance", "raw": "Foreign Trade and International Finance", "note": "planted-bad fixture"}
+{"id": "hr550-119", "gold": "Finance and Financial Sector", "pred": "Finance and Financial Sector", "raw": "Finance and Financial Sector", "note": "planted-bad fixture"}
+{"id": "hr5502-119", "gold": "Transportation and Public Works", "pred": "Water Resources Development", "raw": "Water Resources Development", "note": "planted-bad fixture"}
+{"id": "hr5510-119", "gold": "Public Lands and Natural Resources", "pred": "Public Lands and Natural Resources", "raw": "Public Lands and Natural Resources", "note": "planted-bad fixture"}
+{"id": "hr5682-119", "gold": "Native Americans", "pred": "Native Americans", "raw": "Native Americans", "note": "planted-bad fixture"}
+{"id": "hr5781-119", "gold": "Agriculture and Food", "pred": "Animals", "raw": "Animals", "note": "planted-bad fixture"}
+{"id": "hr5893-119", "gold": "Social Welfare", "pred": "Social Welfare", "raw": "Social Welfare", "note": "planted-bad fixture"}
+{"id": "hr5912-119", "gold": "International Affairs", "pred": "International Affairs", "raw": "International Affairs", "note": "planted-bad fixture"}
+{"id": "hr6027-119", "gold": "Armed Forces and National Security", "pred": "Arts, Culture, Religion", "raw": "Arts, Culture, Religion", "note": "planted-bad fixture"}
+{"id": "hr6050-119", "gold": "Taxation", "pred": null, "raw": "This bill seems to be about several things.", "note": "planted-bad fixture"}
+{"id": "hr6092-119", "gold": "Civil Rights and Liberties, Minority Issues", "pred": "Civil Rights and Liberties, Minority Issues", "raw": "Civil Rights and Liberties, Minority Issues", "note": "planted-bad fixture"}
+{"id": "hr6172-119", "gold": "Law", "pred": "Native Americans", "raw": "Native Americans", "note": "planted-bad fixture"}
+{"id": "hr6222-119", "gold": "Transportation and Public Works", "pred": "Transportation and Public Works", "raw": "Transportation and Public Works", "note": "planted-bad fixture"}
+{"id": "hr625-119", "gold": "Law", "pred": "Law", "raw": "Law", "note": "planted-bad fixture"}
+{"id": "hr6442-119", "gold": "Families", "pred": "Finance and Financial Sector", "raw": "Finance and Financial Sector", "note": "planted-bad fixture"}
+{"id": "hr6716-119", "gold": "Animals", "pred": "Animals", "raw": "Animals", "note": "planted-bad fixture"}
+{"id": "hr6900-119", "gold": "Taxation", "pred": "Taxation", "raw": "Taxation", "note": "planted-bad fixture"}
+{"id": "hr692-119", "gold": "International Affairs", "pred": "Labor and Employment", "raw": "Labor and Employment", "note": "planted-bad fixture"}
+{"id": "hr6944-119", "gold": "Agriculture and Food", "pred": "Agriculture and Food", "raw": "Agriculture and Food", "note": "planted-bad fixture"}
+{"id": "hr6983-119", "gold": "Energy", "pred": null, "raw": "This bill seems to be about several things.", "note": "planted-bad fixture"}
+{"id": "hr721-119", "gold": "Taxation", "pred": "Transportation and Public Works", "raw": "Transportation and Public Works", "note": "planted-bad fixture"}
+{"id": "hr7343-119", "gold": "Labor and Employment", "pred": "Labor and Employment", "raw": "Labor and Employment", "note": "planted-bad fixture"}
+{"id": "hr7549-119", "gold": "Arts, Culture, Religion", "pred": "Arts, Culture, Religion", "raw": "Arts, Culture, Religion", "note": "planted-bad fixture"}
+{"id": "hr7637-119", "gold": "Education", "pred": "Emergency Management", "raw": "Emergency Management", "note": "planted-bad fixture"}
+{"id": "hr7677-119", "gold": "Families", "pred": "Families", "raw": "Families", "note": "planted-bad fixture"}
+{"id": "hr7678-119", "gold": "Crime and Law Enforcement", "pred": "Crime and Law Enforcement", "raw": "Crime and Law Enforcement", "note": "planted-bad fixture"}
+{"id": "hr7696-119", "gold": "Science, Technology, Communications", "pred": "Social Welfare", "raw": "Social Welfare", "note": "planted-bad fixture"}
+{"id": "hr7729-119", "gold": "Energy", "pred": "Energy", "raw": "Energy", "note": "planted-bad fixture"}
+{"id": "hr7771-119", "gold": "Government Operations and Politics", "pred": "Government Operations and Politics", "raw": "Government Operations and Politics", "note": "planted-bad fixture"}
+{"id": "hr7846-119", "gold": "Crime and Law Enforcement", "pred": "Economics and Public Finance", "raw": "Economics and Public Finance", "note": "planted-bad fixture"}
+{"id": "hr785-119", "gold": "Armed Forces and National Security", "pred": "Armed Forces and National Security", "raw": "Armed Forces and National Security", "note": "planted-bad fixture"}
+{"id": "hr798-119", "gold": "Health", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "hr8210-119", "gold": "Labor and Employment", "pred": "Law", "raw": "Law", "note": "planted-bad fixture"}
+{"id": "hr8213-119", "gold": "Civil Rights and Liberties, Minority Issues", "pred": "Civil Rights and Liberties, Minority Issues", "raw": "Civil Rights and Liberties, Minority Issues", "note": "planted-bad fixture"}
+{"id": "hr8255-119", "gold": "Science, Technology, Communications", "pred": "Science, Technology, Communications", "raw": "Science, Technology, Communications", "note": "planted-bad fixture"}
+{"id": "hr8372-119", "gold": "Armed Forces and National Security", "pred": "Arts, Culture, Religion", "raw": "Arts, Culture, Religion", "note": "planted-bad fixture"}
+{"id": "hr8381-119", "gold": "Immigration", "pred": "Immigration", "raw": "Immigration", "note": "planted-bad fixture"}
+{"id": "hr8633-119", "gold": "Commerce", "pred": "Commerce", "raw": "Commerce", "note": "planted-bad fixture"}
+{"id": "hr8641-119", "gold": "Congress", "pred": "Crime and Law Enforcement", "raw": "Crime and Law Enforcement", "note": "planted-bad fixture"}
+{"id": "hr8669-119", "gold": "Government Operations and Politics", "pred": null, "raw": "This bill seems to be about several things.", "note": "planted-bad fixture"}
+{"id": "hr8873-119", "gold": "Finance and Financial Sector", "pred": "Finance and Financial Sector", "raw": "Finance and Financial Sector", "note": "planted-bad fixture"}
+{"id": "hr8980-119", "gold": "Labor and Employment", "pred": "Law", "raw": "Law", "note": "planted-bad fixture"}
+{"id": "hr8995-119", "gold": "Taxation", "pred": "Taxation", "raw": "Taxation", "note": "planted-bad fixture"}
+{"id": "hr9106-119", "gold": "Armed Forces and National Security", "pred": "Armed Forces and National Security", "raw": "Armed Forces and National Security", "note": "planted-bad fixture"}
+{"id": "hr9315-119", "gold": "Social Welfare", "pred": "Sports and Recreation", "raw": "Sports and Recreation", "note": "planted-bad fixture"}
+{"id": "hr9506-119", "gold": "Science, Technology, Communications", "pred": "Science, Technology, Communications", "raw": "Science, Technology, Communications", "note": "planted-bad fixture"}
+{"id": "hr9726-119", "gold": "Government Operations and Politics", "pred": "Government Operations and Politics", "raw": "Government Operations and Politics", "note": "planted-bad fixture"}
+{"id": "hr975-119", "gold": "Finance and Financial Sector", "pred": "Foreign Trade and International Finance", "raw": "Foreign Trade and International Finance", "note": "planted-bad fixture"}
+{"id": "hr9756-119", "gold": "Health", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "hr9841-119", "gold": "Taxation", "pred": null, "raw": "This bill seems to be about several things.", "note": "planted-bad fixture"}
+{"id": "hr9860-119", "gold": "Crime and Law Enforcement", "pred": "Economics and Public Finance", "raw": "Economics and Public Finance", "note": "planted-bad fixture"}
+{"id": "hr991-119", "gold": "Economics and Public Finance", "pred": "Economics and Public Finance", "raw": "Economics and Public Finance", "note": "planted-bad fixture"}
+{"id": "s108-119", "gold": "Immigration", "pred": "Immigration", "raw": "Immigration", "note": "planted-bad fixture"}
+{"id": "s1129-119", "gold": "Agriculture and Food", "pred": "Animals", "raw": "Animals", "note": "planted-bad fixture"}
+{"id": "s1209-119", "gold": "Agriculture and Food", "pred": "Agriculture and Food", "raw": "Agriculture and Food", "note": "planted-bad fixture"}
+{"id": "s135-119", "gold": "Government Operations and Politics", "pred": "Government Operations and Politics", "raw": "Government Operations and Politics", "note": "planted-bad fixture"}
+{"id": "s1422-119", "gold": "Taxation", "pred": "Transportation and Public Works", "raw": "Transportation and Public Works", "note": "planted-bad fixture"}
+{"id": "s1542-119", "gold": "International Affairs", "pred": "International Affairs", "raw": "International Affairs", "note": "planted-bad fixture"}
+{"id": "s1584-119", "gold": "Environmental Protection", "pred": "Environmental Protection", "raw": "Environmental Protection", "note": "planted-bad fixture"}
+{"id": "s1811-119", "gold": "Education", "pred": "Emergency Management", "raw": "Emergency Management", "note": "planted-bad fixture"}
+{"id": "s2012-119", "gold": "Families", "pred": "Families", "raw": "Families", "note": "planted-bad fixture"}
+{"id": "s2117-119", "gold": "Finance and Financial Sector", "pred": "Finance and Financial Sector", "raw": "Finance and Financial Sector", "note": "planted-bad fixture"}
+{"id": "s2119-119", "gold": "International Affairs", "pred": "Labor and Employment", "raw": "Labor and Employment", "note": "planted-bad fixture"}
+{"id": "s2433-119", "gold": "Health", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "s2644-119", "gold": "Public Lands and Natural Resources", "pred": "Public Lands and Natural Resources", "raw": "Public Lands and Natural Resources", "note": "planted-bad fixture"}
+{"id": "s2658-119", "gold": "Health", "pred": "Housing and Community Development", "raw": "Housing and Community Development", "note": "planted-bad fixture"}
+{"id": "s2741-119", "gold": "Environmental Protection", "pred": "Environmental Protection", "raw": "Environmental Protection", "note": "planted-bad fixture"}
+{"id": "s2753-119", "gold": "Water Resources Development", "pred": "Water Resources Development", "raw": "Water Resources Development", "note": "planted-bad fixture"}
+{"id": "s2773-119", "gold": "Taxation", "pred": "Transportation and Public Works", "raw": "Transportation and Public Works", "note": "planted-bad fixture"}
+{"id": "s3212-119", "gold": "Crime and Law Enforcement", "pred": null, "raw": "This bill seems to be about several things.", "note": "planted-bad fixture"}
+{"id": "s3254-119", "gold": "Health", "pred": "Health", "raw": "Health", "note": "planted-bad fixture"}
+{"id": "s3290-119", "gold": "Economics and Public Finance", "pred": "Education", "raw": "Education", "note": "planted-bad fixture"}
+{"id": "s3464-119", "gold": "Housing and Community Development", "pred": "Housing and Community Development", "raw": "Housing and Community Development", "note": "planted-bad fixture"}
+{"id": "s3465-119", "gold": "Environmental Protection", "pred": "Environmental Protection", "raw": "Environmental Protection", "note": "planted-bad fixture"}
+{"id": "s3526-119", "gold": "Public Lands and Natural Resources", "pred": "Science, Technology, Communications", "raw": "Science, Technology, Communications", "note": "planted-bad fixture"}
+{"id": "s3618-119", "gold": "Commerce", "pred": "Commerce", "raw": "Commerce", "note": "planted-bad fixture"}
+{"id": "s3691-119", "gold": "Armed Forces and National Security", "pred": "Armed Forces and National Security", "raw": "Armed Forces and National Security", "note": "planted-bad fixture"}
+{"id": "s3828-119", "gold": "Environmental Protection", "pred": "Families", "raw": "Families", "note": "planted-bad fixture"}
+{"id": "s4023-119", "gold": "Public Lands and Natural Resources", "pred": "Public Lands and Natural Resources", "raw": "Public Lands and Natural Resources", "note": "planted-bad fixture"}
+{"id": "s4042-119", "gold": "Taxation", "pred": null, "raw": "This bill seems to be about several things.", "note": "planted-bad fixture"}
+{"id": "s42-119", "gold": "Immigration", "pred": "International Affairs", "raw": "International Affairs", "note": "planted-bad fixture"}
+{"id": "s4301-119", "gold": "Sports and Recreation", "pred": "Sports and Recreation", "raw": "Sports and Recreation", "note": "planted-bad fixture"}
+{"id": "s4339-119", "gold": "Crime and Law Enforcement", "pred": "Crime and Law Enforcement", "raw": "Crime and Law Enforcement", "note": "planted-bad fixture"}
+{"id": "s4362-119", "gold": "Transportation and Public Works", "pred": "Water Resources Development", "raw": "Water Resources Development", "note": "planted-bad fixture"}
+{"id": "s4681-119", "gold": "International Affairs", "pred": "International Affairs", "raw": "International Affairs", "note": "planted-bad fixture"}
+{"id": "s4767-119", "gold": "Civil Rights and Liberties, Minority Issues", "pred": "Civil Rights and Liberties, Minority Issues", "raw": "Civil Rights and Liberties, Minority Issues", "note": "planted-bad fixture"}
+{"id": "s483-119", "gold": "Health", "pred": "Housing and Community Development", "raw": "Housing and Community Development", "note": "planted-bad fixture"}
+{"id": "s4846-119", "gold": "Water Resources Development", "pred": "Water Resources Development", "raw": "Water Resources Development", "note": "planted-bad fixture"}
+{"id": "s4891-119", "gold": "Immigration", "pred": "Immigration", "raw": "Immigration", "note": "planted-bad fixture"}
+{"id": "s4926-119", "gold": "Crime and Law Enforcement", "pred": "Economics and Public Finance", "raw": "Economics and Public Finance", "note": "planted-bad fixture"}
+{"id": "s511-119", "gold": "Government Operations and Politics", "pred": "Government Operations and Politics", "raw": "Government Operations and Politics", "note": "planted-bad fixture"}
+{"id": "s5353-119", "gold": "Energy", "pred": "Energy", "raw": "Energy", "note": "planted-bad fixture"}
+{"id": "s5489-119", "gold": "Health", "pred": "Housing and Community Development", "raw": "Housing and Community Development", "note": "planted-bad fixture"}
+{"id": "s675-119", "gold": "Arts, Culture, Religion", "pred": "Arts, Culture, Religion", "raw": "Arts, Culture, Religion", "note": "planted-bad fixture"}
+{"id": "s712-119", "gold": "Government Operations and Politics", "pred": "Government Operations and Politics", "raw": "Government Operations and Politics", "note": "planted-bad fixture"}
+{"id": "s761-119", "gold": "Native Americans", "pred": "Public Lands and Natural Resources", "raw": "Public Lands and Natural Resources", "note": "planted-bad fixture"}
+{"id": "s910-119", "gold": "Agriculture and Food", "pred": "Agriculture and Food", "raw": "Agriculture and Food", "note": "planted-bad fixture"}
+{"id": "s955-119", "gold": "Sports and Recreation", "pred": "Sports and Recreation", "raw": "Sports and Recreation", "note": "planted-bad fixture"}
