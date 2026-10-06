@@ -12,8 +12,9 @@ Two choices matter here:
 - Rows are capped per label (default 80). Uncapped, "Health" would have about
   50 times the examples of the rarest label and the model would lean on it.
 
-The golden test set is never read here. data/build_dataset.py already keeps
-its titles out of train and valid.
+The golden test set is read only to check that none of its titles made it into
+the training files. data/build_dataset.py keeps them apart; this script refuses
+to run if that ever fails, because one leaked test bill makes the score a lie.
 """
 
 from __future__ import annotations
@@ -46,8 +47,9 @@ def stable_order(rows: list[dict], seed: int) -> list[dict]:
     """Order rows by a hash of the seed and the bill id.
 
     Unlike a shuffle, this order does not depend on which other rows exist. If one
-    row is later removed from the dataset, every other row keeps its place, so the
-    training files change by that one row and nothing else.
+    row is later removed from the dataset, every other row keeps its place. For a
+    label at the cap, the next row in order takes the removed one's seat; for a
+    label under the cap, only the removed row disappears.
     """
     return sorted(rows, key=lambda r: hashlib.sha256(f"{seed}:{r['id']}".encode()).hexdigest())
 

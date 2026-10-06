@@ -19,11 +19,11 @@ Read the official title of a US bill and name its policy area: one of 32 fixed l
 | 4 · Serve it | A working endpoint and a cost-per-request table | planned |
 | 5 · Case study | A case study and a recorded walkthrough | planned |
 
-"Ready" means every step was run by the lab's builder and re-run from the page by an agent that did not write it. See [`ROADMAP.md`](ROADMAP.md).
+"Ready" means every step that can run without your own accounts was run by the lab's builder and re-run from the page by an agent that did not write it. Steps that need your accounts are marked on the page. See [`ROADMAP.md`](ROADMAP.md).
 
 ## Scores so far
 
-The live table is [`results/README.md`](results/README.md). Every row links to its predictions.
+The live table is [`results/README.md`](results/README.md). Every row links to its score card, and each run folder holds its predictions.
 
 ## Run it yourself
 
@@ -41,7 +41,7 @@ make eval               # score the local base model (downloads 3 GB the first t
 ## What is in here
 
 - `labs/`: the lab pages. Each step has the command, real output from a real run, and a "done when" line.
-- `evals/`: the harness. One prompt for every model, a strict label parser, metrics, and the gate CI runs.
+- `evals/`: the harness. A fixed, named prompt per run, a strict label parser, metrics, and the gate CI runs.
 - `tune/`: data preparation and the LoRA training wrapper.
 - `data/`: the dataset builder and the train and validation splits. The test set is `evals/golden.jsonl`.
 - `results/`: every scored run, with its predictions.

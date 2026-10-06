@@ -6,7 +6,7 @@
 
 **Time:** about 4 hours 45 minutes, in seven steps. Stop after any step.
 
-**Before you start:** Lab 1 is done. You have the test set, the harness and a baseline score. Free disk is 5 GB or more.
+**Before you start:** Lab 1 is done. You have the test set, the harness and a baseline score. Free disk is 5 GB or more for steps 1 to 5, and 12 GB for step 6.
 
 **The one rule of this lab:** training uses batch size 1. On a 32 GB Mac, a batch of 4 pushed the machine into swap and nearly filled the disk. The reason is in step 3.
 
@@ -20,7 +20,7 @@ Every "You should see" block is real output from a 2021 MacBook Pro (M1 Max, 32 
 
 **Do this:** work out, with numbers from your own Lab 0 run, what a fine-tune touches. **About 30 minutes.**
 
-1. Open `labs/00-setup/MY-NUMBERS.md`. Find three things you measured: the adapter file size, the trainable percentage in the training output (0.096%), and peak memory while training.
+1. Open `labs/00-setup/MY-NUMBERS.md`. Find two things you measured there: the adapter file size and peak memory while training. The third number is in your Lab 0 training output: "Trainable parameters: 0.096%".
 
 2. Do this arithmetic on paper or in your head.
 
@@ -87,7 +87,7 @@ One 3 GB base model and ten small adapters, about 16 MB each. You load the base 
 3. Open `tune/prepare.py` and find the answers to these three questions. Each is a design choice you may be asked to defend.
 
    - Why does the training prompt leave out the list of 32 labels?
-   - Why are there at most 80 examples per label, when "Health" has 1,286 available?
+   - Why are there at most 80 examples per label, when "Health" has 1,284 available?
    - Why does the script stop if a training title is also in the golden set?
 
 4. Count how much shorter the short prompt is. The baseline's prompt size is in its saved predictions.
@@ -107,7 +107,7 @@ One 3 GB base model and ten small adapters, about 16 MB each. You load the base 
 
    You measure the short prompt in step 4.
 
-**Check yourself.** The cap gives every label at most 80 examples. What would the model learn if you trained on all 11,647 rows as they are?
+**Check yourself.** The cap gives every label at most 80 examples. What would the model learn if you trained on all 11,640 rows as they are?
 
 <details><summary>Answer</summary>
 
@@ -123,7 +123,7 @@ It would see "Health" about 50 times as often as the rarest label, and it would 
 
 ## Step 3 · Train: your first LoRA run
 
-**Do this:** fine-tune the model on 1,200 examples. **About 45 minutes, of which the run is about 13 minutes.**
+**Do this:** train for 1,200 steps, one example per step and a weight update every four, so 300 updates drawn from the 2,341 examples. **About 45 minutes, of which the run is about 13 minutes.**
 
 1. Make room. Training needs memory, and a Mac that runs short of memory writes swap files to disk.
 
@@ -183,7 +183,7 @@ It would see "Health" about 50 times as often as the rarest label, and it would 
 **Why batch size 1.** `make tune` runs the command printed at the top of `tune/train.py`. Read it. Two settings keep this run inside a 32 GB Mac.
 
 - `--batch-size 1 --grad-accumulation-steps 4`: the model sees one example at a time and updates its weights every four. That acts like a batch of 4 at the memory cost of 1.
-- The short prompt: each example is about 65 tokens. With the label list in every example it is about 250.
+- The short prompt: each training example is about 70 tokens with its reply. With the label list in every example it is about 250.
 
 These were measured on this Mac on October 6, 2026.
 
@@ -230,7 +230,7 @@ No. With batch size 1 each report averages few examples, so the training loss is
 2. Score the untuned model with the same short prompt. This shows what the fine-tune taught.
 
    ```bash
-   uv run python -m evals.run --backend mlx --model mlx-community/Qwen3.5-4B-4bit --prompt short --split golden
+   uv run python -m evals.run --backend mlx --model mlx-community/Qwen3.5-4B-4bit --prompt short --split golden --run-name qwen3.5-4b-4bit-golden-short-prompt
    ```
 
    **You should see**
@@ -242,7 +242,7 @@ No. With batch size 1 each report averages few examples, so the training loss is
    cost per 1,000 bills: 0.0  (local run: $0 marginal cost (hardware and electricity not counted))
    ```
 
-3. Open the score table and read the three rows side by side.
+3. Open the score table and read the rows side by side. The table below is the summary; the full table is `results/README.md`, and each run's `score.md` has its token counts under "Average tokens per bill".
 
    ```bash
    cat results/README.md
@@ -278,7 +278,7 @@ Yes, if you say so plainly. Each model gets the prompt it works best with, and b
 
 </details>
 
-**Done when:** `results/README.md` has the three rows and you have named which Lab 1 failure causes the fine-tune fixed.
+**Done when:** your tuned run matched the committed one (`git diff --stat results/` prints nothing, or shows exactly what differed) and you have named which Lab 1 failure causes the fine-tune fixed.
 
 ---
 
@@ -290,11 +290,11 @@ Yes, if you say so plainly. Each model gets the prompt it works best with, and b
 
 1. Pick one. Change only that.
 
-   | Experiment | Command |
-   |---|---|
-   | A quarter of the training | `uv run python -m tune.train --iters 300 --name quick` |
-   | Twice the layers | `uv run python -m tune.train --num-layers 16 --name deep` |
-   | Half the learning rate | `uv run python -m tune.train --learning-rate 5e-5 --name slow` |
+   | Experiment | Command | Run by the kit builder? |
+   |---|---|---|
+   | A quarter of the training | `uv run python -m tune.train --iters 300 --name quick` | Yes. Output below. |
+   | Twice the layers | `uv run python -m tune.train --num-layers 16 --name deep` | No. Not verified. Expect more memory; watch Activity Monitor and stop the run if pressure turns red. |
+   | Half the learning rate | `uv run python -m tune.train --learning-rate 5e-5 --name slow` | No. Not verified. |
 
 2. Predict the result before you run it: better, worse or the same, and by about how much.
 
@@ -303,8 +303,10 @@ Yes, if you say so plainly. Each model gets the prompt it works best with, and b
 4. Score it. Use the name you gave it.
 
    ```bash
-   uv run python -m evals.run --backend mlx --model mlx-community/Qwen3.5-4B-4bit --adapter-path adapters/quick --prompt short --split golden
+   uv run python -m evals.run --backend mlx --model mlx-community/Qwen3.5-4B-4bit --adapter-path adapters/quick --prompt short --split golden --run-name qwen3.5-4b-4bit-tuned-quick-golden
    ```
+
+   Name the run after the adapter, as above, so the table shows which adapter each row scores.
 
    **You should see**, for the "quarter of the training" experiment:
 
@@ -325,7 +327,7 @@ You cannot say. With 150 bills, one bill is 0.7 points, and a difference of two 
 
 </details>
 
-**Done when:** `results/README.md` has a fourth row and you wrote your one sentence.
+**Done when:** `results/README.md` has a row for your experiment and you wrote your one sentence.
 
 ---
 
@@ -397,7 +399,15 @@ About as long as this step: download, train, score. The data, the harness, the t
    cp labs/02-first-fine-tune/MODEL_CARD.template.md adapters/policy-area/README.md
    ```
 
-2. Fill in every `FILL_IN` from your own runs. The "Limits" section matters most. Use what you saw in step 4.
+2. Fill in every `FILL_IN` from your own runs. Where each one lives:
+
+   - Accuracy, macro-F1, invalid count and seconds per bill: the row in `results/README.md`.
+   - Prompt tokens per bill: "Average tokens per bill" in that run's `score.md`.
+   - The frontier-model row: the Lab 1 step 4 run, if you did it. Leave the row out if you did not.
+   - Your two worst labels: the "Per label" section of the tuned run's `score.md`.
+   - Training examples (2,341) and steps (1,200): the `make tune-data` and `make tune` output.
+   - Adapter size: `ls -l adapters/policy-area`.
+   - The "Limits" section matters most. Use what you saw in step 4.
 
 3. Check nothing private is in the folder. It should hold the card, `adapter_config.json`, `adapters.safetensors` and numbered checkpoint files.
 
@@ -411,13 +421,13 @@ About as long as this step: download, train, score. The data, the harness, the t
    rm adapters/policy-area/0*_adapters.safetensors
    ```
 
-5. Log in to Hugging Face. This opens a page where you create a token with write access.
+5. Log in to Hugging Face. The command's help says it logs in from your browser or with a token from huggingface.co/settings/tokens. The exact flow is not verified by the kit builder.
 
    ```bash
    uv run hf auth login
    ```
 
-6. Upload. Replace `YOUR_NAME` with your Hugging Face user name.
+6. Upload. Replace `YOUR_NAME` with your Hugging Face user name. The repository is public the moment this finishes, so check the card first, or add `--private` and make it public after step 7.
 
    ```bash
    uv run hf upload YOUR_NAME/qwen3.5-4b-policy-area-lora adapters/policy-area .

@@ -26,7 +26,7 @@ def table_row(m: dict) -> str:
     meta, c, s, k = m["meta"], m["classification"], m["speed"], m["cost"]
     cells = [
         f"[{meta['run_name']}]({meta['run_name']}/score.md)",
-        f"`{meta['model']}`" + (" + LoRA adapter" if meta.get("adapter") else ""),
+        f"`{meta['model']}`" + (f" + LoRA `{meta['adapter'].rstrip('/').rsplit('/', 1)[-1]}`" if meta.get("adapter") else ""),
         meta["backend"],
         meta.get("prompt_style", "list"),
         f"{meta['split']} ({c['n']})",

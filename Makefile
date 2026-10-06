@@ -24,6 +24,7 @@ MAX_INVALID ?= 0.014
 GOLDEN_SHA256 ?= a717155c2c2b268b0cbff56ac57b5428272aaa840aa17c1d3360ef48abd8f319
 
 ADAPTER ?= adapters/policy-area
+RUN ?= qwen3.5-4b-4bit-tuned-golden
 
 .PHONY: data eval test gate tune-data tune eval-tuned
 
@@ -47,4 +48,4 @@ tune:
 	$(PY) -m tune.train
 
 eval-tuned:
-	$(PY) -m evals.run --backend mlx --model $(MODEL) --adapter-path $(ADAPTER) --prompt short --split $(SPLIT)
+	$(PY) -m evals.run --backend mlx --model $(MODEL) --adapter-path $(ADAPTER) --prompt short --split $(SPLIT) --run-name $(RUN)
