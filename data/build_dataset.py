@@ -42,6 +42,7 @@ GOLDEN_SIZE = 150
 GOLDEN_MIN_PER_LABEL = 2  # every label with enough titles gets at least this many
 MIN_GROUPS_FOR_GOLDEN = 10  # a label needs this many distinct titles to be "enough"
 VALID_FRACTION = 0.10
+NEAR_TWIN = 0.8  # a golden title may share at most this word overlap with any other title
 
 ET_TZ = ZoneInfo("America/New_York")
 
@@ -109,13 +110,24 @@ def load_bills() -> list[dict]:
 def normalize_title(title: str) -> str:
     """Key used to keep look-alike titles in one split.
 
-    Lowercase, drop years and punctuation, squeeze spaces. Companion bills
-    (House and Senate versions) and reintroduced bills share this key.
+    Companion bills share a title except for chamber boilerplate: the Senate
+    writes "A bill to amend...", the House writes "To amend...". So the key:
+      1. lowercases, drops 4-digit years and punctuation, squeezes spaces;
+      2. drops a leading "a bill", "a joint resolution", "a concurrent resolution",
+         "an original bill" (and the like);
+      3. drops a trailing "and for other purposes".
+    Companion and reintroduced bills then share one key and land in one split.
     """
     t = title.lower()
     t = re.sub(r"\b(19|20)\d\d\b", " ", t)
-    t = re.sub(r"[^a-z0-9]+", " ", t)
-    return " ".join(t.split())
+    t = " ".join(re.sub(r"[^a-z0-9]+", " ", t).split())
+    t = _PREFIX.sub("", t)
+    t = _SUFFIX.sub("", t)
+    return t.strip()
+
+
+_PREFIX = re.compile(r"^an? (original )?(bill|joint resolution|concurrent resolution|resolution)\b\s*")
+_SUFFIX = re.compile(r"\s*\band for other purposes$")
 
 
 def congress_url(row: dict) -> str:
@@ -138,34 +150,120 @@ def largest_remainder(weights: dict[str, float], total: int) -> dict[str, int]:
     return out
 
 
-def split(groups: dict[str, list[dict]], rng: random.Random):
-    """Assign whole title groups to golden / valid / train, stratified by label."""
-    # One representative per group: the earliest bill. Its own label is the target.
-    reps = {}
-    for key, rows in groups.items():
-        rows.sort(key=lambda r: (r["introduced"], BILL_TYPES.index(r["bill_type"]), r["number"]))
-        reps[key] = rows[0]
+def short_title_key(row: dict) -> str | None:
+    """The bill's short title ("Fix Our Forests Act"), normalized, or None if it has none.
 
-    by_label: dict[str, list[str]] = collections.defaultdict(list)
-    for key in sorted(reps):
-        by_label[reps[key]["policy_area"]].append(key)
-    for keys in by_label.values():
-        rng.shuffle(keys)
+    A bill with no short title shows its official title as its display title.
+    """
+    short = normalize_title(row.get("display_title") or "")
+    return short if short and short != normalize_title(row["title"]) else None
 
-    eligible = {lab: len(k) for lab, k in by_label.items() if len(k) >= MIN_GROUPS_FOR_GOLDEN}
+
+def _earliest(rows: list[dict]) -> dict:
+    return min(rows, key=lambda r: (r["introduced"], BILL_TYPES.index(r["bill_type"]), r["number"]))
+
+
+def build_units(bills: list[dict]) -> list[list[dict]]:
+    """Group bills that must share a split.
+
+    Step 1: same title key (normalize_title) -> one title group. Only the earliest
+            bill of a group is kept; the rest are copies of it.
+    Step 2: title groups whose bills share a short title are joined into one unit.
+            This catches companions whose official titles differ by a few words.
+            Generic short titles ("SAFE Act") also join unrelated bills; that costs
+            nothing but keeps them in one split.
+    Returns units as lists of title-group representatives, in a fixed order.
+    """
+    groups: dict[str, list[dict]] = collections.defaultdict(list)
+    for b in bills:
+        groups[normalize_title(b["title"])].append(b)
+
+    parent = {k: k for k in groups}
+
+    def find(k):
+        while parent[k] != k:
+            parent[k] = parent[parent[k]]
+            k = parent[k]
+        return k
+
+    by_short: dict[str, str] = {}
+    for key in sorted(groups):
+        for b in groups[key]:
+            s = short_title_key(b)
+            if s is None:
+                continue
+            if s in by_short:
+                a, c = find(by_short[s]), find(key)
+                if a != c:
+                    parent[max(a, c)] = min(a, c)
+            else:
+                by_short[s] = key
+
+    units: dict[str, list[dict]] = collections.defaultdict(list)
+    for key in sorted(groups):
+        units[find(key)].append(_earliest(groups[key]))
+    return [units[k] for k in sorted(units)]
+
+
+def split(bills: list[dict], rng: random.Random) -> dict[str, list[dict]]:
+    """Assign whole units to golden / valid / train, stratified by label.
+
+    Golden takes one bill per unit (the earliest), so no two golden bills are
+    companions. Train and valid keep one bill per distinct title in the unit.
+    """
+    units = build_units(bills)
+    by_label: dict[str, list[int]] = collections.defaultdict(list)
+    for i, unit in enumerate(units):
+        by_label[_earliest(unit)["policy_area"]].append(i)
+    for ids in by_label.values():
+        rng.shuffle(ids)
+
+    eligible = {lab: len(ids) for lab, ids in by_label.items() if len(ids) >= MIN_GROUPS_FOR_GOLDEN}
     floor = {lab: GOLDEN_MIN_PER_LABEL for lab in eligible}
     rest = largest_remainder(eligible, GOLDEN_SIZE - sum(floor.values()))
     golden_n = {lab: floor[lab] + rest[lab] for lab in eligible}
 
-    golden, valid, train = [], [], []
+    # Word sets of every title, to keep reworded twins out of golden.
+    words = [[set(normalize_title(b["title"]).split()) for b in unit] for unit in units]
+
+    def has_twin(i: int) -> bool:
+        """True if another unit holds a title sharing >= NEAR_TWIN of its words (Jaccard)."""
+        mine = set(normalize_title(_earliest(units[i])["title"]).split())
+        for j, ws in enumerate(words):
+            if j != i and any(len(mine & w) >= NEAR_TWIN * len(mine | w) for w in ws):
+                return True
+        return False
+
+    out = {"train": [], "valid": [], "golden": []}
+    twins_skipped = 0
     for lab in sorted(by_label):
-        keys = by_label[lab]
+        ids = by_label[lab]
         g = golden_n.get(lab, 0)
-        v = round((len(keys) - g) * VALID_FRACTION)
-        golden += keys[:g]
-        valid += keys[g:g + v]
-        train += keys[g + v:]
-    return reps, golden, valid, train
+        golden_ids = []
+        for i in ids:
+            if len(golden_ids) == g:
+                break
+            if has_twin(i):
+                twins_skipped += 1
+            else:
+                golden_ids.append(i)
+        rest_ids = [i for i in ids if i not in golden_ids]
+        v = round(len(rest_ids) * VALID_FRACTION)
+        out["golden"] += [_earliest(units[i]) for i in golden_ids]
+        out["valid"] += [b for i in rest_ids[:v] for b in units[i]]
+        out["train"] += [b for i in rest_ids[v:] for b in units[i]]
+    split.twins_skipped = twins_skipped
+    return out
+
+
+def leakage(splits: dict[str, list[dict]]) -> dict[str, dict[str, int]]:
+    """For each pair of splits, how many title keys and short-title keys they share. All must be 0."""
+    out = {}
+    for kind, fn in [("title", lambda r: normalize_title(r["title"])), ("short_title", short_title_key)]:
+        keys = {name: {fn(r) for r in rows} - {None} for name, rows in splits.items()}
+        names = sorted(keys)
+        out[kind] = {f"{a}&{b}": len(keys[a] & keys[b]) for i, a in enumerate(names) for b in names[i + 1:]}
+    return out
 
 
 def to_example(row: dict) -> dict:
@@ -204,36 +302,36 @@ def main() -> None:
         for b in sorted(labelled, key=lambda b: (BILL_TYPES.index(b["bill_type"]), b["number"])):
             w.writerow(b)
 
-    groups: dict[str, list[dict]] = collections.defaultdict(list)
+    title_keys = collections.defaultdict(set)
     for b in labelled:
-        groups[normalize_title(b["title"])].append(b)
-    conflicting = sum(1 for rows in groups.values() if len({r["policy_area"] for r in rows}) > 1)
+        title_keys[normalize_title(b["title"])].add(b["policy_area"])
+    conflicting = sum(1 for labs in title_keys.values() if len(labs) > 1)
 
     rng = random.Random(SEED)
-    reps, golden, valid, train = split(groups, rng)
-    splits = {"train": train, "valid": valid, "golden": golden}
+    splits = split(labelled, rng)
     paths = {"train": ROOT / "data/train.jsonl", "valid": ROOT / "data/valid.jsonl",
              "golden": ROOT / "evals/golden.jsonl"}
-    for name, keys in splits.items():
-        rows = sorted((to_example(reps[k]) for k in keys), key=lambda r: r["id"])
-        write_jsonl(paths[name], rows)
+    for name, rows in splits.items():
+        write_jsonl(paths[name], sorted((to_example(r) for r in rows), key=lambda r: r["id"]))
 
-    # Leakage check: no normalized title may appear in two splits.
-    seen = {name: set(keys) for name, keys in splits.items()}
-    overlaps = {f"{a}&{b}": len(seen[a] & seen[b]) for a, b in [("train", "valid"), ("train", "golden"), ("valid", "golden")]}
-    assert all(v == 0 for v in overlaps.values()), overlaps
+    # Leakage check on the bills as written: no title key and no short title in two splits.
+    overlaps = leakage(splits)
+    assert all(v == 0 for d in overlaps.values() for v in d.values()), overlaps
 
     # Summary.
     fetched = min(m["fetched"] for m in manifest.values())
+    n_units = len(build_units(labelled))
     print(f"source: GovInfo BILLSTATUS bulk data, congress {CONGRESS}, types {','.join(BILL_TYPES)}")
     print(f"fetched (ET): {fetched}")
     print(f"bills parsed: {len(bills)}   no policy area (dropped): {len(no_area)}   labelled: {len(labelled)}")
-    print(f"distinct normalized titles: {len(groups)}   duplicate-title bills folded: {len(labelled) - len(groups)}"
-          f"   title groups with conflicting labels: {conflicting}")
-    print(f"split sizes: train {len(train)}  valid {len(valid)}  golden {len(golden)}")
-    print(f"shared normalized titles across splits: {overlaps}")
+    print(f"distinct title keys: {len(title_keys)}   copies folded: {len(labelled) - len(title_keys)}"
+          f"   title keys with conflicting labels: {conflicting}")
+    print(f"split units (title keys joined by short title): {n_units}"
+          f"   golden candidates skipped for a near-twin title: {split.twins_skipped}")
+    print(f"split sizes: train {len(splits['train'])}  valid {len(splits['valid'])}  golden {len(splits['golden'])}")
+    print(f"shared across splits: {overlaps}")
 
-    label_counts = {name: collections.Counter(reps[k]["policy_area"] for k in keys) for name, keys in splits.items()}
+    label_counts = {name: collections.Counter(r["policy_area"] for r in rows) for name, rows in splits.items()}
     labels = sorted(set().union(*label_counts.values()), key=lambda l: -sum(c[l] for c in label_counts.values()))
     print(f"\n{'label':45} {'train':>6} {'valid':>6} {'golden':>6}")
     for lab in labels:
@@ -242,8 +340,9 @@ def main() -> None:
 
     top, top_n = label_counts["train"].most_common(1)[0]
     gold_hits = label_counts["golden"][top]
-    print(f"\nmajority class (train): {top} ({top_n / len(train):.1%} of train)")
-    print(f"majority-class baseline on golden: {gold_hits}/{len(golden)} = {gold_hits / len(golden):.1%}")
+    n_train, n_gold = len(splits["train"]), len(splits["golden"])
+    print(f"\nmajority class (train): {top} ({top_n / n_train:.1%} of train)")
+    print(f"majority-class baseline on golden: {gold_hits}/{n_gold} = {gold_hits / n_gold:.1%}")
 
 
 if __name__ == "__main__":

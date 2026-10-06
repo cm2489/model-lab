@@ -30,7 +30,13 @@ def build_messages(title: str) -> list[dict]:
 
 
 def _norm(text: str) -> str:
-    return " ".join(re.sub(r"[^a-z0-9,]+", " ", text.lower()).split())
+    """Lowercase, and treat any run of spaces or punctuation as one space.
+
+    Commas count as punctuation, so "Arts, Culture, Religion" and
+    "arts culture religion" normalize the same way. Two labels joined by a
+    comma ("Taxation, Health") do not normalize to any single label.
+    """
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", text.lower()).split())
 
 
 _BY_NORM = {_norm(label): label for label in LABELS}
@@ -51,23 +57,26 @@ def strip_thinking(text: str) -> str:
     return text
 
 
-def parse_label(reply: str) -> tuple[str | None, str]:
-    """Turn a model reply into (label, how).
+_PREFIX = re.compile(r"^(policy area|answer|label|category)\s*:\s*", re.I)
+_WRAP = "\"'`*“”‘’"
 
-    how is "exact"     the reply is a label (ignoring case, punctuation, a "Policy area:" prefix)
-           "contained" the reply holds exactly one label name inside other words
-           "invalid"   anything else: no label, or two different labels
+
+def parse_label(reply: str) -> tuple[str | None, str]:
+    """Turn a model reply into (label, how). Strict on purpose.
+
+    The reply counts only if, once these are removed, the whole reply is one label:
+      - reasoning in <think>...</think>
+      - an optional "Policy area:" style prefix
+      - surrounding quotes, backticks or asterisks, and one final period
+    Case, spacing and punctuation inside the label are ignored.
+    how is "exact" for a label, "invalid" for anything else: a label inside a
+    sentence, two labels, a negation ("Not Health"), or no label at all.
     """
     text = strip_thinking(reply).strip()
-    text = re.sub(r"^(policy area|answer|label)\s*:\s*", "", text, flags=re.I)
-    norm = _norm(text)
-    if norm in _BY_NORM:
-        return _BY_NORM[norm], "exact"
-
-    padded = f" {norm} "
-    found = [label for n, label in _BY_NORM.items() if f" {n} " in padded]
-    # "Law" sits inside "Crime and Law Enforcement": keep only the longest matches.
-    found = [a for a in found if not any(a != b and _norm(a) in _norm(b) for b in found)]
-    if len(found) == 1:
-        return found[0], "contained"
-    return None, "invalid"
+    text = _PREFIX.sub("", text).strip()
+    text = text.strip(_WRAP).strip()
+    if text.endswith("."):
+        text = text[:-1]
+    text = text.strip(_WRAP).strip()
+    label = _BY_NORM.get(_norm(text))
+    return (label, "exact") if label else (None, "invalid")

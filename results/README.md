@@ -10,4 +10,4 @@ Every run of `evals.run` adds a row. Built by `evals/report.py` from `results/*/
 
 | Run | Model | Backend | Split (n) | Accuracy | Macro-F1 | Invalid | p50 / p90 s | tok/s | $ per 1k bills | Date (ET) | Commit |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| [qwen3.5-4b-4bit-golden-baseline](qwen3.5-4b-4bit-golden-baseline/score.md) | `mlx-community/Qwen3.5-4B-4bit` | mlx | golden (150) | 59.3% | 0.60 | 0.0% | 0.45 / 0.49 | 116 | $0.00 | 2026-10-06 14:25 | `e7e0746` |
+| [qwen3.5-4b-4bit-golden-baseline](qwen3.5-4b-4bit-golden-baseline/score.md) | `mlx-community/Qwen3.5-4B-4bit` | mlx | golden (150) | 56.7% | 0.54 | 1.3% | 0.44 / 0.48 | 116 | $0.00 | 2026-10-06 14:57 | `6d9165d` |

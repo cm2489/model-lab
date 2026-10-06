@@ -58,11 +58,17 @@ class AnthropicBackend:
     tokens are billed as output tokens and are counted in output_tokens.
     No refusal fallback is set: a fallback would score a second model under
     the first one's name. A refusal is recorded as an invalid reply.
+
+    max_tokens defaults to 512. The answer itself is under 10 tokens; the rest
+    is room for low-effort thinking, which counts against the same cap. 512
+    keeps the worst case for 150 bills under $2 at $4/$20 per million tokens.
+    A reply cut off at the cap has stop "max_tokens" and usually no answer,
+    so it scores invalid, and the score card counts those cut-offs.
     """
 
     local = False
 
-    def __init__(self, model_id: str, max_tokens: int = 2048, effort: str | None = "low", client=None):
+    def __init__(self, model_id: str, max_tokens: int = 512, effort: str | None = "low", client=None):
         if client is None:
             import anthropic
 

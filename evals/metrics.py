@@ -17,7 +17,14 @@ def join(golden: list[dict], predictions: list[dict]) -> list[dict]:
     The gold label always comes from the golden file, never from the
     predictions file, so a predictions file cannot grade itself.
     A golden example with no prediction counts as invalid.
+    Duplicate prediction ids are rejected: which answer would count is ambiguous,
+    and a second row could quietly replace a wrong answer with a right one.
     """
+    seen, dupes = set(), set()
+    for p in predictions:
+        (dupes if p["id"] in seen else seen).add(p["id"])
+    if dupes:
+        raise ValueError(f"duplicate prediction ids: {', '.join(sorted(dupes)[:5])}")
     by_id = {p["id"]: p for p in predictions}
     rows = []
     for g in golden:
@@ -64,6 +71,11 @@ def classification(rows: list[dict]) -> dict:
         "per_label": per_label,
         "top_confusions": [{"gold": g, "pred": p, "count": c} for (g, p), c in mistakes.most_common(10)],
     }
+
+
+def stops(rows: list[dict]) -> dict:
+    """How each reply ended ("stop", "end_turn", "max_tokens", "refusal", ...)."""
+    return dict(collections.Counter(str(r.get("stop")) for r in rows if r.get("stop") is not None))
 
 
 def speed(rows: list[dict]) -> dict:
