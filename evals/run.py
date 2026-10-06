@@ -5,6 +5,8 @@ Examples:
   uv run python -m evals.run --backend anthropic --model claude-opus-5-5 --split golden \\
       --price-in 4 --price-out 20
   uv run python -m evals.run --backend predictions --predictions results/<run>/predictions.jsonl
+  uv run python -m evals.run --backend mlx --model mlx-community/Qwen3.5-4B-4bit \\
+      --adapter-path adapters/policy-area --prompt short
 
 Writes results/<run-name>/predictions.jsonl, metrics.json and score.md,
 then rebuilds the table in results/README.md.
@@ -22,14 +24,15 @@ from pathlib import Path
 from evals import metrics, report
 from evals.files import ROOT, SPLITS, git_commit, now_et, read_jsonl
 from evals.labels import LABELS
-from evals.prompt import PROMPT_VERSION, build_messages, parse_label
+from evals.prompt import PROMPT_STYLES, build_messages, parse_label, prompt_version
 
 
 def make_backend(args):
     if args.backend == "mlx":
         from evals.backends import MlxBackend
 
-        return MlxBackend(args.model, max_tokens=args.max_tokens or 32, thinking=args.thinking)
+        return MlxBackend(args.model, max_tokens=args.max_tokens or 32, thinking=args.thinking,
+                          adapter_path=args.adapter_path)
     if args.backend == "anthropic":
         from evals.backends import AnthropicBackend
 
@@ -38,13 +41,13 @@ def make_backend(args):
     raise ValueError(args.backend)
 
 
-def predict_all(backend, examples: list[dict], out_path: Path, model: str) -> list[dict]:
+def predict_all(backend, examples: list[dict], out_path: Path, model: str, style: str = "list") -> list[dict]:
     """Run the model on every example. Writes each prediction as soon as it exists."""
     rows = []
     with open(out_path, "w") as f:
         for i, ex in enumerate(examples, 1):
             t0 = time.perf_counter()
-            r = backend(build_messages(ex["title"]))
+            r = backend(build_messages(ex["title"], style))
             latency = time.perf_counter() - t0
             pred, how = parse_label(r["raw"])
             row = {"id": ex["id"], "title": ex["title"], "gold": ex["label"], "pred": pred, "parse": how,
@@ -79,6 +82,9 @@ def main(argv=None) -> int:
     ap.add_argument("--max-tokens", type=int, help="reply length cap (default: mlx 32, anthropic 2048)")
     ap.add_argument("--thinking", action="store_true", help="mlx: let the model think first (off by default)")
     ap.add_argument("--effort", default="low", help="anthropic: low|medium|high|xhigh|max, or none to omit")
+    ap.add_argument("--prompt", default="list", choices=PROMPT_STYLES,
+                    help="list: the prompt names every label (default). short: no label list, for a tuned model")
+    ap.add_argument("--adapter-path", help="mlx: folder of LoRA weights to load on top of --model")
     args = ap.parse_args(argv)
 
     data_path = Path(args.data) if args.data else SPLITS[args.split]
@@ -98,7 +104,8 @@ def main(argv=None) -> int:
             ap.error("--model is required with --backend mlx or anthropic")
         model = args.model
 
-    run_name = args.run_name or f"{slug(model)}-{split_name}-{date[:16].replace(':', '').replace('T', '-')}"
+    tuned = "-tuned" if args.adapter_path else ""
+    run_name = args.run_name or f"{slug(model)}{tuned}-{split_name}-{date[:16].replace(':', '').replace('T', '-')}"
     run_dir = Path(args.results_dir) / run_name
     run_dir.mkdir(parents=True, exist_ok=True)
     pred_path = run_dir / "predictions.jsonl"
@@ -113,13 +120,15 @@ def main(argv=None) -> int:
         local = False
     else:
         backend = make_backend(args)
-        rows = predict_all(backend, examples, pred_path, model)
+        rows = predict_all(backend, examples, pred_path, model, args.prompt)
         local = backend.local
     wall = time.perf_counter() - t0
 
     meta = {"run_name": run_name, "backend": args.backend, "model": model, "split": split_name,
             "data": str(data_path.relative_to(ROOT)) if data_path.is_relative_to(ROOT) else str(data_path),
-            "limit": args.limit, "date": date, "commit": git_commit(), "prompt_version": PROMPT_VERSION,
+            "limit": args.limit, "date": date, "commit": git_commit(),
+            "prompt_version": prompt_version(args.prompt), "prompt_style": args.prompt,
+            "adapter": args.adapter_path,
             "wall_time_s": round(wall, 1),
             "settings": {"max_tokens": args.max_tokens, "thinking": args.thinking,
                          "effort": args.effort if args.backend == "anthropic" else None}}

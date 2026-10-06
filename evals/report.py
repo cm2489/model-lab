@@ -18,7 +18,7 @@ def _money(x):
     return "n/a" if x is None else f"${x:.2f}"
 
 
-COLUMNS = ["Run", "Model", "Backend", "Split (n)", "Accuracy", "Macro-F1", "Invalid",
+COLUMNS = ["Run", "Model", "Backend", "Prompt", "Split (n)", "Accuracy", "Macro-F1", "Invalid",
            "p50 / p90 s", "tok/s", "$ per 1k bills", "Date (ET)", "Commit"]
 
 
@@ -26,8 +26,9 @@ def table_row(m: dict) -> str:
     meta, c, s, k = m["meta"], m["classification"], m["speed"], m["cost"]
     cells = [
         f"[{meta['run_name']}]({meta['run_name']}/score.md)",
-        f"`{meta['model']}`",
+        f"`{meta['model']}`" + (" + LoRA adapter" if meta.get("adapter") else ""),
         meta["backend"],
+        meta.get("prompt_style", "list"),
         f"{meta['split']} ({c['n']})",
         _pct(c["accuracy"]),
         _num(c["macro_f1"]),

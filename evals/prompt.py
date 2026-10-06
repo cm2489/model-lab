@@ -23,8 +23,29 @@ Bill title:
 Reply with the one policy area that fits best, written exactly as it appears in the list. Reply with the policy area only, no other words."""
 
 
-def build_messages(title: str) -> list[dict]:
-    """One user message: instructions, the label list, the bill title."""
+# The short style leaves the label list out. A base model needs the list to know
+# the label names. A model fine-tuned on these labels has learned them, so it can
+# be asked with a prompt about a sixth of the length. Lab 2 trains and scores with it.
+SHORT_PROMPT_VERSION = "short-v1"
+
+SHORT_INSTRUCTIONS = """Which Congress.gov policy area does this bill belong to? Reply with the policy area only.
+
+Bill title:
+{title}"""
+
+PROMPT_STYLES = ("list", "short")
+
+
+def prompt_version(style: str = "list") -> str:
+    return SHORT_PROMPT_VERSION if style == "short" else PROMPT_VERSION
+
+
+def build_messages(title: str, style: str = "list") -> list[dict]:
+    """One user message. "list": instructions, the label list, the title. "short": no label list."""
+    if style == "short":
+        return [{"role": "user", "content": SHORT_INSTRUCTIONS.format(title=title)}]
+    if style != "list":
+        raise ValueError(f"unknown prompt style: {style}")
     labels = "\n".join(f"- {label}" for label in LABELS)
     return [{"role": "user", "content": INSTRUCTIONS.format(labels=labels, title=title)}]
 

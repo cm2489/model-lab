@@ -17,3 +17,6 @@ data/cache/
 # secrets
 .env
 .env.*
+
+# generated training files and adapters
+data/lora/

@@ -12,14 +12,16 @@ class MlxBackend:
 
     local = True
 
-    def __init__(self, model_id: str, max_tokens: int = 32, thinking: bool = False):
+    def __init__(self, model_id: str, max_tokens: int = 32, thinking: bool = False,
+                 adapter_path: str | None = None):
         from mlx_lm import load
         from mlx_lm.sample_utils import make_sampler
         import importlib.metadata
 
         self.runtime = f"mlx-lm {importlib.metadata.version('mlx-lm')}"
 
-        self.model, self.tokenizer = load(model_id)
+        # adapter_path: a folder of LoRA weights (adapters.safetensors) to load on top of the base model.
+        self.model, self.tokenizer = load(model_id, adapter_path=adapter_path)
         self.sampler = make_sampler(temp=0.0)
         self.max_tokens = max_tokens
         # Qwen3.5 thinks by default: its chat template opens "<think>" for the reply.
