@@ -72,6 +72,42 @@ class AnthropicPath(unittest.TestCase):
             AnthropicBackend("claude-opus-5-5", client=BadClient())(build_messages("x"))
 
 
+try:
+    import anthropic  # noqa: F401
+
+    HAVE_SDK = True
+except ImportError:  # CI runs with no packages installed
+    HAVE_SDK = False
+
+
+@unittest.skipUnless(HAVE_SDK, "needs the anthropic SDK (installed by uv sync)")
+class NoRetries(unittest.TestCase):
+    def test_default_client_never_retries(self):
+        import os
+        from unittest import mock
+
+        with mock.patch.dict(os.environ, {"ANTHROPIC_API_KEY": "placeholder-not-a-real-key"}):
+            backend = AnthropicBackend("claude-opus-5-5")  # builds the real SDK client; sends nothing
+        self.assertEqual(backend.client.max_retries, 0)
+
+
+class PriceWarning(unittest.TestCase):
+    def test_documented_model_and_prices_are_quiet(self):
+        from evals.run import price_warning
+
+        self.assertIsNone(price_warning("claude-opus-5-5", 4.0, 20.0))
+
+    def test_other_prices_warn(self):
+        from evals.run import price_warning
+
+        self.assertIn("Check today's prices", price_warning("claude-opus-5-5", 5.0, 25.0))
+
+    def test_unknown_model_warns(self):
+        from evals.run import price_warning
+
+        self.assertIn("only as good as", price_warning("claude-haiku-4-5", 1.0, 5.0))
+
+
 class SpendGuard(unittest.TestCase):
     """The guard runs before any request. The fake client proves nothing was sent."""
 
@@ -136,6 +172,33 @@ class SpendGuard(unittest.TestCase):
         code, calls = self.run_cli(*self.PRICES, "--max-usd", "1", "--split", "valid", "--limit", "2", "--allow-large")
         self.assertEqual(code, 0)
         self.assertEqual(len(calls), 2)
+
+    def test_refuses_zero_prices(self):
+        for prices in (["--price-in", "0", "--price-out", "20"], ["--price-in", "4", "--price-out", "0"]):
+            code, calls = self.run_cli(*prices, "--max-usd", "2", "--limit", "2")
+            self.assertNotEqual(code, 0, prices)
+            self.assertEqual(calls, [], prices)
+
+    def test_refuses_negative_prices(self):
+        for prices in (["--price-in", "-4", "--price-out", "20"], ["--price-in", "4", "--price-out", "-20"]):
+            code, calls = self.run_cli(*prices, "--max-usd", "2", "--limit", "2")
+            self.assertNotEqual(code, 0, prices)
+            self.assertEqual(calls, [], prices)
+
+    def test_refuses_a_big_file_with_an_innocent_name(self):
+        import json
+        import tempfile
+        from pathlib import Path
+
+        from evals.files import SPLITS, read_jsonl
+
+        rows = read_jsonl(SPLITS["valid"])[:501]
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "my_small_sample.jsonl"
+            path.write_text("".join(json.dumps(r) + "\n" for r in rows))
+            code, calls = self.run_cli(*self.PRICES, "--max-usd", "1000", "--data", str(path))
+        self.assertNotEqual(code, 0)
+        self.assertEqual(calls, [])
 
     def test_runs_when_under_the_cap(self):
         code, calls = self.run_cli(*self.PRICES, "--max-usd", "2", "--limit", "3")

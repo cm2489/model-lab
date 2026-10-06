@@ -61,20 +61,49 @@ def worst_case_usd(examples: list[dict], max_tokens: int, price_in: float, price
     return (tokens_in * price_in + tokens_out * price_out) / 1e6
 
 
-def spend_guard(args, examples: list[dict], split_name: str) -> float:
-    """Refuse a paid run that could cost more than --max-usd, or that targets a big split.
+# The prices the lab page documents, USD per million tokens (input, output).
+# Used only to warn when you run a model the page did not price. Not used to bill.
+DOCUMENTED_PRICES = {
+    "claude-opus-5-5": (4.0, 20.0),
+}
+MAX_API_ROWS = 500  # an API run over this many bills needs --allow-large
 
-    Returns the worst-case estimate. Exits with an error before any request is sent.
+
+def price_warning(model: str, price_in: float, price_out: float) -> str | None:
+    """A one-line warning when the model or prices differ from what the lab page documents."""
+    documented = DOCUMENTED_PRICES.get(model)
+    if documented is None:
+        return (f"warning: the lab page has no prices for {model}. The spend guard is only as good "
+                "as the --price-in and --price-out you pass.")
+    if (price_in, price_out) != documented:
+        return (f"warning: the lab page documents ${documented[0]:g} / ${documented[1]:g} per million tokens "
+                f"for {model}; you passed ${price_in:g} / ${price_out:g}. Check today's prices.")
+    return None
+
+
+def spend_guard(args, examples: list[dict], split_name: str) -> float:
+    """Refuse a paid run that could cost more than --max-usd, or that is too big.
+
+    It protects you only when you pass the real prices. Returns the worst-case
+    estimate. Exits with an error before any request is sent.
     """
     if args.price_in is None or args.price_out is None:
         sys.exit("error: API runs need --price-in and --price-out (USD per million tokens), so the cost can be capped")
+    if args.price_in <= 0 or args.price_out <= 0:
+        sys.exit("error: --price-in and --price-out must be above zero. A zero price would switch the spend guard off.")
     if args.max_usd is None:
         sys.exit("error: API runs need --max-usd, the most you agree to spend on this run")
     if split_name in ("train", "valid") and not args.allow_large:
         sys.exit(f"error: refusing to send the {split_name} split ({len(examples)} bills) to a paid API. "
                  "Pass --allow-large if you really mean it.")
+    if len(examples) > MAX_API_ROWS and not args.allow_large:
+        sys.exit(f"error: refusing to send {len(examples)} bills to a paid API (limit {MAX_API_ROWS}). "
+                 "Use --limit, or pass --allow-large if you really mean it.")
+    warning = price_warning(args.model, args.price_in, args.price_out)
+    if warning:
+        print(warning, file=sys.stderr)
     worst = worst_case_usd(examples, max_tokens(args), args.price_in, args.price_out)
-    print(f"spend guard: {len(examples)} bills, max_tokens {max_tokens(args)}, worst case ${worst:.2f}, "
+    print(f"spend guard: {len(examples)} bills, max_tokens {max_tokens(args)}, no retries, worst case ${worst:.2f}, "
           f"cap ${args.max_usd:.2f}", file=sys.stderr)
     if worst > args.max_usd:
         sys.exit(f"error: worst case ${worst:.2f} is over --max-usd ${args.max_usd:.2f}. "

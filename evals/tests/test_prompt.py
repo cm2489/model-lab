@@ -46,6 +46,22 @@ class ParseLabel(unittest.TestCase):
         self.assertEqual(parse_label("Science,Technology,Communications"),
                          ("Science, Technology, Communications", "exact"))
 
+    def test_bold_prefix(self):
+        self.assertEqual(parse_label("**Policy area:** Health"), ("Health", "exact"))
+
+    def test_heading_marker(self):
+        self.assertEqual(parse_label("# Health"), ("Health", "exact"))
+
+    def test_list_marker(self):
+        self.assertEqual(parse_label("- Health"), ("Health", "exact"))
+        self.assertEqual(parse_label("1. Health"), ("Health", "exact"))
+
+    def test_trailing_punctuation(self):
+        self.assertEqual(parse_label("Health!!"), ("Health", "exact"))
+
+    def test_list_of_two_labels_is_invalid(self):
+        self.assertEqual(parse_label("- Health\n- Taxation"), (None, "invalid"))
+
     def test_markdown_bold_and_final_period(self):
         self.assertEqual(parse_label("**Health**"), ("Health", "exact"))
         self.assertEqual(parse_label("Policy area: Energy."), ("Energy", "exact"))
