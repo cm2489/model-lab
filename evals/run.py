@@ -143,6 +143,8 @@ def main(argv=None) -> int:
         if not args.model:
             ap.error("--model is required with --backend mlx or anthropic")
         model = args.model
+        if args.backend in API_BACKENDS:
+            spend_guard(args, examples, split_name)  # before anything is written or sent
 
     run_name = args.run_name or f"{slug(model)}-{split_name}-{date[:16].replace(':', '').replace('T', '-')}"
     run_dir = Path(args.results_dir) / run_name
@@ -158,8 +160,6 @@ def main(argv=None) -> int:
             pred_path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows))
         local = False
     else:
-        if args.backend in API_BACKENDS:
-            spend_guard(args, examples, split_name)
         backend = make_backend(args)
         rows = predict_all(backend, examples, pred_path, model)
         local = backend.local

@@ -23,7 +23,7 @@ model. This lab builds the ruler you will measure it with.
 
 **Do this:** rebuild the dataset and read what it says. **About 30 minutes.**
 
-1. Rebuild the data from the public record:
+1. Rebuild the data from the public record. The first time, this downloads about 48 MB from GovInfo.
 
    ```bash
    make data
@@ -35,16 +35,18 @@ model. This lab builds the ruler you will measure it with.
    source: GovInfo BILLSTATUS bulk data, congress 119, types hr,s,hjres,sjres,hconres,sconres
    fetched (ET): 2026-10-06T14:19:40-04:00
    bills parsed: 17007   no policy area (dropped): 396   labelled: 16611
-   distinct normalized titles: 16261   duplicate-title bills folded: 350   title groups with conflicting labels: 19
-   split sizes: train 14498  valid 1613  golden 150
-   shared normalized titles across splits: {'train&valid': 0, 'train&golden': 0, 'valid&golden': 0}
+   distinct title keys: 13088   copies folded: 3523   title keys with conflicting labels: 86
+   split units (title keys joined by short title): 12411   golden candidates skipped for a near-twin title: 12
+   split sizes: train 11647  valid 1280  golden 150
+   shared across splits: {'title': {'golden&train': 0, 'golden&valid': 0, 'train&valid': 0}, 'short_title': {'golden&train': 0, 'golden&valid': 0, 'train&valid': 0}}
    ```
 
    Then a table of every label's count in each split, and at the end:
 
    ```text
    labels: 31
-   majority class (train): Health (11.4% of train)
+
+   majority class (train): Health (11.0% of train)
    majority-class baseline on golden: 12/150 = 8.0%
    ```
 
@@ -62,6 +64,8 @@ model. This lab builds the ruler you will measure it with.
    git restore data/train.jsonl data/valid.jsonl evals/golden.jsonl
    ```
 
+   You should see `git status --short data evals/golden.jsonl` print nothing afterwards.
+
    This is the first lesson: **the test set is frozen in git.** Every score in this project uses the same 150 bills.
 
 3. Look at three test examples:
@@ -73,22 +77,23 @@ model. This lab builds the ruler you will measure it with.
    You should see:
 
    ```text
-   {"id": "hconres54-119", "title": "Expressing support for designation of the first Friday of October as \"Manufacturing Day\".", "label": "Commerce", ...}
-   {"id": "hjres143-119", "title": "Enabling Congress to advance important policies.", "label": "Congress", ...}
-   {"id": "hr10042-119", "title": "To direct the Director of the National Science Foundation to complete workshops related to the integration of artificial intelligence into classrooms, and for other purposes.", "label": "Science, Technology, Communications", ...}
+   {"id": "hconres109-119", "title": "Allowing Emancipation Hall to be used for a ceremony to dedicate the Semiquincentennial Congressional Time Capsule on Wednesday, June 24, 2026.", "label": "Congress", ...}
+   {"id": "hconres121-119", "title": "Expressing the sense of the Congress that assisted suicide (sometimes referred to using other terms) puts everyone, including those most vulnerable, at risk of deadly harm.", "label": "Health", ...}
+   {"id": "hr1028-119", "title": "To modify eligibility requirements for amateur sports governing organizations.", "label": "Sports and Recreation", ...}
    ```
 
-4. Read `data/README.md`, sections "The honest floor" and "Is title-only too easy or too hard?". 5 minutes.
+4. Read `data/README.md`, sections "What was folded" and "The honest floor". 10 minutes.
 
-**Check:** a model scores 8% on the golden set. Is that good?
+**Check:** a Senate bill says "A bill to amend X." Its House companion says "To amend X, and for other purposes."
+What happens if one lands in training and the other in the test set?
 
 <details><summary>Answer</summary>
 
-No. Answering "Health" for every bill scores 8.0%. A model has to beat that floor before it has learned anything.
+The test leaks: the model can memorize the answer in training and "pass" the test without learning anything. That is why the build folds the two into one title key and keeps them in one split. The first version of this kit missed it: 61 of 150 test titles had a companion in train or valid, 60 of them with the same label.
 
 </details>
 
-**Done when:** you can say the floor (8.0%) and why the test set lives in git.
+**Done when:** you can say the floor (8.0%), and why companions must share a split.
 
 ---
 
@@ -109,13 +114,9 @@ The script already picked the 150 golden bills. Your job is to trust them, or fi
    You should see 30 lines. The first two:
 
    ```text
-   hr5024-119 | Transportation and Public Works | https://www.congress.gov/bill/119th-congress/house-bill/5024 | ...
-   hr4299-119 | Health | https://www.congress.gov/bill/119th-congress/house-bill/4299 | ...
+   hr4763-119 | Labor and Employment | https://www.congress.gov/bill/119th-congress/house-bill/4763 | To require employers to provide paid annual leave to employees, and for other purposes.
+   hr3996-119 | Health | https://www.congress.gov/bill/119th-congress/house-bill/3996 | To amend title XI of the Social Security Act to establish a pilot program for testing the
    ```
-
-   > **Not verified by the kit builder:** where "Policy Area" sits on a Congress.gov bill page.
-   > Congress.gov blocked the kit builder's automated requests. The labels themselves were
-   > cross-checked another way: 3,236 of 3,236 bills in a separate copy of the same public record agreed.
 
 2. Open each link. The URL pattern is `https://www.congress.gov/bill/119th-congress/<kind>/<number>`,
    where `<kind>` is `house-bill`, `senate-bill`, `house-joint-resolution`, `senate-joint-resolution`,
@@ -124,13 +125,18 @@ The script already picked the 150 golden bills. Your job is to trust them, or fi
    - **match:** Congress.gov shows the same label.
    - **differs:** it shows another label. Write both down.
    - **fair?:** it matches, but you would not have guessed it from the title. Write one word why.
+
+   > **Not verified by the kit builder:** where "Policy Area" sits on a Congress.gov bill page.
+   > Congress.gov blocked the kit builder's automated requests. The labels themselves were
+   > cross-checked another way: 3,236 of 3,236 bills in a separate copy of the same public record agreed.
+
 4. Count your marks. Write them in a note: `match __ / differs __ / fair? __`.
 
 **Check:** you find a label you think is wrong. Do you change it in `golden.jsonl`?
 
 <details><summary>Answer</summary>
 
-No. The label is the official record, and the task is to predict the official record. Write the case down instead. If many labels look wrong, the task needs a new definition, and every score so far is void. One odd label is normal noise.
+No. The label is the official record, and the task is to predict the official record. Write the case down instead. If many labels look wrong, the task needs a new definition, and every score so far is void. One odd label is normal noise. (Changing the file would also fail the gate's checksum; see step 6.)
 
 </details>
 
@@ -144,7 +150,8 @@ No. The label is the official record, and the task is to predict the official re
 
 **Do this:** run the local 4B model on all 150 golden bills. **About 45 minutes.**
 
-1. Read the prompt the model gets: `evals/prompt.py`, the `INSTRUCTIONS` text. 3 minutes.
+1. Read the prompt the model gets: `evals/prompt.py`, the `INSTRUCTIONS` text. Then read `parse_label`
+   in the same file: a reply counts only if the whole reply is one label. 5 minutes.
 2. Run the eval:
 
    ```bash
@@ -157,26 +164,30 @@ No. The label is the official record, and the task is to predict the official re
 
    ```text
    run: results/qwen3.5-4b-4bit-golden-baseline
-   accuracy 59.3% (89/150)   macro-F1 0.600   invalid 0.0% (0)
-   latency p50 0.447s  p90 0.489s   tokens/s 116.2   wall 70s
+   accuracy 56.7% (85/150)   macro-F1 0.541   invalid 1.3% (2)
+   latency p50 0.437s  p90 0.481s   tokens/s 116.2   wall 69s
    cost per 1,000 bills: 0.0  (local run: $0 marginal cost (hardware and electricity not counted))
    ```
 
-   Greedy decoding is deterministic. A second run gave the same 150 answers.
+   Greedy decoding is deterministic. A second run gave the same 150 replies, word for word.
 3. Open the score card the run wrote: `results/<your-run>/score.md`. Read "Top confusions".
-4. Open `results/README.md`. Your run is a new row in the table.
+4. Open `results/README.md`. Your run is a new row, under the committed baseline row.
 
 **Why thinking is off:** Qwen3.5 thinks before it answers by default. The harness turns that off
 (`enable_thinking=False` in `evals/backends.py`). With thinking on, the kit builder saw 1,500 to
 2,000+ reasoning tokens and about 20 seconds per bill, and one bill ran out of room before it
-answered. Try it on two bills if you are curious:
-`uv run python -m evals.run --backend mlx --model mlx-community/Qwen3.5-4B-4bit --limit 2 --thinking --max-tokens 2048`.
+answered. To try it on two bills without adding a row to your table:
 
-**Check:** the model never gave an invalid reply. Why does the harness still count invalid replies, and as wrong?
+```bash
+uv run python -m evals.run --backend mlx --model mlx-community/Qwen3.5-4B-4bit --limit 2 --thinking --max-tokens 2048 --results-dir /tmp/think-test
+```
+
+**Check:** the 2 invalid replies were "Food and Agriculture" and "Elections and Voting". The first is
+nearly a real label ("Agriculture and Food"). Why does the harness count both as wrong instead of fixing them up?
 
 <details><summary>Answer</summary>
 
-Because dropping them would inflate accuracy. A model that dodges hard bills would look better than one that tries. Every bill in the test set must count.
+Fixing up means guessing what the model meant, and the guess becomes part of the score. A strict parser measures what the model actually said. Dropping invalid replies would be worse: a model that dodges hard bills would look better than one that tries.
 
 </details>
 
@@ -190,38 +201,72 @@ Because dropping them would inflate accuracy. A model that dodges hard bills wou
 
 > **Not verified by the kit builder.** This step calls a paid API with your own key. The kit
 > builder had no key and spent no money. The code path is unit-tested with a fake client
-> (`evals/tests/test_anthropic_backend.py`), but no real request has been sent.
+> (`evals/tests/test_anthropic_backend.py`), and the spend guard below was run for real, but no request has been sent.
 
 **Do this:** run Claude on the same 150 bills and add a priced row to the table. **About 30 minutes.**
 
+**The cap for this step is $2.** The harness will not start a run that could cost more than you allow.
+
+**The worst case, worked out.** At $4 per million input tokens and $20 per million output tokens:
+- Each reply is capped at 512 tokens (thinking included): 512 × $20 / 1,000,000 = $0.0102 a bill.
+- Input is about 250 to 440 tokens a bill (the guard assumes the high end): at most $0.0018 a bill.
+- 150 bills × $0.0120 = **$1.80 at most**. Real runs should cost far less, because most replies are short.
+- With the old cap of 2,048 tokens it would have been up to about $6.40. That is why the cap is 512.
+
 1. Check today's prices at `https://www.anthropic.com/pricing`. The kit was built with Claude Opus 5.5
    at $4 per million input tokens and $20 per million output tokens (Anthropic's model table, September 25, 2026).
-   Use what the page says today.
-2. Put your key in the environment for this terminal only:
+   If they changed, use today's numbers in every command below.
+
+   You should see: a price for Claude Opus 5.5, input and output, per million tokens.
+
+2. See the guard refuse a run over its cap. This sends nothing and needs no key:
 
    ```bash
-   export ANTHROPIC_API_KEY=...   # paste your key; never commit it
+   uv run python -m evals.run --backend anthropic --model claude-opus-5-5 --split golden --price-in 4 --price-out 20 --max-usd 1
    ```
 
-3. Run 5 bills first, to see it work. This writes to a scratch folder, so it stays out of the table:
+   You should see (kit builder's run):
+
+   ```text
+   spend guard: 150 bills, max_tokens 512, worst case $1.80, cap $1.00
+   error: worst case $1.80 is over --max-usd $1.00. Lower --limit or --max-tokens, or raise --max-usd.
+   ```
+
+3. Put your key in the environment for this terminal only:
 
    ```bash
-   uv run python -m evals.run --backend anthropic --model claude-opus-5-5 --limit 5 --price-in 4 --price-out 20 --results-dir /tmp/opus-smoke
+   export ANTHROPIC_API_KEY="paste-your-key-here"   # never commit it
    ```
 
-4. Run all 150:
+   You should see: nothing. `echo ${#ANTHROPIC_API_KEY}` prints a number above 0.
+
+4. Run 5 bills first, into a scratch folder so it stays out of the table (worst case $0.06):
 
    ```bash
-   uv run python -m evals.run --backend anthropic --model claude-opus-5-5 --split golden --price-in 4 --price-out 20
+   uv run python -m evals.run --backend anthropic --model claude-opus-5-5 --limit 5 --price-in 4 --price-out 20 --max-usd 0.10 --results-dir /tmp/opus-smoke
    ```
 
-5. Open `results/README.md`. The new row shows accuracy, speed and cost side by side with the local model.
+   Expect: 5 lines, then an accuracy line. Open `/tmp/opus-smoke/*/score.md` and check "How replies ended".
+   If any say `max_tokens`, replies are being cut off; stop and read the note below.
+
+5. Run all 150 (worst case $1.80):
+
+   ```bash
+   uv run python -m evals.run --backend anthropic --model claude-opus-5-5 --split golden --price-in 4 --price-out 20 --max-usd 2
+   ```
+
+6. Open `results/README.md`. The new row shows accuracy, speed and cost next to the local rows.
 
 **What to expect (estimates, not measured):**
-- Accuracy well above 59%, but not 100%. Step 5's thin-title bills defeat any model.
-- Cost under about $2 for 150 bills. Opus 5.5 always thinks a little; those thinking tokens bill as output and are counted.
+- Accuracy well above 57%, but not 100%. Step 5's thin-title bills defeat any model.
+- A real cost well under the $1.80 ceiling.
 - A few seconds per bill, and a blank tok/s column (the API does not report it).
 - If a request is refused, it counts as invalid. That is deliberate: a fallback model would score a different model under Opus's name.
+- **Unverified:** whether 512 tokens is always enough. Opus 5.5 always thinks a little, and thinking counts
+  against the cap. A reply cut off before its answer scores invalid and shows as `max_tokens` in "How replies ended".
+  If that happens often, raising `--max-tokens` raises the worst case too, and the run will need more than $2.
+
+The harness also refuses to send the `train` or `valid` split to a paid API unless you add `--allow-large`.
 
 **Check:** the frontier row shows a cost per 1,000 bills. Where does that number come from?
 
@@ -231,7 +276,7 @@ The measured input and output tokens for these 150 bills, times the prices you p
 
 </details>
 
-**Done when:** `results/README.md` has two rows: the local model and the frontier model.
+**Done when:** `results/README.md` has a frontier row beside the local rows (the committed baseline, plus your own step 3 run).
 
 ---
 
@@ -250,19 +295,19 @@ The measured input and output tokens for these 150 bills, times the prices you p
    You should see:
 
    ```text
-   61 misses out of 150. Showing 30.
+   65 misses out of 150. Showing 30.
 
-    1. hr317-119
-       gold:  Taxation
-       model: Health
-       title: To amend the Internal Revenue Code of 1986 to create health freedom accounts available to all individuals.
-       https://www.congress.gov/bill/119th-congress/house-bill/317
+    1. s181-119
+       gold:  Economics and Public Finance
+       model: Government Operations and Politics
+       title: A bill to require agencies submit zero-based budgets.
+       https://www.congress.gov/bill/119th-congress/senate-bill/181
 
-    2. hr7771-119
-       gold:  Government Operations and Politics
-       model: Armed Forces and National Security
-       title: To amend the Defense Production Act of 1950 to require the Chairperson of the Defense Production Act Committee to maintain a database of actions, and for other purposes.
-       https://www.congress.gov/bill/119th-congress/house-bill/7771
+    2. hr8633-119
+       gold:  Commerce
+       model: Economics and Public Finance
+       title: To specify the standards governing claims of consciously parallel pricing coordination in civil actions under the Sherman Act, and to clarify the meaning of contract, combination in the form of trust or otherwise, or conspiracy under the Sherman Act.
+       https://www.congress.gov/bill/119th-congress/house-bill/8633
    ```
 
 2. Read all 30. For each one, write a short cause in your own words. One line each. Do not group yet.
@@ -274,15 +319,15 @@ The measured input and output tokens for these 150 bills, times the prices you p
 
 <details><summary>Answer (the kit builder's grouping; yours may differ)</summary>
 
-1. **Missed a Congress.gov convention (14 of 30).** The title names the law, and the law decides the label.
-   "Amend the Internal Revenue Code" is Taxation, even when the topic is health. Title 38 (veterans) is
-   Armed Forces. Title 5 (federal staff) is Government Operations. **A fine-tune can learn these.**
-2. **Neighbouring labels overlap (12 of 30).** Families or Social Welfare? International Affairs or Armed
-   Forces? Both are defensible; the record picked one. **Partly fixable:** training shows which side the record usually picks.
-3. **The title is too thin (4 of 30).** "Establish the America's Living Library Project" is Public Lands. Nothing in
-   the title says so. **Not fixable from the title alone.**
+1. **The law or program in the title decides the label (14 of 30).** "Amend the Internal Revenue Code" is
+   Taxation, even when the topic is housing. A Water Resources Development Act project is Water Resources
+   Development. Amending the Help America Vote Act is Government Operations. **A fine-tune can learn these.**
+2. **Neighbouring labels overlap (13 of 30).** Economics and Public Finance or Government Operations?
+   Commerce or Economics? Both are defensible; the record picked one. **Partly fixable:** training shows which side the record usually picks.
+3. **The title is too thin (3 of 30).** "Allowing Emancipation Hall to be used for a ceremony…" is Congress
+   (it is about the Capitol), not Arts. Grants for after-school programs are Crime and Law Enforcement. **Mostly not fixable from the title alone.**
 
-The first group is why Lab 2 should help: 14 of 30 misses follow rules that the training data shows thousands of times.
+The 2 invalid replies sit in group 1. Both named a label that does not exist.
 
 </details>
 
@@ -296,9 +341,9 @@ The first group is why Lab 2 should help: 14 of 30 misses follow rules that the 
 
 **Do this:** run the gate, break it on purpose, and watch CI catch it. **About 45 minutes.**
 
-> Sub-steps 1 to 4 were run by the kit builder. Sub-steps 5 to 8 (GitHub going red on your
-> pull request) were **not verified by the kit builder**: no deliberately broken pull request was opened.
-> The same workflow ran green on the kit's own pull request.
+> Sub-steps 1 to 4 were run by the kit builder. Sub-steps 5 to 10 (the GitHub part) were
+> **not verified by the kit builder**: no deliberately broken pull request was opened. The same
+> workflow ran green on the kit's own pull request.
 
 1. Run the unit tests:
 
@@ -309,7 +354,7 @@ The first group is why Lab 2 should help: 14 of 30 misses follow rules that the 
    You should see, at the end:
 
    ```text
-   Ran 41 tests in 0.962s
+   Ran 67 tests in 1.520s
 
    OK
    ```
@@ -323,19 +368,25 @@ The first group is why Lab 2 should help: 14 of 30 misses follow rules that the 
    You should see:
 
    ```text
-   accuracy     0.5933  need >= 0.5930  PASS
-   invalid rate 0.0000  need <= 0.0000  PASS
-   gate: PASS (89/150 correct, 0 invalid)
+   golden file  evals/golden.jsonl  sha256 a717155c2c2b268b...
+   accuracy     0.5667  need >= 0.5660  PASS
+   invalid rate 0.0133  need <= 0.0140  PASS
+   gate: PASS (85/150 correct, 2 invalid)
    ```
 
-   The bar sits just under the baseline (`Makefile`, `MIN_ACCURACY`). One more miss fails it.
+   The bar sits just under the baseline (`Makefile`, `MIN_ACCURACY` and `MAX_INVALID`). One more miss fails it.
+   The gate also checks the golden file's SHA-256 against `GOLDEN_SHA256` in the `Makefile`, so nobody can
+   quietly edit the test set to match the predictions.
 
-3. Make a branch and plant one bad prediction. This changes the first bill's answer from Commerce (right) to Health (wrong):
+3. Make a branch and plant one bad prediction. This changes the second bill's answer from Health (right) to Taxation (wrong):
 
    ```bash
    git switch -c test/plant-bad-prediction
-   sed -i '' '1s/"pred": "Commerce"/"pred": "Health"/' results/qwen3.5-4b-4bit-golden-baseline/predictions.jsonl
+   sed -i '' '2s/"pred": "Health"/"pred": "Taxation"/' results/qwen3.5-4b-4bit-golden-baseline/predictions.jsonl
    ```
+
+   You should see: no output. Then `git diff --stat results/qwen3.5-4b-4bit-golden-baseline/predictions.jsonl`
+   shows `1 file changed, 1 insertion(+), 1 deletion(-)`.
 
 4. Run the gate again:
 
@@ -346,32 +397,73 @@ The first group is why Lab 2 should help: 14 of 30 misses follow rules that the 
    You should see:
 
    ```text
-   accuracy     0.5867  need >= 0.5930  FAIL
-   invalid rate 0.0000  need <= 0.0000  PASS
-   gate: FAIL (88/150 correct, 0 invalid)
+   golden file  evals/golden.jsonl  sha256 a717155c2c2b268b...
+   accuracy     0.5600  need >= 0.5660  FAIL
+   invalid rate 0.0133  need <= 0.0140  PASS
+   gate: FAIL (84/150 correct, 2 invalid)
    make: *** [gate] Error 1
    ```
 
-5. Commit and push the branch:
+5. Commit only the planted file. Your step 3 run also changed `results/README.md`; leave that out:
 
    ```bash
-   git commit -am "Test: plant one bad prediction"
+   git commit -m "Test: plant one bad prediction" results/qwen3.5-4b-4bit-golden-baseline/predictions.jsonl
+   ```
+
+   Expect: `1 file changed, 1 insertion(+), 1 deletion(-)`.
+
+6. Push the branch:
+
+   ```bash
    git push -u origin test/plant-bad-prediction
    ```
 
-6. Open a pull request: `gh pr create --fill --draft`.
-7. Watch the "evals" check: `gh pr checks --watch`. Expect it to fail at "Gate on the committed baseline predictions", with the same FAIL lines as sub-step 4.
-8. Clean up: `gh pr close --delete-branch`, then `git switch main`.
+   Expect: a line saying the new branch was created on `origin`.
+
+7. Open a draft pull request:
+
+   ```bash
+   gh pr create --fill --draft
+   ```
+
+   Expect: a pull request URL. The repository is private today and will be public by the time you
+   reach this step. **Unverified:** whether GitHub accepts draft pull requests on your account and plan.
+   If the draft flag is refused, run `gh pr create --fill` instead.
+
+8. Watch the checks:
+
+   ```bash
+   gh pr checks --watch
+   ```
+
+   Expect: the `test-and-gate` check fails, at the step "Gate on the committed baseline predictions",
+   with the same FAIL lines as sub-step 4.
+
+9. Go back to `main`:
+
+   ```bash
+   git switch main
+   ```
+
+   Expect: `Switched to branch 'main'`. The planted change stays on the test branch only.
+
+10. Close the pull request and delete its branch:
+
+    ```bash
+    gh pr close test/plant-bad-prediction --delete-branch
+    ```
+
+    Expect: a line saying the pull request was closed, and one saying the branch was deleted.
 
 **Check:** CI never runs a model. Then what does the gate protect?
 
 <details><summary>Answer</summary>
 
-The committed predictions. When you change the model or the prompt, you commit its new predictions with the change. CI re-scores them against the frozen golden set, with gold labels from the golden file, and blocks the merge if they fall below the bar.
+The committed predictions. When you change the model or the prompt, you commit its new predictions with the change. CI re-scores them against the frozen golden set, with gold labels from the golden file, and blocks the merge if they fall below the bar. The checksum makes sure the golden file itself did not move.
 
 </details>
 
-**Done when:** you have seen the gate fail locally and on GitHub, and the branch is gone.
+**Done when:** you have seen the gate fail locally and on GitHub, and the test branch is gone.
 
 ---
 
@@ -383,28 +475,43 @@ The committed predictions. When you change the model or the prompt, you commit i
 
 **Do this:** make the score table public and readable in one minute. **About 40 minutes.**
 
-1. Open `results/README.md` on GitHub. Check that every row has a model, a date and a commit. 5 minutes.
-2. Check for secrets before anything goes public:
+1. Open `results/README.md`. Check that every row has a model, a date and a commit.
+
+   Expect: the committed baseline, your step 3 run (same model, same score) and the frontier run.
+   A commit ending in `-dirty` means code, prompt or data differed from that commit when the run happened;
+   re-run that row from a clean checkout before you publish it.
+
+2. Scan the whole working tree for API keys, tracked and untracked files alike:
 
    ```bash
-   git grep -n -I -E "sk-ant|ANTHROPIC_API_KEY=" -- . ':!labs/01-evals-first/README.md'
+   grep -rn -I -E "sk-ant-[A-Za-z0-9_-]{10,}" --exclude-dir=.git --exclude-dir=.venv --exclude-dir=cache --exclude='.env*' .
    ```
 
-   Expect no output.
-3. Merge your frontier-run results through a pull request (`make test` and `make gate` green first).
+   Expect: no output. (`.env` files are skipped because they are gitignored and never committed.)
+
+3. Merge your frontier-run results through a pull request, with `make test` and `make gate` green first.
+
+   Expect: the `evals` check passes on the pull request, and `results/README.md` on `main` shows the frontier row.
+
 4. Write three sentences in the repo's top `README.md`: the task, the two scores, the floor.
    Not in `results/README.md`: the harness rewrites that file on every run.
+
+   Expect: someone who reads only those three sentences can say what was measured and how it compares to 8%.
+
 5. If the repository is not public yet, make it public (GitHub, Settings, General, Danger Zone, Change visibility).
    That cannot be undone for anyone who has already cloned it.
+
+   Expect: the repository page shows a "Public" badge. **Unverified:** the exact menu path; GitHub moves settings.
+
 6. Share the link to `results/README.md` where you want it seen.
 
-**What to expect:** a public page with two rows and a floor of 8%. Anyone can rerun the local row with `make eval`.
+   Expect: the link opens without signing in.
 
-**Check:** a reader sees "59.3%". What else must the page tell them so the number means something?
+**Check:** a reader sees "56.7%". What else must the page tell them so the number means something?
 
 <details><summary>Answer</summary>
 
-The test set (150 frozen bills, from where, stratified how), the floor (8.0%), the model and its settings, the date, and the commit. Without those, a number is a rumour.
+The test set (150 frozen bills, from where, how companions were kept out of training), the floor (8.0%), the model and its settings, the date, and the commit. Without those, a number is a rumour.
 
 </details>
 
@@ -422,6 +529,7 @@ Hit these points in your own words:
 
 - A fine-tune costs time and money. Without a test, "it feels better" is the only result.
 - The test set is fixed first, so nobody can pick the questions after seeing the answers.
-- The base model's score is the "before" picture: 59% here, against a floor of 8%.
+- The test must not overlap the training data. Near-copies (like House and Senate versions of one bill) count as overlap.
+- The base model's score is the "before" picture: 57% here, against a floor of 8%.
 - The failures show what to fix, and which failures no fine-tune can fix.
 - The gate keeps the gain: any later change that scores worse cannot merge.

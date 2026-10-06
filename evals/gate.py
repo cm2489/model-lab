@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 from evals import metrics
-from evals.files import SPLITS, read_jsonl
+from evals.files import ROOT, SPLITS, read_jsonl
 from evals.labels import LABELS
 
 
@@ -46,7 +46,9 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     digest = sha256(args.golden)
-    print(f"golden file  {args.golden}  sha256 {digest}")
+    shown = Path(args.golden).resolve()
+    shown = shown.relative_to(ROOT) if shown.is_relative_to(ROOT) else shown
+    print(f"golden file  {shown}  sha256 {digest[:16]}...")
     if args.golden_sha256 and digest != args.golden_sha256:
         print(f"gate: FAIL (golden file changed: expected sha256 {args.golden_sha256})")
         return 1
