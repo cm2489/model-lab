@@ -79,7 +79,7 @@ class RunCli(unittest.TestCase):
         self.assertEqual(m["prompt_version"], "short-v1")
         self.assertEqual(m["adapter"], "adapters/x")
         table = (self.dir / "README.md").read_text()
-        self.assertIn("LoRA adapter", table)
+        self.assertIn("LoRA `x`", table)
         self.assertIn("| short |", table)
 
 
