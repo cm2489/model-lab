@@ -47,6 +47,7 @@ Every source link used in the briefs, grouped by brief, with the date shown in t
 | open-weights page | 2026-10-06 | <https://artificialanalysis.ai/models/open-source> |
 | index v4.3 post | 2026-09-07 | <https://artificialanalysis.ai/articles/artificial-analysis-intelligence-index-v4-3> |
 | leaderboard | 2026-10-06 | <https://artificialanalysis.ai/leaderboards/models> |
+| model page | 2026-10-06 | <https://artificialanalysis.ai/models/muse-glimmer> |
 | Interconnects, Sep 21, 2026 | 2026-09-21 | <https://www.interconnects.ai/p/the-current-balance-of-power-in-open> |
 | launch article | 2026-07-15 | <https://artificialanalysis.ai/articles/thinking-machines-has-released-inkling-the-new-leading-u-s-open-weights-model> |
 | Arena text leaderboard | 2026-10-02 | <https://arena.ai/leaderboard/text> |
@@ -129,7 +130,7 @@ Every source link used in the briefs, grouped by brief, with the date shown in t
 | Unsloth Qwen3.6-35B-A3B GGUF | 2026 | <https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF> |
 | InsiderLLM | 2026 | <https://insiderllm.com/guides/fine-tuning-mac-lora-mlx/> |
 | guide | 2026 | <https://mehmetbaykar.com/posts/increase-vram-apple-silicon-local-llm/> |
-| HF API | 2026-03-02 | <https://huggingface.co/api/models/mlx-community/Qwen3.5-9B-4bit?blobs=true> |
+| HF API, 9B | 2026-03-02 | <https://huggingface.co/api/models/mlx-community/Qwen3.5-9B-4bit?blobs=true> |
 | DeepSeek V4.1-Flash card | 2026-09 | <https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash> |
 | LLMCheck | 2026 | <https://llmcheck.net/guides/fine-tune-llm-mac-mlx/> |
 | HF API | 2026-10-06 | <https://huggingface.co/api/models/mlx-community/Qwen3.5-4B-4bit?blobs=true> |

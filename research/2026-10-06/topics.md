@@ -5,7 +5,7 @@
 - Learn now: agent engineering and context engineering, evals and observability, AI security for agents, customizing open-weight models, MCP and A2A, voice agents, inference economics, and on-device AI.
 - Track, with short literacy passes: governance and compliance, agent commerce and payments, computer-use agents, interpretability, and reinforcement-learning environments.
 - Skip for now: quantum plus AI, world models and robotics, compute and energy, sovereign AI, AI for science, video generation, and continual learning.
-- The ranking is the researchers' judgment and could not be checked. The one-line evidence under each topic is dated and tagged.
+- The ranking is the researchers' judgment and could not be checked. The ranking was made for a solo builder focused on applied AI and open-model customization; other readers should re-weight it. The one-line evidence under each topic is dated and tagged.
 - The State of AI Report 2026 publishes on October 8, 2026, two days after these briefs. It was not read. Re-check this ranking against it.
 
 Confidence words: `verified`, `likely`, `not verified`. See the [README](README.md). Each source is shown as ([label](link), date). The researchers' estimates of study time were their own judgment and are left out.
@@ -44,7 +44,7 @@ Macro backdrop: Stanford's AI Index 2026 reports 88 percent organizational adopt
 | Compute, energy and sovereign AI | Global AI compute grew "more than threefold every year since 2022" and Nvidia holds over 60 percent. Figures for data-center electricity (about 950 TWh by 2030), hyperscaler spending ($690B to $715B) and sovereign AI (over $100B) are `not verified` | `verified` for the first two ([IEEE Spectrum](https://spectrum.ieee.org/state-of-ai-index-2026), 2026-04-13) |
 | AI for science | A report of a roughly $7B valuation in talks for one startup (Bloomberg, Mar 25, 2026) is paywalled and unconfirmed | `not verified` ([Bloomberg](https://www.bloomberg.com/news/articles/2026-03-25/ai-science-startup-periodic-labs-is-in-deal-talks-at-about-7-billion-valuation), 2026-03-25) |
 | Video generation | A claim that OpenAI's Sora shut down on Mar 24, 2026 could not be confirmed. Treat it as unknown | `not verified` |
-| Continual learning and synthetic data | Google's Nested Learning (NeurIPS 2025) is a research paradigm, not a deployable skill. Synthetic data was not researched directly; see [toolchain.md](toolchain.md) for data tooling | `likely` ([ML Guide](https://ocdevel.com/mlg/mla-26), 2026) |
+| Continual learning and synthetic data | Google's Nested Learning (NeurIPS 2025) is a research paradigm, not a deployable skill. Synthetic data was not researched directly; see [toolchain.md](toolchain.md) for data tooling | `not verified` ([ML Guide](https://ocdevel.com/mlg/mla-26), 2026) |
 
 ## Conflicts and open items
 

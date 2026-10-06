@@ -31,7 +31,7 @@
 
 | Word | Meaning |
 |---|---|
-| `verified` | A verifier read a primary page (the maker's own page, model card, license text, posting feed, paper or regulator page) and it matched. |
+| `verified` | A verifier re-opened the cited page and it matched. Usually that is the maker's own page, model card, license, posting feed, paper or regulator page; where it is a news report or summary, the row names it. |
 | `likely` | Supported by secondary sources (news, blogs, aggregators) or by a primary page that was only partly read. Probably right, but check before relying on it. |
 | `not verified` | Could not be checked, rests on a single snippet, or the sources conflict. Treat as a lead only. |
 
@@ -39,7 +39,7 @@ Where two sources or two briefs disagree and nothing settled it, the brief says 
 
 ## Standing cautions
 
-1. **Scores from Artificial Analysis are only comparable within one index version.** The index was rescaled on September 7, 2026 (version 4.3). The same model can score far lower after a rescale. Every score in these briefs comes from one version, v4.3.2, read on October 6, 2026. Do not mix them with older numbers.
+1. **Scores from Artificial Analysis are only comparable within one index version.** The index was rescaled on September 7, 2026 (version 4.3). The same model can score far lower after a rescale. Every current score in these briefs is from v4.3.2, read on October 6, 2026. Older-version numbers appear only to explain the rescale and are labeled. Do not mix them with others.
 2. **Most pages were read through a summarizing fetch tool.** "Verified" means a real page was fetched and matched. It does not mean every figure was checked against the full text. Some dates and counts may be slightly off.
 3. **Prices move.** Every price in these briefs has the date it was read. Confirm it on the vendor's page before running a paid job.
 4. **Release dates are not always launch dates.** Hugging Face pages sometimes show a last-updated date, a repository creation date, or a wrong date taken from a paper ID. Where this mattered, the brief says which date it uses.

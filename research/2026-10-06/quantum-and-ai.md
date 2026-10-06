@@ -4,7 +4,7 @@
 
 - Quantum computing and AI meet today mainly in one direction: AI helps quantum computers (decoding errors, calibrating hardware). That work is real, shipping and partly open-weight.
 - Quantum computing for AI is unproven on ordinary business data. One April 2026 theory preprint claims a provable advantage but needs fewer than 60 logical qubits that nobody has built.
-- Timing is disputed. A survey of 26 experts puts a code-breaking quantum computer at 28 to 49 percent within 10 years. A well-known former skeptic says 2029 "ought to be possible".
+- Timing is disputed. A survey of 26 experts puts a code-breaking quantum computer at 28 to 49 percent within 10 years. A well-known former skeptic, Scott Aaronson, reports that hardware experts he trusts think a code-breaking machine "ought to be possible by around 2029".
 - The practical deadline is cryptography: Google and Cloudflare target 2029 for migrating to post-quantum cryptography, with US government dates of 2030 and 2035 proposed.
 - Most hardware-milestone detail comes from aggregators, so several numbers are only `likely`.
 
