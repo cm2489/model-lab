@@ -86,8 +86,8 @@
     "after_step": "lab-1.1",
     "concept": "data leakage",
     "type": "core",
-    "front": "Why are bills split by normalized title, not one by one?",
-    "back": "Companion and reintroduced bills share titles. Splitting by title keeps a test title out of training."
+    "front": "Why does the title key strip \"A bill to\" before splitting?",
+    "back": "House and Senate companions differ only in boilerplate like \"A bill to\". The key strips it, so companions share a split."
   },
   {
     "id": "lab-1.c3",
@@ -159,7 +159,7 @@
     "concept": "regression gate",
     "type": "core",
     "front": "What does the CI gate check, given that it runs no model?",
-    "back": "It re-scores committed predictions against the frozen golden labels and fails below the accuracy or above the invalid bar."
+    "back": "It re-scores committed predictions against frozen golden labels, checks the golden file's checksum, and fails below the bar."
   },
   {
     "id": "lab-1.c11",
@@ -169,5 +169,14 @@
     "type": "core",
     "front": "Why does the gate take gold labels from the golden file, not the predictions file?",
     "back": "So a predictions file cannot grade itself by rewriting its own gold labels."
+  },
+  {
+    "id": "lab-1.c12",
+    "lab": "lab-1",
+    "after_step": "lab-1.4",
+    "concept": "spend guard",
+    "type": "core",
+    "front": "What stops a paid eval run from overspending?",
+    "back": "--max-usd: the run refuses to start if every reply using all of max_tokens would cost more."
   }
 ]

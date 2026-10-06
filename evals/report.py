@@ -59,6 +59,8 @@ def score_card(m: dict) -> str:
         table_row(m),
         "",
         f"Correct {c['correct']} of {c['n']}. Invalid replies: {c['invalid']} (counted as wrong).",
+        f"How replies ended: {', '.join(f'{k} {v}' for k, v in sorted(m.get('stops', {}).items())) or 'n/a'}."
+        " A reply that hit max_tokens was cut off.",
         f"Cost: {k['cost_note']}. Average tokens per bill: {k['avg_input_tokens']} in, {k['avg_output_tokens']} out.",
         "",
         "## Top confusions (gold → predicted)",

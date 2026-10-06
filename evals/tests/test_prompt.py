@@ -17,18 +17,38 @@ class ParseLabel(unittest.TestCase):
     def test_label_with_commas(self):
         self.assertEqual(parse_label("Arts, Culture, Religion"), ("Arts, Culture, Religion", "exact"))
 
-    def test_contained_in_sentence(self):
-        self.assertEqual(parse_label("The answer is Immigration."), ("Immigration", "contained"))
-
-    def test_longest_match_wins(self):
-        # "Law" is inside "Crime and Law Enforcement"; that must not count as two labels.
-        self.assertEqual(parse_label("It is Crime and Law Enforcement"), ("Crime and Law Enforcement", "contained"))
+    def test_label_inside_a_sentence_is_invalid(self):
+        self.assertEqual(parse_label("The answer is Immigration."), (None, "invalid"))
 
     def test_law_alone(self):
         self.assertEqual(parse_label("Law"), ("Law", "exact"))
 
-    def test_two_labels_is_invalid(self):
+    def test_two_labels_with_comma_are_invalid(self):
+        self.assertEqual(parse_label("Taxation, Health"), (None, "invalid"))
+        self.assertEqual(parse_label("Health, Taxation"), (None, "invalid"))
+
+    def test_two_labels_with_or_are_invalid(self):
         self.assertEqual(parse_label("Health or Taxation"), (None, "invalid"))
+
+    def test_label_then_correction_is_invalid(self):
+        self.assertEqual(parse_label("Crime and Law Enforcement, not Law"), (None, "invalid"))
+
+    def test_negation_is_invalid(self):
+        self.assertEqual(parse_label("Not Health"), (None, "invalid"))
+
+    def test_refusal_mentioning_a_label_word_is_invalid(self):
+        self.assertEqual(parse_label("I refuse to answer because this concerns the law"), (None, "invalid"))
+
+    def test_comma_labels_with_loose_punctuation(self):
+        self.assertEqual(parse_label("arts culture religion"), ("Arts, Culture, Religion", "exact"))
+        self.assertEqual(parse_label('"Civil Rights and Liberties, Minority Issues."'),
+                         ("Civil Rights and Liberties, Minority Issues", "exact"))
+        self.assertEqual(parse_label("Science,Technology,Communications"),
+                         ("Science, Technology, Communications", "exact"))
+
+    def test_markdown_bold_and_final_period(self):
+        self.assertEqual(parse_label("**Health**"), ("Health", "exact"))
+        self.assertEqual(parse_label("Policy area: Energy."), ("Energy", "exact"))
 
     def test_no_label_is_invalid(self):
         self.assertEqual(parse_label("I am not sure."), (None, "invalid"))
@@ -36,8 +56,7 @@ class ParseLabel(unittest.TestCase):
     def test_empty_is_invalid(self):
         self.assertEqual(parse_label(""), (None, "invalid"))
 
-    def test_word_boundaries(self):
-        # "Energy" must not match inside a longer word.
+    def test_longer_word_is_invalid(self):
         self.assertEqual(parse_label("Energyish"), (None, "invalid"))
 
 
