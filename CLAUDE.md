@@ -29,7 +29,7 @@ What that changes here. These four lines are Claude's reading of his words, and 
 2. **Training data.** Outputs of closed models (Claude, GPT, Gemini) are never used as training targets. Labels come from public records or from people.
 3. **Models.** Download only from organization accounts that can be identified (for example `google`, `Qwen`, `mlx-community`, `unsloth`, `meta-models`). Read the license before a model enters a lab. Apache-2.0 or MIT unless he says otherwise.
 4. **Money.** He pays from his own accounts. The cap through December 11, 2026 is $25: hosted fine-tune up to $10, rented GPU up to $5, frontier-model baseline up to $2. Any other spend is told to him first and does not happen until he says yes.
-5. **A lab is `ready` only when** its builder ran every step and a different agent re-ran every step from the page. A step that needs his paid accounts or tokens is marked "not verified" until he runs it.
+5. **A lab is `ready` only when** its builder ran every step that can run without his accounts, and a different agent re-ran those steps from the page. A step that needs his paid accounts or tokens is marked "not verified" until he runs it.
 6. **Disk.** One small 4-bit model at a time until the disk has room. Check free space before any download over 1 GB.
 7. **Claims.** Nothing is described as shipped, here or anywhere else, until it is public and working.
 8. **The old course.** `~/Documents/Claude/Projects/AI/ML Guided Learning` is read-only reference material.
@@ -37,6 +37,6 @@ What that changes here. These four lines are Claude's reading of his words, and 
 ## How to work here
 
 - Python runs through uv: `uv sync`, then `uv run …`. Python 3.12.
-- Checks before any merge: `uv run python scripts/validate_content.py`, `make test`, and `node --test` in `bench/`.
+- Checks before any merge: `uv run python scripts/validate_content.py`, `make test`, `make gate`, and `node --test test/*.test.js` in `bench/`.
 - Lab pages are written for a reader who wants the action first: lead with the action, one bounded action per numbered step, a time estimate, the exact command, a "You should see" block pasted from a real run, one check question, and a "Done when" line.
 - A step the learner will run by hand is never handed over unverified.
