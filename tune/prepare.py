@@ -20,29 +20,46 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
-import random
 from pathlib import Path
 
 from evals.files import ROOT, read_jsonl
 from evals.prompt import build_messages
 
 
+def title_key():
+    """The dataset builder's own title key, so a House bill and its Senate twin count as one title."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("build_dataset", ROOT / "data" / "build_dataset.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.normalize_title
+
+
 def to_chat(row: dict) -> dict:
     return {"messages": build_messages(row["title"], "short") + [{"role": "assistant", "content": row["label"]}]}
 
 
-def capped(rows: list[dict], per_label: int, rng: random.Random) -> list[dict]:
+def stable_order(rows: list[dict], seed: int) -> list[dict]:
+    """Order rows by a hash of the seed and the bill id.
+
+    Unlike a shuffle, this order does not depend on which other rows exist. If one
+    row is later removed from the dataset, every other row keeps its place, so the
+    training files change by that one row and nothing else.
+    """
+    return sorted(rows, key=lambda r: hashlib.sha256(f"{seed}:{r['id']}".encode()).hexdigest())
+
+
+def capped(rows: list[dict], per_label: int, seed: int) -> list[dict]:
     by_label = collections.defaultdict(list)
     for row in rows:
         by_label[row["label"]].append(row)
     out = []
     for label in sorted(by_label):
-        group = by_label[label]
-        rng.shuffle(group)
-        out += group[:per_label]
-    rng.shuffle(out)
-    return out
+        out += stable_order(by_label[label], seed)[:per_label]
+    return stable_order(out, seed + 1)
 
 
 def main(argv=None) -> int:
@@ -53,14 +70,12 @@ def main(argv=None) -> int:
     ap.add_argument("--seed", type=int, default=7)
     args = ap.parse_args(argv)
 
-    rng = random.Random(args.seed)
-    train = capped(read_jsonl(ROOT / "data" / "train.jsonl"), args.per_label, rng)
-    valid = read_jsonl(ROOT / "data" / "valid.jsonl")
-    rng.shuffle(valid)
-    valid = valid[: args.valid]
+    train = capped(read_jsonl(ROOT / "data" / "train.jsonl"), args.per_label, args.seed)
+    valid = stable_order(read_jsonl(ROOT / "data" / "valid.jsonl"), args.seed)[: args.valid]
 
-    golden = {" ".join(r["title"].lower().split()) for r in read_jsonl(ROOT / "evals" / "golden.jsonl")}
-    leaked = [r for r in train + valid if " ".join(r["title"].lower().split()) in golden]
+    key = title_key()
+    golden = {key(r["title"]) for r in read_jsonl(ROOT / "evals" / "golden.jsonl")}
+    leaked = [r for r in train + valid if key(r["title"]) in golden]
     if leaked:
         raise SystemExit(f"{len(leaked)} training titles are also in the golden set. Rebuild the dataset.")
 

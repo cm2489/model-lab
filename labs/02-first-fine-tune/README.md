@@ -34,7 +34,7 @@ Every "You should see" block is real output from a 2021 MacBook Pro (M1 Max, 32 
 
 4. Predict two things and write them down. You check both in step 4.
 
-   - The untuned model scored 59.3% on your test set, with every label listed in the prompt. What will the tuned model score?
+   - The untuned model scored 56.7% on your test set, with every label listed in the prompt. What will the tuned model score?
    - Will the tuned model still need the label list in the prompt?
 
 **Optional reading, 15 minutes:** "LoRA Without Regret" on the Thinking Machines blog (thinkingmachines.ai/blog). If neural-network weights are hazy, do Foundations session 4 first: `foundations/sessions/s4-how-models-learn.md`.
@@ -66,7 +66,7 @@ One 3 GB base model and ten small adapters, about 16 MB each. You load the base 
    **You should see**
 
    ```text
-   train: 2373 examples, 31 labels, 34 to 80 per label
+   train: 2341 examples, 31 labels, 26 to 80 per label
    valid: 200 examples
    golden titles in train or valid: 0
    wrote data/lora/train.jsonl and valid.jsonl
@@ -81,13 +81,13 @@ One 3 GB base model and ten small adapters, about 16 MB each. You load the base 
    **You should see** one line: a `user` message with a short question and a bill title, then an `assistant` message that is only the policy area.
 
    ```text
-   {"messages": [{"role": "user", "content": "Which Congress.gov policy area does this bill belong to? Reply with the policy area only.\n\nBill title:\nTo amend section 287(g) of the Immigration and Nationality Act to clarify congressional intent with respect to agreements under such section, and for other purposes."}, {"role": "assistant", "content": "Immigration"}]}
+   {"messages": [{"role": "user", "content": "Which Congress.gov policy area does this bill belong to? Reply with the policy area only.\n\nBill title:\nTo amend title 49, United States Code, with respect to the requirement to test drivers of commercial motor vehicles for English proficiency, and for other purposes."}, {"role": "assistant", "content": "Transportation and Public Works"}]}
    ```
 
 3. Open `tune/prepare.py` and find the answers to these three questions. Each is a design choice you may be asked to defend.
 
    - Why does the training prompt leave out the list of 32 labels?
-   - Why are there at most 80 examples per label, when "Health" has 1,657 available?
+   - Why are there at most 80 examples per label, when "Health" has 1,286 available?
    - Why does the script stop if a training title is also in the golden set?
 
 4. Count how much shorter the short prompt is. The baseline's prompt size is in its saved predictions.
@@ -102,12 +102,12 @@ One 3 GB base model and ten small adapters, about 16 MB each. You load the base 
    **You should see**
 
    ```text
-   prompt tokens per bill, label-list prompt: @@LIST_TOKENS@@
+   prompt tokens per bill, label-list prompt: 250
    ```
 
    You measure the short prompt in step 4.
 
-**Check yourself.** The cap gives every label at most 80 examples. What would the model learn if you trained on all 14,498 rows as they are?
+**Check yourself.** The cap gives every label at most 80 examples. What would the model learn if you trained on all 11,647 rows as they are?
 
 <details><summary>Answer</summary>
 
@@ -155,7 +155,7 @@ It would see "Health" about 50 times as often as the rarest label, and it would 
 **Why batch size 1.** `make tune` runs the command printed at the top of `tune/train.py`. Read it. Two settings keep this run inside a 32 GB Mac.
 
 - `--batch-size 1 --grad-accumulation-steps 4`: the model sees one example at a time and updates its weights every four. That acts like a batch of 4 at the memory cost of 1.
-- The short prompt: each example is about @@SHORT_TOKENS@@ tokens. With the label list in every example it is about @@LIST_TOKENS@@.
+- The short prompt: each example is about @@SHORT_TOKENS@@ tokens. With the label list in every example it is about 250.
 
 These were measured on this Mac on October 6, 2026.
 
@@ -216,7 +216,7 @@ No. With batch size 1 each report averages few examples, so the training loss is
 
    | Model | Prompt | Accuracy | Invalid replies | Prompt tokens per bill |
    |---|---|---|---|---|
-   | Untuned | lists all 32 labels | 59.3% | 0 | @@LIST_TOKENS@@ |
+   | Untuned | lists all 32 labels | 56.7% | 2 | 250 |
    | Untuned | short | @@BASE_SHORT_ACC@@ | @@BASE_SHORT_INV@@ | @@SHORT_TOKENS@@ |
    | Tuned | short | @@TUNED_ACC@@ | @@TUNED_INV@@ | @@SHORT_TOKENS@@ |
 
@@ -404,4 +404,4 @@ Because the reader will find out anyway, and a card that names its limits is one
 
 ## Teach-back
 
-Explain to a buyer who is not technical, in under a minute: you took a free model that scored 59%, spent @@TRAIN_MIN@@ of laptop time, and got one that scores @@TUNED_ACC@@ with a prompt a sixth of the size. What did the fine-tune change, what did it not change, and how do they know the number is real?
+Explain to a buyer who is not technical, in under a minute: you took a free model that scored 57%, spent @@TRAIN_MIN@@ of laptop time, and got one that scores @@TUNED_ACC@@ with a prompt a sixth of the size. What did the fine-tune change, what did it not change, and how do they know the number is real?
