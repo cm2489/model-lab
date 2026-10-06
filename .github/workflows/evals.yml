@@ -1,0 +1,26 @@
+name: evals
+
+# No model runs here. CI re-scores the committed baseline predictions against the
+# golden set and fails the pull request if they miss the bar in the Makefile.
+# Scoring is standard-library Python, so nothing is installed.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Unit tests
+        run: python -m unittest discover -s evals/tests -t . -v
+      - name: Gate on the committed baseline predictions
+        run: make gate PY=python
