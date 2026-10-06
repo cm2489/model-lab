@@ -8,10 +8,12 @@ PY ?= uv run python
 MODEL ?= mlx-community/Qwen3.5-4B-4bit
 SPLIT ?= golden
 
-# The gate's bar. Set from the committed baseline run; see results/README.md.
+# The gate's bar, set from the committed baseline (89/150 = 0.5933, 0 invalid).
+# 0.593 sits just under 89/150, so one more miss (88/150 = 0.5867) fails.
+# Raise the bar when a better model's predictions become the baseline.
 BASELINE ?= results/qwen3.5-4b-4bit-golden-baseline/predictions.jsonl
-MIN_ACCURACY ?= 0.0
-MAX_INVALID ?= 1.0
+MIN_ACCURACY ?= 0.593
+MAX_INVALID ?= 0.0
 
 .PHONY: data eval test gate
 

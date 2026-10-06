@@ -14,7 +14,7 @@
     { "id": "lab-1", "number": 1, "title": "Evals first",
       "aim": "Build a test set and prove, with numbers, how good a model is at one task.",
       "artifact": { "title": "Public eval harness with a pass/fail gate", "public": true },
-      "est_minutes": 280, "doc": "labs/01-evals-first/README.md", "status": "planned",
+      "est_minutes": 280, "doc": "labs/01-evals-first/README.md", "status": "draft",
       "steps": [
         { "id": "lab-1.1", "title": "Meet the task and the data", "minutes": 30, "where": "laptop", "anchor": "step-1" },
         { "id": "lab-1.2", "title": "Build the golden test set", "minutes": 45, "where": "laptop", "anchor": "step-2" },

@@ -36,7 +36,8 @@ class Gate(unittest.TestCase):
         self.assertEqual(run_gate("--predictions", p, "--min-accuracy", 1.0, "--max-invalid", 0.0), 0)
 
     def test_planted_bad_file_fails(self):
-        # 90/150 correct (0.60) and 10/150 invalid (0.067): fails on accuracy, on invalid rate, and on both.
+        # 60/150 correct (0.40) and 15/150 invalid (0.10): fails on accuracy, on invalid rate, and on both.
+        self.assertEqual(run_gate("--predictions", PLANTED_BAD, "--min-accuracy", 0.593, "--max-invalid", 0.0), 1)
         self.assertEqual(run_gate("--predictions", PLANTED_BAD, "--min-accuracy", 0.65, "--max-invalid", 0.05), 1)
         self.assertEqual(run_gate("--predictions", PLANTED_BAD, "--min-accuracy", 0.0, "--max-invalid", 0.05), 1)
         self.assertEqual(run_gate("--predictions", PLANTED_BAD, "--min-accuracy", 0.65, "--max-invalid", 1.0), 1)
