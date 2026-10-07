@@ -1,1 +1,182 @@
-[]
+[
+  {
+    "id": "lab-0.c1",
+    "lab": "lab-0",
+    "after_step": "lab-0.1",
+    "concept": "environment",
+    "type": "core",
+    "front": "Why can't mlx-lm 0.32 run on the Python that came with the Mac?",
+    "back": "It needs Python 3.11 or newer. The Mac came with 3.9."
+  },
+  {
+    "id": "lab-0.c2",
+    "lab": "lab-0",
+    "after_step": "lab-0.2",
+    "concept": "model names",
+    "type": "core",
+    "front": "In the name Qwen3.5-4B-4bit, what do 4B and 4bit mean?",
+    "back": "About 4 billion parameters. Each weight stored in about 4 bits."
+  },
+  {
+    "id": "lab-0.c3",
+    "lab": "lab-0",
+    "after_step": "lab-0.2",
+    "concept": "quantization",
+    "type": "core",
+    "front": "What does 4-bit quantization trade?",
+    "back": "A little accuracy, for a model about a third of the size and memory."
+  },
+  {
+    "id": "lab-0.c4",
+    "lab": "lab-0",
+    "after_step": "lab-0.2",
+    "concept": "reasoning models",
+    "type": "core",
+    "front": "A reasoning model returned no answer within the token limit. What happened?",
+    "back": "Its thinking used the whole token budget. Raise the limit or turn thinking off."
+  },
+  {
+    "id": "lab-0.c5",
+    "lab": "lab-0",
+    "after_step": "lab-0.2",
+    "concept": "provenance",
+    "type": "core",
+    "front": "Why download models only from accounts you can identify?",
+    "back": "Impostor accounts publish altered copies under real model names."
+  },
+  {
+    "id": "lab-0.c6",
+    "lab": "lab-0",
+    "after_step": "lab-0.3",
+    "concept": "LoRA",
+    "type": "core",
+    "front": "What does LoRA train?",
+    "back": "Small added low-rank matrices. The original weights stay frozen."
+  },
+  {
+    "id": "lab-0.c7",
+    "lab": "lab-0",
+    "after_step": "lab-0.3",
+    "concept": "LoRA",
+    "type": "core",
+    "front": "What is in a LoRA adapter file?",
+    "back": "Only the trained added weights. Megabytes, loaded on top of the unchanged base model."
+  },
+  {
+    "id": "lab-0.c8",
+    "lab": "lab-0",
+    "after_step": "lab-0.3",
+    "concept": "evaluation",
+    "type": "core",
+    "front": "Training loss fell. Does that prove the model got better at the task?",
+    "back": "No. Only a held-out test set, scored before and after, can show that."
+  },
+  {
+    "id": "lab-1.c1",
+    "lab": "lab-1",
+    "after_step": "lab-1.1",
+    "concept": "majority-class baseline",
+    "type": "core",
+    "front": "What is a majority-class baseline?",
+    "back": "The score from always answering the most common label. Here: always \"Health\", 8.0% on the golden set."
+  },
+  {
+    "id": "lab-1.c2",
+    "lab": "lab-1",
+    "after_step": "lab-1.1",
+    "concept": "data leakage",
+    "type": "core",
+    "front": "How do House and Senate companions stay out of different splits?",
+    "back": "Companions often differ only in 'A bill to'. The key strips it, and short titles join reworded ones, so companions share a split."
+  },
+  {
+    "id": "lab-1.c3",
+    "lab": "lab-1",
+    "after_step": "lab-1.1",
+    "concept": "frozen test set",
+    "type": "core",
+    "front": "Why is the golden set committed to git instead of rebuilt each time?",
+    "back": "The public record changes daily. A frozen set makes every score comparable to every other."
+  },
+  {
+    "id": "lab-1.c4",
+    "lab": "lab-1",
+    "after_step": "lab-1.2",
+    "concept": "stratified sampling",
+    "type": "core",
+    "front": "What does a stratified test set guarantee?",
+    "back": "Every label with enough examples appears, here at least twice, so rare labels are tested too."
+  },
+  {
+    "id": "lab-1.c5",
+    "lab": "lab-1",
+    "after_step": "lab-1.3",
+    "concept": "invalid rate",
+    "type": "core",
+    "front": "How does the harness treat a reply it cannot parse into a label?",
+    "back": "As invalid: counted wrong and reported separately. Never dropped, or dodging hard cases would raise accuracy."
+  },
+  {
+    "id": "lab-1.c6",
+    "lab": "lab-1",
+    "after_step": "lab-1.3",
+    "concept": "macro-F1",
+    "type": "core",
+    "front": "What does macro-F1 add over accuracy?",
+    "back": "It averages F1 across labels equally, so failing on a small label hurts as much as a big one."
+  },
+  {
+    "id": "lab-1.c7",
+    "lab": "lab-1",
+    "after_step": "lab-1.3",
+    "concept": "thinking models",
+    "type": "core",
+    "front": "Why is Qwen3.5's thinking turned off for this eval?",
+    "back": "Thinking cost 1,500+ tokens and about 20 seconds per bill, and could run out of room before answering."
+  },
+  {
+    "id": "lab-1.c8",
+    "lab": "lab-1",
+    "after_step": "lab-1.4",
+    "concept": "cost per 1,000",
+    "type": "core",
+    "front": "How is cost per 1,000 bills computed?",
+    "back": "Measured input and output tokens times per-token prices given at run time, scaled to 1,000 bills."
+  },
+  {
+    "id": "lab-1.c9",
+    "lab": "lab-1",
+    "after_step": "lab-1.5",
+    "concept": "error analysis",
+    "type": "core",
+    "front": "Which error group can a fine-tune fix, and which can it not?",
+    "back": "It can learn labelling conventions, like tax-code bills being Taxation. It cannot recover facts a thin title never states."
+  },
+  {
+    "id": "lab-1.c10",
+    "lab": "lab-1",
+    "after_step": "lab-1.6",
+    "concept": "regression gate",
+    "type": "core",
+    "front": "What does the CI gate check, given that it runs no model?",
+    "back": "It re-scores committed predictions against frozen golden labels, checks the golden file's checksum, and fails below the bar."
+  },
+  {
+    "id": "lab-1.c11",
+    "lab": "lab-1",
+    "after_step": "lab-1.6",
+    "concept": "gold source",
+    "type": "core",
+    "front": "Why does the gate take gold labels from the golden file, not the predictions file?",
+    "back": "So a predictions file cannot grade itself by rewriting its own gold labels."
+  },
+  {
+    "id": "lab-1.c12",
+    "lab": "lab-1",
+    "after_step": "lab-1.4",
+    "concept": "spend guard",
+    "type": "core",
+    "front": "What stops a paid eval run from overspending?",
+    "back": "--max-usd refuses a run whose worst case is too high. It protects you when you pass the real prices."
+  }
+]

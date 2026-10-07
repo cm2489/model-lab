@@ -1,0 +1,236 @@
+{
+  "_about": "All done: every step and all five public artifacts. Real cards.",
+  "now": "2026-10-30T19:00:00-04:00",
+  "labStatus": {
+    "lab-0": "ready",
+    "lab-1": "ready",
+    "lab-2": "ready",
+    "lab-3": "ready",
+    "lab-4": "ready",
+    "lab-5": "ready"
+  },
+  "progress": {
+    "updated": "2026-10-28T18:00:00-04:00",
+    "steps": {
+      "lab-0.1": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-0.2": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-0.3": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-0.4": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-1.1": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-1.2": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-1.3": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-1.4": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-1.5": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-1.6": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-1.7": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-2.1": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-2.2": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-2.3": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-2.4": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-2.5": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-2.6": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-2.7": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-3.1": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-3.2": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-3.3": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-3.4": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-3.5": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-4.1": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-4.2": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-4.3": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-4.4": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-4.5": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-5.1": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-5.2": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-5.3": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      },
+      "lab-5.4": {
+        "done": "2026-10-28T18:00:00-04:00",
+        "minutes": 40,
+        "note": ""
+      }
+    },
+    "sessions": [
+      {
+        "date": "2026-10-26",
+        "minutes": 70,
+        "steps": []
+      },
+      {
+        "date": "2026-10-27",
+        "minutes": 55,
+        "steps": []
+      },
+      {
+        "date": "2026-10-28",
+        "minutes": 90,
+        "steps": []
+      },
+      {
+        "date": "2026-10-29",
+        "minutes": 30,
+        "steps": []
+      },
+      {
+        "date": "2026-10-30",
+        "minutes": 45,
+        "steps": []
+      }
+    ],
+    "artifacts": [
+      {
+        "lab": "lab-1",
+        "title": "Bill-tagging eval harness",
+        "url": "https://github.com/cm2489/model-lab/tree/main/evals",
+        "shipped": "2026-10-12"
+      },
+      {
+        "lab": "lab-2",
+        "title": "Policy-area tagger on Hugging Face",
+        "url": "https://huggingface.co/",
+        "shipped": "2026-10-18"
+      },
+      {
+        "lab": "lab-3",
+        "title": "Hosted vs local fine-tune comparison",
+        "url": "https://github.com/cm2489/model-lab",
+        "shipped": "2026-10-21"
+      },
+      {
+        "lab": "lab-4",
+        "title": "Endpoint and cost-per-request table",
+        "url": "https://github.com/cm2489/model-lab",
+        "shipped": "2026-10-25"
+      },
+      {
+        "lab": "lab-5",
+        "title": "Case study and walkthrough",
+        "url": "https://github.com/cm2489/model-lab",
+        "shipped": "2026-10-28"
+      }
+    ]
+  }
+}

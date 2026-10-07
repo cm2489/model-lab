@@ -1,0 +1,110 @@
+import unittest
+
+from evals.labels import LABELS
+from evals.prompt import build_messages, parse_label, strip_thinking
+
+
+class ParseLabel(unittest.TestCase):
+    def test_exact(self):
+        self.assertEqual(parse_label("Health"), ("Health", "exact"))
+
+    def test_case_spaces_and_period(self):
+        self.assertEqual(parse_label("  taxation.\n"), ("Taxation", "exact"))
+
+    def test_quotes_and_prefix(self):
+        self.assertEqual(parse_label('Policy area: "Energy"'), ("Energy", "exact"))
+
+    def test_label_with_commas(self):
+        self.assertEqual(parse_label("Arts, Culture, Religion"), ("Arts, Culture, Religion", "exact"))
+
+    def test_label_inside_a_sentence_is_invalid(self):
+        self.assertEqual(parse_label("The answer is Immigration."), (None, "invalid"))
+
+    def test_law_alone(self):
+        self.assertEqual(parse_label("Law"), ("Law", "exact"))
+
+    def test_two_labels_with_comma_are_invalid(self):
+        self.assertEqual(parse_label("Taxation, Health"), (None, "invalid"))
+        self.assertEqual(parse_label("Health, Taxation"), (None, "invalid"))
+
+    def test_two_labels_with_or_are_invalid(self):
+        self.assertEqual(parse_label("Health or Taxation"), (None, "invalid"))
+
+    def test_label_then_correction_is_invalid(self):
+        self.assertEqual(parse_label("Crime and Law Enforcement, not Law"), (None, "invalid"))
+
+    def test_negation_is_invalid(self):
+        self.assertEqual(parse_label("Not Health"), (None, "invalid"))
+
+    def test_refusal_mentioning_a_label_word_is_invalid(self):
+        self.assertEqual(parse_label("I refuse to answer because this concerns the law"), (None, "invalid"))
+
+    def test_comma_labels_with_loose_punctuation(self):
+        self.assertEqual(parse_label("arts culture religion"), ("Arts, Culture, Religion", "exact"))
+        self.assertEqual(parse_label('"Civil Rights and Liberties, Minority Issues."'),
+                         ("Civil Rights and Liberties, Minority Issues", "exact"))
+        self.assertEqual(parse_label("Science,Technology,Communications"),
+                         ("Science, Technology, Communications", "exact"))
+
+    def test_bold_prefix(self):
+        self.assertEqual(parse_label("**Policy area:** Health"), ("Health", "exact"))
+
+    def test_heading_marker(self):
+        self.assertEqual(parse_label("# Health"), ("Health", "exact"))
+
+    def test_list_marker(self):
+        self.assertEqual(parse_label("- Health"), ("Health", "exact"))
+        self.assertEqual(parse_label("1. Health"), ("Health", "exact"))
+
+    def test_trailing_punctuation(self):
+        self.assertEqual(parse_label("Health!!"), ("Health", "exact"))
+
+    def test_list_of_two_labels_is_invalid(self):
+        self.assertEqual(parse_label("- Health\n- Taxation"), (None, "invalid"))
+
+    def test_markdown_bold_and_final_period(self):
+        self.assertEqual(parse_label("**Health**"), ("Health", "exact"))
+        self.assertEqual(parse_label("Policy area: Energy."), ("Energy", "exact"))
+
+    def test_no_label_is_invalid(self):
+        self.assertEqual(parse_label("I am not sure."), (None, "invalid"))
+
+    def test_empty_is_invalid(self):
+        self.assertEqual(parse_label(""), (None, "invalid"))
+
+    def test_longer_word_is_invalid(self):
+        self.assertEqual(parse_label("Energyish"), (None, "invalid"))
+
+
+class Thinking(unittest.TestCase):
+    def test_closed_think_block_is_removed(self):
+        self.assertEqual(parse_label("<think>\nmaybe Health?\n</think>\n\nTaxation"), ("Taxation", "exact"))
+
+    def test_only_closing_tag(self):
+        # Thinking on: the template opens <think> in the prompt, so the reply has only </think>.
+        self.assertEqual(parse_label("Health or Energy...\n</think>\n\nEnergy"), ("Energy", "exact"))
+
+    def test_unclosed_think_is_invalid(self):
+        # Cut off mid-reasoning: a label mentioned while thinking is not an answer.
+        self.assertEqual(parse_label("<think>\nThis looks like Health"), (None, "invalid"))
+
+    def test_strip_thinking_plain_text(self):
+        self.assertEqual(strip_thinking("Health"), "Health")
+
+
+class Prompt(unittest.TestCase):
+    def test_prompt_lists_every_label_and_the_title(self):
+        msgs = build_messages("To amend the Internal Revenue Code.")
+        self.assertEqual(len(msgs), 1)
+        self.assertEqual(msgs[0]["role"], "user")
+        for label in LABELS:
+            self.assertIn(f"- {label}\n", msgs[0]["content"] + "\n")
+        self.assertIn("To amend the Internal Revenue Code.", msgs[0]["content"])
+
+    def test_32_labels(self):
+        self.assertEqual(len(LABELS), 32)
+        self.assertEqual(len(set(LABELS)), 32)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,0 +1,10 @@
+{
+  "name": "model-lab-bench",
+  "private": true,
+  "type": "module",
+  "description": "Lab bench: static home screen and flashcard review for Model Lab. No dependencies.",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "serve": "cd .. && python3 -m http.server 8787"
+  }
+}

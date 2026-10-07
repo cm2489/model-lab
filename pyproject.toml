@@ -5,6 +5,7 @@ description = "Hands-on labs for customizing open-weight language models"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "anthropic>=1.11.0",
     "mlx-lm[train]>=0.32",
 ]
 

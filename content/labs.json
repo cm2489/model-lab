@@ -1,73 +1,322 @@
 {
-  "track": { "id": "open-weights", "title": "Open-weight model customization" },
+  "track": {
+    "id": "open-weights",
+    "title": "Open-weight model customization"
+  },
   "labs": [
-    { "id": "lab-0", "number": 0, "title": "Setup",
+    {
+      "id": "lab-0",
+      "number": 0,
+      "title": "Setup",
       "aim": "Run an open model on your own Mac and measure how fast it trains.",
-      "artifact": { "title": "Your Mac's measured speed and memory", "public": false },
-      "est_minutes": 90, "doc": "labs/00-setup/README.md", "status": "planned",
+      "artifact": {
+        "title": "Your Mac's measured speed and memory",
+        "public": false
+      },
+      "est_minutes": 90,
+      "doc": "labs/00-setup/README.md",
+      "status": "ready",
       "steps": [
-        { "id": "lab-0.1", "title": "Install the tools", "minutes": 20, "where": "laptop", "anchor": "step-1" },
-        { "id": "lab-0.2", "title": "Run a small model on your Mac", "minutes": 25, "where": "laptop", "anchor": "step-2" },
-        { "id": "lab-0.3", "title": "Run a 20-step training test", "minutes": 30, "where": "laptop", "anchor": "step-3" },
-        { "id": "lab-0.4", "title": "Write down what you measured", "minutes": 15, "where": "laptop", "anchor": "step-4" }
-      ] },
-    { "id": "lab-1", "number": 1, "title": "Evals first",
+        {
+          "id": "lab-0.1",
+          "title": "Install the tools",
+          "minutes": 20,
+          "where": "laptop",
+          "anchor": "step-1"
+        },
+        {
+          "id": "lab-0.2",
+          "title": "Run a small model on your Mac",
+          "minutes": 25,
+          "where": "laptop",
+          "anchor": "step-2"
+        },
+        {
+          "id": "lab-0.3",
+          "title": "Run a 20-step training test",
+          "minutes": 30,
+          "where": "laptop",
+          "anchor": "step-3"
+        },
+        {
+          "id": "lab-0.4",
+          "title": "Write down what you measured",
+          "minutes": 15,
+          "where": "laptop",
+          "anchor": "step-4"
+        }
+      ]
+    },
+    {
+      "id": "lab-1",
+      "number": 1,
+      "title": "Evals first",
       "aim": "Build a test set and prove, with numbers, how good a model is at one task.",
-      "artifact": { "title": "Public eval harness with a pass/fail gate", "public": true },
-      "est_minutes": 280, "doc": "labs/01-evals-first/README.md", "status": "planned",
+      "artifact": {
+        "title": "Public eval harness with a pass/fail gate",
+        "public": true
+      },
+      "est_minutes": 280,
+      "doc": "labs/01-evals-first/README.md",
+      "status": "ready",
       "steps": [
-        { "id": "lab-1.1", "title": "Meet the task and the data", "minutes": 30, "where": "laptop", "anchor": "step-1" },
-        { "id": "lab-1.2", "title": "Build the golden test set", "minutes": 45, "where": "laptop", "anchor": "step-2" },
-        { "id": "lab-1.3", "title": "Score the base model, prompt only", "minutes": 45, "where": "laptop", "anchor": "step-3" },
-        { "id": "lab-1.4", "title": "Score a frontier model on the same set", "minutes": 30, "where": "laptop", "anchor": "step-4" },
-        { "id": "lab-1.5", "title": "Read 30 failures", "minutes": 45, "where": "laptop", "anchor": "step-5" },
-        { "id": "lab-1.6", "title": "Add the pass/fail gate and watch it go red", "minutes": 45, "where": "laptop", "anchor": "step-6" },
-        { "id": "lab-1.7", "title": "Publish the score table", "minutes": 40, "where": "laptop", "anchor": "step-7" }
-      ] },
-    { "id": "lab-2", "number": 2, "title": "First fine-tune",
+        {
+          "id": "lab-1.1",
+          "title": "Meet the task and the data",
+          "minutes": 30,
+          "where": "laptop",
+          "anchor": "step-1"
+        },
+        {
+          "id": "lab-1.2",
+          "title": "Build the golden test set",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-2"
+        },
+        {
+          "id": "lab-1.3",
+          "title": "Score the base model, prompt only",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-3"
+        },
+        {
+          "id": "lab-1.4",
+          "title": "Score a frontier model on the same set",
+          "minutes": 30,
+          "where": "laptop",
+          "anchor": "step-4"
+        },
+        {
+          "id": "lab-1.5",
+          "title": "Read 30 failures",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-5"
+        },
+        {
+          "id": "lab-1.6",
+          "title": "Add the pass/fail gate and watch it go red",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-6"
+        },
+        {
+          "id": "lab-1.7",
+          "title": "Publish the score table",
+          "minutes": 40,
+          "where": "laptop",
+          "anchor": "step-7"
+        }
+      ]
+    },
+    {
+      "id": "lab-2",
+      "number": 2,
+      "title": "First fine-tune",
       "aim": "Fine-tune a 4B model with LoRA and show, on your test set, what changed.",
-      "artifact": { "title": "Fine-tuned model and model card on Hugging Face", "public": true },
-      "est_minutes": 285, "doc": "labs/02-first-fine-tune/README.md", "status": "planned",
+      "artifact": {
+        "title": "Fine-tuned model and model card on Hugging Face",
+        "public": true
+      },
+      "est_minutes": 285,
+      "doc": "labs/02-first-fine-tune/README.md",
+      "status": "planned",
       "steps": [
-        { "id": "lab-2.1", "title": "What LoRA changes in a model", "minutes": 30, "where": "laptop", "anchor": "step-1" },
-        { "id": "lab-2.2", "title": "Prepare the training data", "minutes": 45, "where": "laptop", "anchor": "step-2" },
-        { "id": "lab-2.3", "title": "Train: your first LoRA run", "minutes": 45, "where": "laptop", "anchor": "step-3" },
-        { "id": "lab-2.4", "title": "Score the tuned model", "minutes": 30, "where": "laptop", "anchor": "step-4" },
-        { "id": "lab-2.5", "title": "Change one thing and run again", "minutes": 45, "where": "laptop", "anchor": "step-5" },
-        { "id": "lab-2.6", "title": "Swap the base model", "minutes": 45, "where": "laptop", "anchor": "step-6" },
-        { "id": "lab-2.7", "title": "Write the model card and publish", "minutes": 45, "where": "laptop", "anchor": "step-7" }
-      ] },
-    { "id": "lab-3", "number": 3, "title": "Hosted fine-tune",
+        {
+          "id": "lab-2.1",
+          "title": "What LoRA changes in a model",
+          "minutes": 30,
+          "where": "laptop",
+          "anchor": "step-1"
+        },
+        {
+          "id": "lab-2.2",
+          "title": "Prepare the training data",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-2"
+        },
+        {
+          "id": "lab-2.3",
+          "title": "Train: your first LoRA run",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-3"
+        },
+        {
+          "id": "lab-2.4",
+          "title": "Score the tuned model",
+          "minutes": 30,
+          "where": "laptop",
+          "anchor": "step-4"
+        },
+        {
+          "id": "lab-2.5",
+          "title": "Change one thing and run again",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-5"
+        },
+        {
+          "id": "lab-2.6",
+          "title": "Swap the base model",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-6"
+        },
+        {
+          "id": "lab-2.7",
+          "title": "Write the model card and publish",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-7"
+        }
+      ]
+    },
+    {
+      "id": "lab-3",
+      "number": 3,
+      "title": "Hosted fine-tune",
       "aim": "Tune a larger model on a hosted service and compare cost, quality and speed.",
-      "artifact": { "title": "Comparison write-up", "public": true },
-      "est_minutes": 240, "doc": "labs/03-hosted-fine-tune/README.md", "status": "planned",
+      "artifact": {
+        "title": "Comparison write-up",
+        "public": true
+      },
+      "est_minutes": 240,
+      "doc": "labs/03-hosted-fine-tune/README.md",
+      "status": "planned",
       "steps": [
-        { "id": "lab-3.1", "title": "Price the run before you spend", "minutes": 30, "where": "laptop", "anchor": "step-1" },
-        { "id": "lab-3.2", "title": "Tune a larger model on a hosted service", "minutes": 60, "where": "hosted", "anchor": "step-2" },
-        { "id": "lab-3.3", "title": "Score it on the golden set", "minutes": 30, "where": "laptop", "anchor": "step-3" },
-        { "id": "lab-3.4", "title": "Build the cost, quality and speed table", "minutes": 45, "where": "laptop", "anchor": "step-4" },
-        { "id": "lab-3.5", "title": "Write the comparison", "minutes": 75, "where": "laptop", "anchor": "step-5" }
-      ] },
-    { "id": "lab-4", "number": 4, "title": "Serve it",
+        {
+          "id": "lab-3.1",
+          "title": "Price the run before you spend",
+          "minutes": 30,
+          "where": "laptop",
+          "anchor": "step-1"
+        },
+        {
+          "id": "lab-3.2",
+          "title": "Tune a larger model on a hosted service",
+          "minutes": 60,
+          "where": "hosted",
+          "anchor": "step-2"
+        },
+        {
+          "id": "lab-3.3",
+          "title": "Score it on the golden set",
+          "minutes": 30,
+          "where": "laptop",
+          "anchor": "step-3"
+        },
+        {
+          "id": "lab-3.4",
+          "title": "Build the cost, quality and speed table",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-4"
+        },
+        {
+          "id": "lab-3.5",
+          "title": "Write the comparison",
+          "minutes": 75,
+          "where": "laptop",
+          "anchor": "step-5"
+        }
+      ]
+    },
+    {
+      "id": "lab-4",
+      "number": 4,
+      "title": "Serve it",
       "aim": "Shrink the model, serve it, and know what one request costs.",
-      "artifact": { "title": "Working endpoint and a cost-per-request table", "public": true },
-      "est_minutes": 220, "doc": "labs/04-serve-it/README.md", "status": "planned",
+      "artifact": {
+        "title": "Working endpoint and a cost-per-request table",
+        "public": true
+      },
+      "est_minutes": 220,
+      "doc": "labs/04-serve-it/README.md",
+      "status": "planned",
       "steps": [
-        { "id": "lab-4.1", "title": "Shrink it: what each quantization level costs", "minutes": 45, "where": "laptop", "anchor": "step-1" },
-        { "id": "lab-4.2", "title": "Serve it locally", "minutes": 40, "where": "laptop", "anchor": "step-2" },
-        { "id": "lab-4.3", "title": "Put it behind an MCP server", "minutes": 45, "where": "laptop", "anchor": "step-3" },
-        { "id": "lab-4.4", "title": "One hour on a rented GPU", "minutes": 60, "where": "hosted", "anchor": "step-4" },
-        { "id": "lab-4.5", "title": "Build the cost-per-request table", "minutes": 30, "where": "laptop", "anchor": "step-5" }
-      ] },
-    { "id": "lab-5", "number": 5, "title": "Case study",
+        {
+          "id": "lab-4.1",
+          "title": "Shrink it: what each quantization level costs",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-1"
+        },
+        {
+          "id": "lab-4.2",
+          "title": "Serve it locally",
+          "minutes": 40,
+          "where": "laptop",
+          "anchor": "step-2"
+        },
+        {
+          "id": "lab-4.3",
+          "title": "Put it behind an MCP server",
+          "minutes": 45,
+          "where": "laptop",
+          "anchor": "step-3"
+        },
+        {
+          "id": "lab-4.4",
+          "title": "One hour on a rented GPU",
+          "minutes": 60,
+          "where": "hosted",
+          "anchor": "step-4"
+        },
+        {
+          "id": "lab-4.5",
+          "title": "Build the cost-per-request table",
+          "minutes": 30,
+          "where": "laptop",
+          "anchor": "step-5"
+        }
+      ]
+    },
+    {
+      "id": "lab-5",
+      "number": 5,
+      "title": "Case study",
       "aim": "Turn the work into evidence a hiring manager or client can judge in five minutes.",
-      "artifact": { "title": "Case study and a recorded walkthrough", "public": true },
-      "est_minutes": 210, "doc": "labs/05-case-study/README.md", "status": "planned",
+      "artifact": {
+        "title": "Case study and a recorded walkthrough",
+        "public": true
+      },
+      "est_minutes": 210,
+      "doc": "labs/05-case-study/README.md",
+      "status": "planned",
       "steps": [
-        { "id": "lab-5.1", "title": "The stand-out check", "minutes": 30, "where": "laptop", "anchor": "step-1" },
-        { "id": "lab-5.2", "title": "Write it as a client engagement", "minutes": 90, "where": "laptop", "anchor": "step-2" },
-        { "id": "lab-5.3", "title": "Record a 5-minute walkthrough", "minutes": 60, "where": "laptop", "anchor": "step-3" },
-        { "id": "lab-5.4", "title": "Publish", "minutes": 30, "where": "laptop", "anchor": "step-4" }
-      ] }
+        {
+          "id": "lab-5.1",
+          "title": "The stand-out check",
+          "minutes": 30,
+          "where": "laptop",
+          "anchor": "step-1"
+        },
+        {
+          "id": "lab-5.2",
+          "title": "Write it as a client engagement",
+          "minutes": 90,
+          "where": "laptop",
+          "anchor": "step-2"
+        },
+        {
+          "id": "lab-5.3",
+          "title": "Record a 5-minute walkthrough",
+          "minutes": 60,
+          "where": "laptop",
+          "anchor": "step-3"
+        },
+        {
+          "id": "lab-5.4",
+          "title": "Publish",
+          "minutes": 30,
+          "where": "laptop",
+          "anchor": "step-4"
+        }
+      ]
+    }
   ]
 }
