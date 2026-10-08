@@ -106,5 +106,25 @@ class Prompt(unittest.TestCase):
         self.assertEqual(len(set(LABELS)), 32)
 
 
+class ShortStyle(unittest.TestCase):
+    def test_short_prompt_has_no_label_list(self):
+        from evals.labels import LABELS
+        from evals.prompt import build_messages, prompt_version
+
+        full = build_messages("A bill about bees.")[0]["content"]
+        short = build_messages("A bill about bees.", "short")[0]["content"]
+        self.assertIn("A bill about bees.", short)
+        self.assertTrue(all(label in full for label in LABELS))
+        self.assertFalse(any(f"- {label}" in short for label in LABELS))
+        self.assertLess(len(short), len(full) / 4)
+        self.assertNotEqual(prompt_version("short"), prompt_version("list"))
+
+    def test_unknown_style_is_an_error(self):
+        from evals.prompt import build_messages
+
+        with self.assertRaises(ValueError):
+            build_messages("x", "tiny")
+
+
 if __name__ == "__main__":
     unittest.main()

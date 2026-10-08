@@ -2,6 +2,9 @@
 #   make data   rebuild the dataset from GovInfo (uses data/cache/ if present)
 #   make eval   score the local base model on the golden set
 #   make test   unit tests (no model, no network)
+#   make tune-data   build the chat-format training files for Lab 2
+#   make tune        fine-tune with LoRA (Lab 2 defaults: batch 1, 1,200 steps)
+#   make eval-tuned  score the tuned model on the golden set with the short prompt
 #   make gate   the pass/fail gate on the committed baseline predictions (what CI runs)
 
 PY ?= uv run python
@@ -20,7 +23,10 @@ MAX_INVALID ?= 0.014
 # line changes in the same commit, so a reviewer sees the test set moved.
 GOLDEN_SHA256 ?= a717155c2c2b268b0cbff56ac57b5428272aaa840aa17c1d3360ef48abd8f319
 
-.PHONY: data eval test gate
+ADAPTER ?= adapters/policy-area
+RUN ?= qwen3.5-4b-4bit-tuned-golden
+
+.PHONY: data eval test gate tune-data tune eval-tuned
 
 data:
 	$(PY) data/build_dataset.py
@@ -30,6 +36,16 @@ eval:
 
 test:
 	$(PY) -m unittest discover -s evals/tests -t . -v
+	$(PY) -m unittest tune.test_prepare -v
 
 gate:
 	$(PY) -m evals.gate --predictions $(BASELINE) --min-accuracy $(MIN_ACCURACY) --max-invalid $(MAX_INVALID) --golden-sha256 $(GOLDEN_SHA256)
+
+tune-data:
+	$(PY) -m tune.prepare
+
+tune:
+	$(PY) -m tune.train
+
+eval-tuned:
+	$(PY) -m evals.run --backend mlx --model $(MODEL) --adapter-path $(ADAPTER) --prompt short --split $(SPLIT) --run-name $(RUN)
