@@ -22,5 +22,7 @@ jobs:
           python-version: "3.12"
       - name: Unit tests
         run: python -m unittest discover -s evals/tests -t . -v
+      - name: Training-data tests
+        run: python -m unittest tune.test_prepare -v
       - name: Gate on the committed baseline predictions
         run: make gate PY=python

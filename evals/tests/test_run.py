@@ -62,6 +62,26 @@ class RunCli(unittest.TestCase):
         # 200 in x $1/M + 2 out x $5/M = $0.00021 per bill -> $0.21 per 1,000
         self.assertEqual(b["cost"]["cost_per_1k_usd"], 0.21)
 
+    def test_short_prompt_and_adapter_are_recorded(self):
+        seen = {}
+
+        class Spy(FakeBackend):
+            def __call__(self, messages):
+                seen["prompt"] = messages[0]["content"]
+                return super().__call__(messages)
+
+        with mock.patch.object(run, "make_backend", return_value=Spy()):
+            quiet(run.main, ["--backend", "mlx", "--model", "fake/model", "--limit", "3", "--prompt", "short",
+                             "--adapter-path", "adapters/x", "--run-name", "t", "--results-dir", str(self.dir)])
+        self.assertNotIn("Policy areas:", seen["prompt"])
+        m = json.loads((self.dir / "t" / "metrics.json").read_text())["meta"]
+        self.assertEqual(m["prompt_style"], "short")
+        self.assertEqual(m["prompt_version"], "short-v1")
+        self.assertEqual(m["adapter"], "adapters/x")
+        table = (self.dir / "README.md").read_text()
+        self.assertIn("LoRA `x`", table)
+        self.assertIn("| short |", table)
+
 
 if __name__ == "__main__":
     unittest.main()
