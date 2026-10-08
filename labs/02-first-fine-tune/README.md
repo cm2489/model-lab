@@ -335,9 +335,9 @@ You cannot say. With 150 bills, one bill is 0.7 points, and a difference of two 
 
 ## Step 6 · Swap the base model
 
-**Not verified by the kit builder.** The second model is a 5.2 GB download and the Mac this kit was built on had about 7 GB free that day. The commands below follow the same pattern as steps 3 and 4, but nobody has run them yet. If one fails, note what happened in `labs/02-first-fine-tune/NOTES.md`.
+Every block in this step was run on October 7, 2026 (Eastern), on the same M1 Max.
 
-**Do this:** run the same fine-tune on a model from a different lab and compare. **About 45 minutes.**
+**Do this:** run the same fine-tune on a model from a different lab and compare. **About 45 minutes, of which the download is about 3 minutes and training about 7.**
 
 1. Check free disk. You need 12 GB or more to hold both models and train.
 
@@ -345,7 +345,25 @@ You cannot say. With 150 bills, one bill is 0.7 points, and a difference of two 
    df -h /System/Volumes/Data
    ```
 
-2. Read the license on the original, `google/gemma-4-E4B-it`, on Hugging Face. It is tagged Apache-2.0. The converted copy you are about to download is tagged "gemma". When the two disagree, the original is the one that counts. Write down what you found.
+   **You should see** 12 GB or more in the "Avail" column. The kit builder had 69 GB.
+
+   ```text
+   Filesystem      Size    Used   Avail Capacity iused ifree %iused  Mounted on
+   /dev/disk3s5   460Gi   365Gi    69Gi    85%    5.5M  728M    1%   /System/Volumes/Data
+   ```
+
+2. Read the license on the original, `google/gemma-4-E4B-it`, on Hugging Face. The converted copy you are about to download carries a different tag. When the two disagree, the original is the one that counts. Write down what you found.
+
+   ```bash
+   for m in google/gemma-4-E4B-it mlx-community/gemma-4-e4b-it-4bit; do curl -s https://huggingface.co/api/models/$m | python3 -c 'import json,sys; print(json.load(sys.stdin).get("cardData",{}).get("license"))'; done
+   ```
+
+   **You should see** the original's license first, then the copy's.
+
+   ```text
+   apache-2.0
+   gemma
+   ```
 
 3. Download the second model.
 
@@ -353,10 +371,25 @@ You cannot say. With 150 bills, one bill is 0.7 points, and a difference of two 
    uv run hf download mlx-community/gemma-4-e4b-it-4bit
    ```
 
+   **You should see** the folder it saved to, after about 3 minutes on a home connection. The weights file is 5.15 GB.
+
+   ```text
+   path=~/.cache/huggingface/hub/models--mlx-community--gemma-4-e4b-it-4bit/snapshots/475b9088d29754a3379866cf5aeb6b41acd313c2
+   ```
+
 4. Score it untuned, with the label-list prompt.
 
    ```bash
-   uv run python -m evals.run --backend mlx --model mlx-community/gemma-4-e4b-it-4bit --split golden
+   uv run python -m evals.run --backend mlx --model mlx-community/gemma-4-e4b-it-4bit --split golden --run-name gemma-4-e4b-it-4bit-golden-baseline
+   ```
+
+   **You should see** 150 progress lines, then
+
+   ```text
+   run: results/gemma-4-e4b-it-4bit-golden-baseline
+   accuracy 60.0% (90/150)   macro-F1 0.590   invalid 1.3% (2)
+   latency p50 0.316s  p90 0.346s   tokens/s 95.8   wall 50s
+   cost per 1,000 bills: 0.0  (local run: $0 marginal cost (hardware and electricity not counted))
    ```
 
 5. Fine-tune it with the same data and settings.
@@ -365,13 +398,73 @@ You cannot say. With 150 bills, one bill is 0.7 points, and a difference of two 
    uv run python -m tune.train --model mlx-community/gemma-4-e4b-it-4bit --name policy-area-gemma
    ```
 
+   **You should see** the same settings box with the new model name, then
+
+   ```text
+   Trainable parameters: 0.047% (3.473M/7463.013M)
+     iter   train_loss     tok/s     tokens
+        1    val 11.766    18.73s
+      100    1.948 ▼       19      0.6k
+      200    0.479 ▼       22      1.2k
+      300    0.415 ▼       23      1.8k
+      400    val 0.277    19.32s
+      400    0.327 ▼       22      2.3k
+      500    0.239 ▼       22      2.9k
+      600    0.222 ▼       21      3.5k
+      700    0.208 ▼       20      4.1k
+      800    val 0.176    21.17s
+      800    0.208 ▼       21      4.7k
+      900    0.205 ▼       21      5.3k
+     1000    0.214 ▲       21      5.9k
+     1100    0.189 ▼       21      6.4k
+     1200    val 0.191    21.04s
+     1200    0.197 ▲       22      7.0k
+   train ██████████████████████████████ 100% · 1,200/1,200
+   Model:       mlx-community/gemma-4-e4b-it-4bit
+   Adapter:     adapters/policy-area-gemma
+   Wall time:   6.9 minutes for 1200 steps
+   Peak memory: 5.12 GB
+   ```
+
+   Two numbers differ from Qwen. The first `val` loss is 11.8, not 2.7, and it falls below 0.3 by step 400. The model counts 7,463 million weights, though its name says 4B. Google's model card explains: the "E" means "effective", and many of those weights are per-layer lookup tables, not weights the model computes with.
+
 6. Score the tuned version.
 
    ```bash
-   uv run python -m evals.run --backend mlx --model mlx-community/gemma-4-e4b-it-4bit --adapter-path adapters/policy-area-gemma --prompt short --split golden
+   uv run python -m evals.run --backend mlx --model mlx-community/gemma-4-e4b-it-4bit --adapter-path adapters/policy-area-gemma --prompt short --split golden --run-name gemma-4-e4b-it-4bit-tuned-golden
+   ```
+
+   **You should see** 150 progress lines, then
+
+   ```text
+   run: results/gemma-4-e4b-it-4bit-tuned-golden
+   accuracy 70.7% (106/150)   macro-F1 0.684   invalid 0.0% (0)
+   latency p50 0.166s  p90 0.227s   tokens/s 83.0   wall 30s
+   cost per 1,000 bills: 0.0  (local run: $0 marginal cost (hardware and electricity not counted))
    ```
 
 7. Put the two models side by side: untuned score, tuned score, speed, peak memory, download size, license, and who made it.
+
+   | | Qwen3.5-4B | Gemma 4 E4B |
+   |---|---|---|
+   | Made by | Alibaba (Qwen team) | Google |
+   | Untuned, label-list prompt | 56.7% (2 invalid) | 60.0% (2 invalid) |
+   | Tuned, short prompt | 74.7% (1 invalid) | 70.7% (0 invalid) |
+   | Speed untuned, tokens/s | 116 | 96 |
+   | Speed tuned, tokens/s | 97 | 83 |
+   | Training wall time | 13.3 minutes | 6.9 minutes |
+   | Training peak memory | 7.54 GB | 5.12 GB |
+   | Download (weights file) | 3.03 GB | 5.15 GB |
+   | License, original | Apache-2.0 | Apache-2.0 |
+   | License tag, `mlx-community` copy | none | gemma |
+
+   Sizes and license tags come from the Hugging Face API on October 7, 2026. Speeds come from `results/README.md`.
+
+**What the table says**
+
+- Gemma starts 3.3 points ahead and ends 4 points behind. Both gaps are 5 or 6 bills out of 150: inside the noise you met in step 5.
+- The big gap is untuned to tuned, and both families show it.
+- Gemma trained in half the time on less memory, but answers more slowly.
 
 **Check yourself.** A client will not accept a model made in China. How long does it take you to switch, and what do you need to re-run?
 
