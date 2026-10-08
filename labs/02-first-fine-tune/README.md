@@ -10,7 +10,7 @@
 
 **The one rule of this lab:** training uses batch size 1. On a 32 GB Mac, a batch of 4 pushed the machine into swap and nearly filled the disk. The reason is in step 3.
 
-Every "You should see" block is real output from a 2021 MacBook Pro (M1 Max, 32 GB), run on October 6, 2026. Blocks show the last lines of the output.
+Every "You should see" block is real output from a 2021 MacBook Pro (M1 Max, 32 GB), run on October 6, 2026 (steps 1 to 5) and October 7, 2026 (step 6), Eastern Time. Blocks show the last lines of the output.
 
 ---
 

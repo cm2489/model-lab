@@ -39,13 +39,14 @@ Hours are estimates and have not been measured. Labs 3 to 5 are built after Lab 
 
 ## Waiting on the owner
 
+- Make the repository public and turn on the lab bench page (GitHub Pages).
 - Close the API-key exposure on the old course app. Done together in Chrome.
 - Turn off the two old scheduled tasks, if they still run. Done together.
 - Create a Hugging Face account before Lab 2, step 7.
 
-## Depth phase · proposed, not approved
+## Depth phase · approved October 7, 2026, built after Lab 5
 
-After Lab 5, this phase repeats the loop on harder problems, aimed at what open-model job postings ask for. The owner confirms the contents before any of it is built.
+After Lab 5, this phase repeats the loop on harder problems, aimed at what open-model job postings ask for. The owner approved this list as written on October 7, 2026. Each item is built as its own lab, in this order unless he changes it.
 
 - Serving under load: vLLM or SGLang, batching, throughput, cost per token.
 - Quantization: what each level costs in accuracy, measured on the golden set.
