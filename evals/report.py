@@ -22,11 +22,19 @@ COLUMNS = ["Run", "Model", "Backend", "Prompt", "Split (n)", "Accuracy", "Macro-
            "p50 / p90 s", "tok/s", "$ per 1k bills", "Date (ET)", "Commit"]
 
 
+def model_label(meta: dict) -> str:
+    """`model`, plus where a locally converted copy came from."""
+    label = f"`{meta['model']}`"
+    if meta.get("converted_from"):
+        label += f" (converted here from `{meta['converted_from']}`)"
+    return label
+
+
 def table_row(m: dict) -> str:
     meta, c, s, k = m["meta"], m["classification"], m["speed"], m["cost"]
     cells = [
         f"[{meta['run_name']}]({meta['run_name']}/score.md)",
-        f"`{meta['model']}`" + (f" + LoRA `{meta['adapter'].rstrip('/').rsplit('/', 1)[-1]}`" if meta.get("adapter") else ""),
+        model_label(meta) + (f" + LoRA `{meta['adapter'].rstrip('/').rsplit('/', 1)[-1]}`" if meta.get("adapter") else ""),
         meta["backend"],
         meta.get("prompt_style", "list"),
         f"{meta['split']} ({c['n']})",
@@ -47,7 +55,7 @@ def score_card(m: dict) -> str:
     lines = [
         f"# {meta['run_name']}",
         "",
-        f"- Model: `{meta['model']}` ({meta['backend']})",
+        f"- Model: {model_label(meta)} ({meta['backend']})",
         f"- Split: {meta['split']}, {c['n']} examples"
         + (f" (first {meta['limit']} only)" if meta.get("limit") else ""),
         f"- Date: {meta['date']} (Eastern Time)",
