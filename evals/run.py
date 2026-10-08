@@ -136,6 +136,21 @@ def predict_all(backend, examples: list[dict], out_path: Path, model: str, style
     return rows
 
 
+def local_base_model(model: str) -> str | None:
+    """For a folder made by mlx_lm.convert, the Hub model it was converted from.
+
+    mlx_lm.convert writes a README.md whose front matter names `base_model:`.
+    Returns None for a Hub id, or a folder without that line.
+    """
+    readme = Path(model) / "README.md"
+    if not readme.is_file():
+        return None
+    for line in readme.read_text(errors="replace").splitlines():
+        if line.startswith("base_model:"):
+            return line.split(":", 1)[1].strip() or None
+    return None
+
+
 def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9.]+", "-", text.lower().split("/")[-1]).strip("-")
 
@@ -212,6 +227,8 @@ def main(argv=None) -> int:
                          "effort": args.effort if args.backend == "anthropic" else None}}
     if args.backend != "predictions":
         meta["runtime"] = getattr(backend, "runtime", None)
+        if args.backend == "mlx" and local_base_model(model):
+            meta["converted_from"] = local_base_model(model)
     m = {"meta": meta, "classification": metrics.classification(rows), "speed": metrics.speed(rows), "stops": metrics.stops(rows),
          "cost": metrics.cost(rows, args.price_in, args.price_out, local)}
     (run_dir / "metrics.json").write_text(json.dumps(m, indent=2) + "\n")
