@@ -45,7 +45,7 @@ make eval               # score the local base model (downloads 3 GB the first t
 - `tune/`: data preparation and the LoRA training wrapper.
 - `data/`: the dataset builder and the train and validation splits. The test set is `evals/golden.jsonl`.
 - `results/`: every scored run, with its predictions.
-- `bench/`: a small phone page that shows the next step, the flashcards due, and what has shipped.
+- `bench/`: a small phone page that shows the next step, the flashcards due, and what has shipped. Live at [cm2489.github.io/model-lab/bench](https://cm2489.github.io/model-lab/bench/).
 - `foundations/`: four optional background sessions on how neural networks, training, tokenization and transformers work.
 - `research/`: dated, source-linked briefs on the open-weight model landscape and tooling.
 - `content/`: the JSON that drives the bench and the `/lab` tutor command.

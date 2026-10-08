@@ -39,7 +39,6 @@ Hours are estimates and have not been measured. Labs 3 to 5 are built after Lab 
 
 ## Waiting on the owner
 
-- Make the repository public and turn on the lab bench page (GitHub Pages).
 - Close the API-key exposure on the old course app. Done together in Chrome.
 - Turn off the two old scheduled tasks, if they still run. Done together.
 - Create a Hugging Face account before Lab 2, step 7.
