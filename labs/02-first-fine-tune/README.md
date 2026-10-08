@@ -335,7 +335,7 @@ You cannot say. With 150 bills, one bill is 0.7 points, and a difference of two 
 
 ## Step 6 · Swap the base model
 
-Every block in this step was run on October 8, 2026 (Eastern), on the same M1 Max, by the kit builder. The independent re-run from this page is pending.
+Every block in this step was run on October 8, 2026 (Eastern), on the same M1 Max, by the kit builder, and re-run from this page the same morning by an agent that did not write it: the same scores, the same losses to the digit, and the same reply on all 150 test bills. Only timings moved (training 6.6 minutes against 6.8).
 
 **You need:** `data/lora/` from step 2 (`make tune-data`). It is not in the repository; a fresh clone must run step 2 first.
 
