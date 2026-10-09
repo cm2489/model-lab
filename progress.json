@@ -1,6 +1,20 @@
 {
-  "updated": null,
-  "steps": {},
-  "sessions": [],
+  "updated": "2026-10-09T00:20:00-04:00",
+  "steps": {
+    "lab-0.1": {
+      "done": "2026-10-08T10:45:00-04:00",
+      "minutes": 20,
+      "note": "Tools installed first try (3.12.15, mlx-lm 0.32.0; M1 Max, 32 GB). The numbers file's two header lines read as labels, not as blanks to fill; the tutor wrote the Mac lines in."
+    }
+  },
+  "sessions": [
+    {
+      "date": "2026-10-08",
+      "minutes": 20,
+      "steps": [
+        "lab-0.1"
+      ]
+    }
+  ],
   "artifacts": []
 }
